@@ -1,0 +1,21 @@
+{
+  "path": "src/tvcodepg.pas",
+  "kind": "translation",
+  "sources": [
+    {"source": "magiblot/tvision", "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524", "file": "include/tvision/internal/codepage.h", "lines": "1-43"},
+    {"source": "magiblot/tvision", "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524", "file": "source/platform/codepage.cpp", "lines": "1-89"}
+  ],
+  "inputs": [
+    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/codepage.h", "sha256": "1b7711d980066490098a1c7b0fbf8e03a2fbc0632dda9bbda3d5d018c34b5041"},
+    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/codepage.cpp", "sha256": "448aab1538071cfecc14d50837fd7b16157289d776e1615c35c935b9759db96b"},
+    {"origin": "repository:docs/API-NAMES.md", "sha256": "e7e3ac75e6ed365763ffe9e1f5ace6febcdfddec9f655c908dfe1350fb3d06f1"},
+    {"origin": "repository:docs/ASYNC.md", "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"},
+    {"origin": "repository:src/tvutf8.pas", "sha256": "194a547ad470bae95d60e1bc980f759151f16d987ffefac1a3c06c86512e1e14"},
+    {"origin": "repository:src/tvtext.pas", "sha256": "4b54630ae6cec87f74565c01ce9af1d049dd553e843938c804fb27043b9ec3b2"}
+  ],
+  "implementer": "implementer 25",
+  "proofs": [],
+  "versions": [
+    {"blob": "2a3276dc58cc1eb46ad93a93e7f17822241bf565", "commit": null, "pr": null, "audit_run": null}
+  ]
+}
