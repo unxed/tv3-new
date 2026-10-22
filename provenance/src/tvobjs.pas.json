@@ -1,0 +1,102 @@
+{
+  "path": "src/tvobjs.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/tvobjs.h",
+      "lines": "1-152"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/objects.h",
+      "lines": "209-302"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tobject.cpp",
+      "lines": "1-20"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tcollect.cpp",
+      "lines": "1-251"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tsortcol.cpp",
+      "lines": "1-104"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/nmcollct.cpp",
+      "lines": "1-17"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/nmscoll.cpp",
+      "lines": "1-17"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/tvobjs.h",
+      "sha256": "cc43a7b75c0770c72f51df8b791254ceb518c9e4a0028377c7138b057de48037"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/objects.h",
+      "sha256": "21f60d4098d6959f5f3253fa7729fd5a31d2ab85b43ec2d9f0caf4bc88fb9920"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tobject.cpp",
+      "sha256": "5546bf6b604f4050c3a0615e3c9b0a20eaa8eea9803cc31e24ee9436fd2d990a"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tcollect.cpp",
+      "sha256": "e9fdb40720e147e79d9b64b3d7919a6a34ad2690b83548e0773389a39f4751d8"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tsortcol.cpp",
+      "sha256": "47882432f5e95a29c89890247d3bc0efb17a56a076b644870b0010ea2ada5410"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/nmcollct.cpp",
+      "sha256": "3aa496e15364af29c551b58fa9d3c204475ba01afa68039c5e6d10a45a0b4201"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/nmscoll.cpp",
+      "sha256": "1dbcf318ff48db69ee13ac39245c06f84ec285048f09c213b4af2ede1ea885f6"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "2177bcb2269e6b9dec6eb979d7c473fa0de5c46c4b42422fd0cdb1db1f7ae6e4"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    }
+  ],
+  "implementer": "implementer 20",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "6b5d855f31f4acb6c92adeb872b59cc138d619c9",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "67c94e710fe10348193de2416ad433c42341b8e1",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
