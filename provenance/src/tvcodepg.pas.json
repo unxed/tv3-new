@@ -14,7 +14,11 @@
     {"origin": "repository:src/tvtext.pas", "sha256": "4b54630ae6cec87f74565c01ce9af1d049dd553e843938c804fb27043b9ec3b2"}
   ],
   "implementer": "implementer 25",
-  "proofs": [],
+  "proofs": [
+    "d5c404091dcb80dbc5d7b665a6bb29113ae5290e55a08b69e97487ff586c694c",
+    "40d5adc6423d6e7122054a7dc36f7ef67b8f2819c22b97a48cba32ad4bf58352",
+    "ffc09f7e7b874f8b28ae7ff094278aa90883aaa1a82d410f9c294757902d559d"
+  ],
   "versions": [
     {"blob": "2a3276dc58cc1eb46ad93a93e7f17822241bf565", "commit": null, "pr": null, "audit_run": null},
     {"blob": "9f802bd415b91505ac992d71a4cac25a2c62aa20", "commit": null, "pr": null, "audit_run": null}
