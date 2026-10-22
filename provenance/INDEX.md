@@ -56,6 +56,7 @@
 | `tests/t_ustr.pas` | specification | specification:tvustr | 1 | 1 | 0 |
 | `tests/t_utf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 2 | 2 | 0 |
 | `tests/t_util.pas` | translation | magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/drivers2.cpp:1-118; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/newstr.cpp:1-48; magiblot/tvision:source/tvision/fmtstr.cpp:1-61 | 1 | 1 | 0 |
+| `tests/t_wild.pas` | specification | specification:tvwild | 1 | 1 | 0 |
 | `tests/t_wordnav.pas` | specification | specification:tvwordnav | 1 | 1 | 0 |
 | `tests/testlib.inc` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/audit.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
