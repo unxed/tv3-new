@@ -26,11 +26,13 @@ added: TTextCells
 added: TTransformAttr
 added: TPackedUtf8Func
 added: CodePageToPackedUtf8
+added: TClipboardBackend
 
-The last four are added by the rules of the translation, not by rule P5. A Pascal class cannot be extended in another
+The last five are added by the rules of the translation, not by rule P5. A Pascal class cannot be extended in another
 unit, so the members of the C++ class TText that write into screen cells are class methods of TTextCells in TvText.
 TTransformAttr and TPackedUtf8Func are the procedural types that stand for a function template parameter and for the
 code page conversion of a control character, and CodePageToPackedUtf8 is the variable that holds the latter.
+TClipboardBackend is the class of the hook for the system clipboard, which THardwareInfo provides in the C++.
 
 ## Differences
 
