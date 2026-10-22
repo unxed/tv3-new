@@ -3,7 +3,10 @@
   See COPYRIGHT.magiblot.
 
   A translation is a table of 256 UTF-8 sequences of up to four bytes, zero-padded, one per code page character.
-  The built-in table is the one of code page 437. }
+  The built-in table is the one of code page 437.
+
+  The initialization of this unit sets the variable CodePageToPackedUtf8 of TvText to the conversion of
+  CpTranslator. }
 unit TvCodePg;
 
 {$mode objfpc}
@@ -41,6 +44,9 @@ type
 
 implementation
 
+uses
+  TvText;
+
 const
   { The code point of every character of code page 437, in the order of the characters. }
   Cp437Points: array[0..255] of Cardinal = (
@@ -62,28 +68,186 @@ const
     $2261, $00B1, $2265, $2264, $2320, $2321, $00F7, $2248, $00B0, $2219, $00B7, $221A, $207F, $00B2, $25A0, $00A0
   );
 
-class procedure CpTranslator.SetTranslation(ATranslation: PCpTranslation);
+type
+  { An entry of the reverse map: the first Len bytes of a UTF-8 sequence as a Cardinal, the first byte being the
+    lowest, and the code page character it stands for. }
+  TCpMapEntry = record
+    Key: Cardinal;
+    Value: Byte;
+  end;
+
+  { A translation table with its reverse map. A state is never changed after it is published. }
+  TCpState = record
+    Table: TCpTranslation;
+    Count: Integer;
+    Map: array[0..255] of TCpMapEntry; { Sorted by Key. }
+  end;
+  PCpState = ^TCpState;
+
+var
+  { The published state, nil until first use. Secondary threads may still read a state when it is replaced, so a
+    replaced state is never freed and the state is never destroyed on exit. }
+  State: PCpState = nil;
+  StateLock: TRTLCriticalSection;
+
+function PackBytes(const Bytes: TUtf8Bytes; Count: Integer): Cardinal;
+var
+  I: Integer;
 begin
+  Result := 0;
+  for I := 0 to Count - 1 do
+    Result := Result or (Cardinal(Bytes[I]) shl (8 * I));
+end;
+
+{ The key of the first four bytes of S. }
+function StringToKey(const S: string): Cardinal;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := 1 to Length(S) do
+  begin
+    if I > 4 then
+      Break;
+    Result := Result or (Cardinal(Byte(S[I])) shl (8 * (I - 1)));
+  end;
+end;
+
+{ Returns the index of the first entry of the map whose key is not less than Key. }
+function LowerBound(St: PCpState; Key: Cardinal): Integer;
+var
+  Lo, Hi, Mid: Integer;
+begin
+  Lo := 0;
+  Hi := St^.Count;
+  while Lo < Hi do
+  begin
+    Mid := (Lo + Hi) div 2;
+    if St^.Map[Mid].Key < Key then
+      Lo := Mid + 1
+    else
+      Hi := Mid;
+  end;
+  Result := Lo;
+end;
+
+procedure InitUtf8ToCp(St: PCpState);
+var
+  I, Pos, J: Integer;
+  Len: Integer;
+  Key: Cardinal;
+begin
+  St^.Count := 0;
+  for I := 0 to 255 do
+  begin
+    Len := 1 + Integer(Utf8BytesLeft(St^.Table[I][0]));
+    Key := PackBytes(St^.Table[I], Len);
+    Pos := LowerBound(St, Key);
+    { An existing entry is kept, as with the insertion into a map. }
+    if (Pos < St^.Count) and (St^.Map[Pos].Key = Key) then
+      Continue;
+    for J := St^.Count downto Pos + 1 do
+      St^.Map[J] := St^.Map[J - 1];
+    St^.Map[Pos].Key := Key;
+    St^.Map[Pos].Value := Byte(I);
+    Inc(St^.Count);
+  end;
+end;
+
+{ Makes a state from ATranslation, or from code page 437 if it is nil. }
+function BuildState(ATranslation: PCpTranslation): PCpState;
+var
+  I: Integer;
+begin
+  New(Result);
+  if ATranslation <> nil then
+    Result^.Table := ATranslation^
+  else
+    for I := 0 to 255 do
+      Utf32To8(Cp437Points[I], Result^.Table[I]);
+  InitUtf8ToCp(Result);
+end;
+
+{ The map is created on first use, which is safe from other threads, and it is not destroyed. }
+function GetState: PCpState;
+var
+  Built: PCpState;
+begin
+  Result := State;
+  if Result = nil then
+  begin
+    EnterCriticalSection(StateLock);
+    try
+      if State = nil then
+      begin
+        Built := BuildState(nil);
+        WriteBarrier;
+        State := Built;
+      end;
+      Result := State;
+    finally
+      LeaveCriticalSection(StateLock);
+    end;
+  end;
+end;
+
+class procedure CpTranslator.SetTranslation(ATranslation: PCpTranslation);
+var
+  Built: PCpState;
+begin
+  Built := BuildState(ATranslation);
+  EnterCriticalSection(StateLock);
+  try
+    WriteBarrier;
+    State := Built;
+  finally
+    LeaveCriticalSection(StateLock);
+  end;
 end;
 
 class function CpTranslator.ToUtf8(C: Byte): TUtf8Bytes;
 begin
-  FillChar(Result, SizeOf(Result), 0);
+  Result := GetState^.Table[C];
 end;
 
 class function CpTranslator.ToPackedUtf8(C: Byte): Cardinal;
 begin
-  Result := 0;
+  Result := PackBytes(GetState^.Table[C], 4);
 end;
 
 class function CpTranslator.FromUtf8(const S: string): Char;
+var
+  St: PCpState;
+  Key: Cardinal;
+  Pos: Integer;
 begin
-  Result := #0;
+  St := GetState;
+  Key := StringToKey(S);
+  Pos := LowerBound(St, Key);
+  if (Pos < St^.Count) and (St^.Map[Pos].Key = Key) then
+    Result := Char(St^.Map[Pos].Value)
+  else
+    Result := #0;
 end;
 
 class function CpTranslator.PrintableFromUtf8(const S: string): Char;
+var
+  C: Char;
 begin
-  Result := #0;
+  C := FromUtf8(S);
+  if C < ' ' then
+    Result := #0
+  else
+    Result := C;
 end;
+
+function PackedUtf8OfCodePage(C: Char): Cardinal;
+begin
+  Result := CpTranslator.ToPackedUtf8(Byte(C));
+end;
+
+initialization
+  InitCriticalSection(StateLock);
+  CodePageToPackedUtf8 := @PackedUtf8OfCodePage;
 
 end.
