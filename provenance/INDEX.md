@@ -13,6 +13,7 @@
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvansi.pas` | translation | magiblot/tvision:include/tvision/internal/ansiwrit.h:1-151; magiblot/tvision:source/platform/ansiwrit.cpp:1-449 | 2 | 2 | 0 |
+| `src/tvappdir.pas` | specification | specification:tvappdir | 1 | 1 | 0 |
 | `src/tvcell.pas` | translation | magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
 | `src/tvclip.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tclipbrd.cpp:1-44 | 2 | 2 | 0 |
 | `src/tvcodepg.pas` | translation | magiblot/tvision:include/tvision/internal/codepage.h:1-43; magiblot/tvision:source/platform/codepage.cpp:1-89 | 2 | 2 | 3 |
