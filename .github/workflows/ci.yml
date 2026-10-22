@@ -133,8 +133,8 @@ jobs:
           if git diff --quiet -- VERDICT.md && git ls-files --error-unmatch VERDICT.md >/dev/null 2>&1; then
             echo "VERDICT.md is current"
           else
-            git config user.name "tv3 maintainers"
-            git config user.email "tv3-maintainers@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add VERDICT.md
             git commit -m "Update VERDICT.md"
             git push origin HEAD:main
