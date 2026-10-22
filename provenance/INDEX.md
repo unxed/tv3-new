@@ -29,7 +29,7 @@
 | `src/tvtermosbase.pas` | specification | specification:tvtermosbase | 2 | 2 | 0 |
 | `src/tvtext.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
 | `src/tvtimer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 2 | 2 | 0 |
-| `src/tvustr.pas` | specification | specification:tvustr | 1 | 1 | 0 |
+| `src/tvustr.pas` | specification | specification:tvustr | 2 | 2 | 0 |
 | `src/tvutf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 3 | 3 | 1 |
 | `src/tvutil.pas` | translation | magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/drivers2.cpp:1-118; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/newstr.cpp:1-48; magiblot/tvision:source/tvision/fmtstr.cpp:1-61 | 2 | 2 | 0 |
 | `src/tvwidth.inc` | standard | Unicode 15.0.0 EastAsianWidth.txt; Unicode 15.0.0 DerivedGeneralCategory.txt | 1 | 1 | 0 |
