@@ -60,6 +60,9 @@ var
   Arr: array of Cardinal;
 
 begin
+  { Utf8Enabled }
+  Check(Utf8Enabled, 'utf8 mode is on by default');
+
   { Utf8BytesLeft }
   Check(Utf8BytesLeft($41) = 0, 'bytes left of ASCII');
   Check(Utf8BytesLeft($80) = 0, 'bytes left of a continuation byte');
