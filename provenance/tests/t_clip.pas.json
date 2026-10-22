@@ -1,0 +1,66 @@
+{
+  "path": "tests/t_clip.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/system.h",
+      "lines": "1-560"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tclipbrd.cpp",
+      "lines": "1-44"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/system.h",
+      "sha256": "2012b6d6efab5627525bb124c0695fda1a530b80a2157dc3e21d8f12ed8fc266"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tclipbrd.cpp",
+      "sha256": "b5d0c4f82ec87aff10e894e88ddd1b4f7e4373ea10a461d9139e235b8879e089"
+    },
+    {
+      "origin": "repository:tests/testlib.inc",
+      "sha256": "096b4f4c541c4ef4716079c3d1eeb67cdd02bb36a3711cf15f7aec58114afb3a"
+    },
+    {
+      "origin": "repository:src/tvclip.pas",
+      "sha256": "672e3edc41a22f243f3ff4f06ca3f7c7768757bc892c6db291e3eb560335a203"
+    },
+    {
+      "origin": "repository:src/tvsys.pas",
+      "sha256": "5cc8894b6d166144aeb295a6445c0144041a43e103d360f2d5215317ddf967ac"
+    },
+    {
+      "origin": "repository:src/tvevents.pas",
+      "sha256": "a24fb07f4e2d82e2c244fdd66f3e766cc1ee88becdb1ac4a2af47fcacff07cb4"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "483fa888399f3bee73b1d6bcf8a256827dab6bb230ee7c6decb2de9219416ee6"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:tests/t_evqueue.pas",
+      "sha256": "2d2876745343fd6a0264fb83fb7515f0c66fc09b769f1d4ed3676f719747e04d"
+    }
+  ],
+  "implementer": "implementer 21",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "aa537d4f456345057afb0e6dbdcfb1286d54ea27",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
