@@ -52,6 +52,7 @@
 | `tests/t_termosbase.pas` | specification | specification:tvtermosbase | 1 | 1 | 0 |
 | `tests/t_text.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
 | `tests/t_timer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 1 | 1 | 0 |
+| `tests/t_ustr.pas` | specification | specification:tvustr | 1 | 1 | 0 |
 | `tests/t_utf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 2 | 2 | 0 |
 | `tests/t_util.pas` | translation | magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/drivers2.cpp:1-118; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/newstr.cpp:1-48; magiblot/tvision:source/tvision/fmtstr.cpp:1-61 | 1 | 1 | 0 |
 | `tests/t_wordnav.pas` | specification | specification:tvwordnav | 1 | 1 | 0 |
