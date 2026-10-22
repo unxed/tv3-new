@@ -49,9 +49,14 @@ jobs:
       - name: Provenance check with the history
         run: python3 tools/audit/provenance_lint.py --history
       - name: Install Free Pascal
+        timeout-minutes: 15
         run: |
-          sudo apt-get update
-          sudo apt-get install -y fpc
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/microsoft-prod.sources
+          for attempt in 1 2 3; do
+            sudo apt-get update && sudo apt-get install -y fpc && break
+            echo "apt attempt $attempt failed"; sleep 15
+          done
+          command -v fpc
       - name: Build of the units
         run: tools/test.sh build
       - name: Unit tests
@@ -68,9 +73,13 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install archive tools
+        timeout-minutes: 15
         run: |
-          sudo apt-get update
-          sudo apt-get install -y p7zip-full libarchive-tools
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/microsoft-prod.sources
+          for attempt in 1 2 3; do
+            sudo apt-get update && sudo apt-get install -y p7zip-full libarchive-tools && break
+            echo "apt attempt $attempt failed"; sleep 15
+          done
           sudo apt-get install -y unrar || echo "unrar is not available"
       - name: Restore the cache of the corpora
         id: restore
