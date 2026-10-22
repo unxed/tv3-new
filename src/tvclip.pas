@@ -55,6 +55,12 @@ uses
 var
   DefaultBackend: TClipboardBackend;
 
+{ The procedure that the backend gives the text of the system clipboard to. }
+procedure PasteText(const Text: string);
+begin
+  TEventQueue.SetPasteText(Text);
+end;
+
 { TClipboardBackend }
 
 function TClipboardBackend.SetText(const Text: string): Boolean;
@@ -76,15 +82,22 @@ end;
 
 destructor TClipboard.Destroy;
 begin
+  LocalText := '';
   inherited Destroy;
 end;
 
 class procedure TClipboard.SetText(const Text: string);
 begin
+  if Backend.SetText(Text) then
+    Exit;
+  LocalText := Text;
 end;
 
 class procedure TClipboard.RequestText;
 begin
+  if Backend.RequestText(@PasteText) then
+    Exit;
+  TEventQueue.SetPasteText(LocalText);
 end;
 
 initialization

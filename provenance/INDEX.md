@@ -14,7 +14,7 @@
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvansi.pas` | translation | magiblot/tvision:include/tvision/internal/ansiwrit.h:1-151; magiblot/tvision:source/platform/ansiwrit.cpp:1-449 | 2 | 2 | 0 |
 | `src/tvcell.pas` | translation | magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
-| `src/tvclip.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tclipbrd.cpp:1-44 | 1 | 1 | 0 |
+| `src/tvclip.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tclipbrd.cpp:1-44 | 2 | 2 | 0 |
 | `src/tvcolors.pas` | translation | magiblot/tvision:include/tvision/colors.h:1-855; magiblot/tvision:source/platform/colors.cpp:1-253 | 2 | 2 | 0 |
 | `src/tvcrc.pas` | specification | specification:tvcrc | 2 | 2 | 0 |
 | `src/tvcstr.pas` | specification | specification:tvcstr | 2 | 2 | 0 |
