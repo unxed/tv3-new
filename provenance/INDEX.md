@@ -40,6 +40,7 @@
 | `tests/t_async.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 1 | 1 | 0 |
 | `tests/t_cell.pas` | translation | magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
 | `tests/t_clip.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tclipbrd.cpp:1-44 | 1 | 1 | 0 |
+| `tests/t_codepg.pas` | translation | magiblot/tvision:include/tvision/internal/codepage.h:1-43; magiblot/tvision:source/platform/codepage.cpp:1-89 | 1 | 1 | 0 |
 | `tests/t_colors.pas` | translation | magiblot/tvision:include/tvision/colors.h:1-855; magiblot/tvision:source/platform/colors.cpp:1-253 | 1 | 1 | 0 |
 | `tests/t_crc.pas` | specification | specification:tvcrc | 1 | 1 | 0 |
 | `tests/t_cstr.pas` | specification | specification:tvcstr | 1 | 1 | 0 |
