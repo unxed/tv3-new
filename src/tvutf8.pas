@@ -73,6 +73,11 @@ function Utf32To16(U32: Cardinal; var U16: TUtf16Pair): Integer;
   other zero-width character, 2 for a double-width character, 1 otherwise. }
 function CharWidth(Cp: Cardinal): Integer;
 
+var
+  { True: text that is valid UTF-8 is treated as UTF-8. False: the bytes of the text are the bytes of the current
+    code page, so one byte is one character and nothing is decoded. }
+  Utf8Enabled: Boolean = True;
+
 implementation
 
 {$I tvwidth.inc}

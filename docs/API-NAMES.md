@@ -24,6 +24,7 @@ added: TEventBackend
 added: TEventFifo
 added: TvObject
 added: TvObject.DestroyObject
+added: Utf8Enabled
 added: TTextCells
 added: TTransformAttr
 added: TPackedUtf8Func
@@ -35,6 +36,9 @@ unit, so the members of the C++ class TText that write into screen cells are cla
 TTransformAttr and TPackedUtf8Func are the procedural types that stand for a function template parameter and for the
 code page conversion of a control character, and CodePageToPackedUtf8 is the variable that holds the latter.
 TClipboardBackend is the class of the hook for the system clipboard, which THardwareInfo provides in the C++.
+
+Utf8Enabled is a variable of TvUtf8 that has no counterpart in the C++ API; it switches the text routines between
+UTF-8 and the one-byte code page.
 
 TvObject is the class TObject of the C++ and TvObject.DestroyObject is its static function destroy: the names TObject
 and Destroy belong to System.TObject and its destructor, and a class of the same name in a unit would hide
