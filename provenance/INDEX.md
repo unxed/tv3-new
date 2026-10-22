@@ -45,6 +45,7 @@
 | `tests/t_evqueue.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 1 | 1 | 0 |
 | `tests/t_format.pas` | specification | specification:tvformat | 1 | 1 | 0 |
 | `tests/t_geom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 1 | 1 | 0 |
+| `tests/t_keyname.pas` | specification | specification:tvkeyname | 1 | 1 | 0 |
 | `tests/t_keys.pas` | translation | magiblot/tvision:include/tvision/tkeys.h:1-216; magiblot/tvision:source/tvision/tkey.cpp:1-286; magiblot/tvision:source/tvision/drivers2.cpp:1-118 | 1 | 1 | 0 |
 | `tests/t_objs.pas` | translation | magiblot/tvision:include/tvision/tvobjs.h:1-152; magiblot/tvision:include/tvision/objects.h:209-302; magiblot/tvision:source/tvision/tobject.cpp:1-20; magiblot/tvision:source/tvision/tcollect.cpp:1-251; magiblot/tvision:source/tvision/tsortcol.cpp:1-104; magiblot/tvision:source/tvision/nmcollct.cpp:1-17; magiblot/tvision:source/tvision/nmscoll.cpp:1-17 | 1 | 1 | 0 |
 | `tests/t_termosbase.pas` | specification | specification:tvtermosbase | 1 | 1 | 0 |
