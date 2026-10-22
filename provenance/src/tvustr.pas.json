@@ -1,0 +1,53 @@
+{
+  "path": "src/tvustr.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvustr"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvustr",
+      "sha256": "6225fca7840f87b0f17ad2fa6bf8340408832431d870a160707e12f517da54ea"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "c2931bb2e2184ccbcc1fb5b1e885ad5461f42e7aae93ed5e785e307282e3447f"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:CLAUDE.md",
+      "sha256": "87723313bd40369e38c6de75ae2adb40283b277d6097b8d4a0316fd4c303fdd5"
+    },
+    {
+      "origin": "repository:docs/CLEANROOM.md",
+      "sha256": "498f4416469c3cc49ddcac38ce8a89fadae5e6c350ad1ed95b934431175a6c2a"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    },
+    {
+      "origin": "repository:src/tvcstr.pas",
+      "sha256": "b4dfd7cb1fcb1fbb86b4ad471d22f98369ecf6ca7ba06f9b387c68cde76a641a"
+    },
+    {
+      "origin": "repository:src/tvwordnav.pas",
+      "sha256": "c9bf84b09f6ec69c95a2ec51d414756b81197861bd3a1d82a0d8f0f7578aa916"
+    }
+  ],
+  "implementer": "implementer 24",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "e49f9c47b6955efa4b6dc6c53cc5de742b290721",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
