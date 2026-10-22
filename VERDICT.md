@@ -36,6 +36,8 @@ provenance check: pending version src/tvkeys.pas 0192bff4a0043f1df3c69c2bba07263
 provenance check: pending version src/tvkeys.pas 81cc60123e5cbe03917ddc10ed6883d17a4ed210
 provenance check: pending version src/tvsys.pas 4b74514d23c2bed52a8da2a61b5d076f9ee8ff9b
 provenance check: pending version src/tvsys.pas 97b5263a52a51e4221bac43263f5e58d9543be78
+provenance check: pending version src/tvtermosbase.pas fb1b8205239fc93529ddb0a368c1dacceacd3ded
+provenance check: pending version src/tvtermosbase.pas 2bffb85d2e67b48d55a3d8fb6a47281182572906
 provenance check: pending version src/tvtext.pas f49e98fa6e85533b611f1039c1a6aea0e38f4095
 provenance check: pending version src/tvtext.pas 135d7c71e13e33b5f144cc0bac3a37a73e711729
 provenance check: pending version src/tvtimer.pas 49194f23df53ef60ce8221701d823f9a20d5e1fe
@@ -57,6 +59,7 @@ provenance check: pending version tests/t_evqueue.pas fc3da252b87a36c917c1a2e23a
 provenance check: pending version tests/t_format.pas 7f4e7c2987639003b13efe21c052df70a18a9b06
 provenance check: pending version tests/t_geom.pas 0963e364eb639398f1482e79f60fdd0bf1b5ff0f
 provenance check: pending version tests/t_keys.pas 5239e0309fc3b5e450c68678f75c43ec871cea27
+provenance check: pending version tests/t_termosbase.pas 0404ecb0d3bab2bfa9907125752df89b12a40abc
 provenance check: pending version tests/t_text.pas 73cfa8a3559be87f4de027051f8dadba95fe175a
 provenance check: pending version tests/t_timer.pas 41b9c344ad769483e144bab63ed252f6728c91f6
 provenance check: pending version tests/t_utf8.pas e9ddebf1452caec5c61b0fc32158a8a5daaf4357
