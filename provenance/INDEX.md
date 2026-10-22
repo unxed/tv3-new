@@ -23,6 +23,7 @@
 | `src/tvgeom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 2 | 2 | 0 |
 | `src/tvkeys.pas` | translation | magiblot/tvision:include/tvision/tkeys.h:1-216; magiblot/tvision:source/tvision/tkey.cpp:1-286; magiblot/tvision:source/tvision/drivers2.cpp:1-118 | 2 | 2 | 3 |
 | `src/tvsys.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 2 | 2 | 0 |
+| `src/tvtermosbase.pas` | specification | specification:tvtermosbase | 2 | 2 | 0 |
 | `src/tvtext.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
 | `src/tvtimer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 2 | 2 | 0 |
 | `src/tvutf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 2 | 2 | 1 |
@@ -40,6 +41,7 @@
 | `tests/t_format.pas` | specification | specification:tvformat | 1 | 1 | 0 |
 | `tests/t_geom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 1 | 1 | 0 |
 | `tests/t_keys.pas` | translation | magiblot/tvision:include/tvision/tkeys.h:1-216; magiblot/tvision:source/tvision/tkey.cpp:1-286; magiblot/tvision:source/tvision/drivers2.cpp:1-118 | 1 | 1 | 0 |
+| `tests/t_termosbase.pas` | specification | specification:tvtermosbase | 1 | 1 | 0 |
 | `tests/t_text.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
 | `tests/t_timer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 1 | 1 | 0 |
 | `tests/t_utf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 1 | 1 | 0 |
