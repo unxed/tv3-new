@@ -19,4 +19,6 @@ var
 
 implementation
 
+{ The unit has no routines and no initialisation or finalisation code; the variables start with the values above. }
+
 end.
