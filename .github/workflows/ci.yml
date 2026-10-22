@@ -53,7 +53,7 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/microsoft-prod.sources
           for attempt in 1 2 3; do
-            sudo apt-get update && sudo apt-get install -y fpc && break
+            sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Acquire::Retries=3 -o Acquire::http::Timeout=30 fp-compiler fp-units-rtl fp-units-fcl fp-units-base && break
             echo "apt attempt $attempt failed"; sleep 15
           done
           command -v fpc
