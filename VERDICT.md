@@ -16,6 +16,7 @@ provenance check: pending version docs/API-NAMES.md b409e70a865f915786d6cf420ec7
 provenance check: pending version docs/API-NAMES.md 8eb74a778a05a3dd929c103c4b107b718bf8f50c
 provenance check: pending version docs/API-NAMES.md 2b99ff4b4e28805c903e4a0c940b8f4d7364d2cf
 provenance check: pending version docs/API-NAMES.md 34f380d37de68e9bf703f1ca353970c17bc90947
+provenance check: pending version docs/API-NAMES.md 0d293f92d2ecef0157cb209d830580c26e006d63
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvansi.pas 7ef6de68228626e3013cbef9805b91681da37060
@@ -52,8 +53,11 @@ provenance check: pending version src/tvtext.pas f49e98fa6e85533b611f1039c1a6aea
 provenance check: pending version src/tvtext.pas 135d7c71e13e33b5f144cc0bac3a37a73e711729
 provenance check: pending version src/tvtimer.pas 49194f23df53ef60ce8221701d823f9a20d5e1fe
 provenance check: pending version src/tvtimer.pas 90fffe035fff259a3be7022ee5a1d15c525c74f5
+provenance check: pending version src/tvustr.pas e49f9c47b6955efa4b6dc6c53cc5de742b290721
+provenance check: pending version src/tvustr.pas a6273984aef21d83a602cfdbb93f0e3d777acbc9
 provenance check: pending version src/tvutf8.pas 1673e72e4400359b3ee4e7c07a438d6ad2a53bba
 provenance check: pending version src/tvutf8.pas 5891c975ee234e3b046cd09b103d058027121c44
+provenance check: pending version src/tvutf8.pas 9066990f3ed84e714bfd23c0ee6c32a4b7e60505
 provenance check: pending version src/tvutil.pas a0b64a80847b33eed951d91c39785e0905704742
 provenance check: pending version src/tvutil.pas 8ec5f82f50d35fdc47e041ffed96351f0ebafba6
 provenance check: pending version src/tvwidth.inc 0135fc30f9f884fbf0e1d93f581665505d95a787
@@ -77,7 +81,9 @@ provenance check: pending version tests/t_objs.pas a9ac02a2aafce1c75d83ef7f6979b
 provenance check: pending version tests/t_termosbase.pas 0404ecb0d3bab2bfa9907125752df89b12a40abc
 provenance check: pending version tests/t_text.pas 73cfa8a3559be87f4de027051f8dadba95fe175a
 provenance check: pending version tests/t_timer.pas 41b9c344ad769483e144bab63ed252f6728c91f6
+provenance check: pending version tests/t_ustr.pas 6328b7a88822dc90eb2dc0d5ab868b5dd8a8d6d3
 provenance check: pending version tests/t_utf8.pas e9ddebf1452caec5c61b0fc32158a8a5daaf4357
+provenance check: pending version tests/t_utf8.pas 3ebd4452d0e44435c961f1aae25d7674e829fd52
 provenance check: pending version tests/t_util.pas 1af0e582f1dc476fa6bf9a4f2d9482631cf28f08
 provenance check: pending version tests/t_wordnav.pas d3f9b3cbfdca79f550d07152dedbc417156fa4a4
 provenance check: pending version tests/testlib.inc 0822cbaece08a16b0760fd01ea7bf1ca0f61601d
