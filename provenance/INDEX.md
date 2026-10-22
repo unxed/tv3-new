@@ -29,6 +29,7 @@
 | `src/tvutf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 2 | 2 | 1 |
 | `src/tvutil.pas` | translation | magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/drivers2.cpp:1-118; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/newstr.cpp:1-48; magiblot/tvision:source/tvision/fmtstr.cpp:1-61 | 2 | 2 | 0 |
 | `src/tvwidth.inc` | standard | Unicode 15.0.0 EastAsianWidth.txt; Unicode 15.0.0 DerivedGeneralCategory.txt | 1 | 1 | 0 |
+| `src/tvwordnav.pas` | specification | specification:tvwordnav | 2 | 2 | 0 |
 | `tests/t_ansi.pas` | translation | magiblot/tvision:include/tvision/internal/ansiwrit.h:1-151; magiblot/tvision:source/platform/ansiwrit.cpp:1-449 | 1 | 1 | 0 |
 | `tests/t_async.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 1 | 1 | 0 |
 | `tests/t_cell.pas` | translation | magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
@@ -46,6 +47,7 @@
 | `tests/t_timer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 1 | 1 | 0 |
 | `tests/t_utf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 1 | 1 | 0 |
 | `tests/t_util.pas` | translation | magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/drivers2.cpp:1-118; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/newstr.cpp:1-48; magiblot/tvision:source/tvision/fmtstr.cpp:1-61 | 1 | 1 | 0 |
+| `tests/t_wordnav.pas` | specification | specification:tvwordnav | 1 | 1 | 0 |
 | `tests/testlib.inc` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/audit.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/audit/corpora.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
