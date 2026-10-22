@@ -1,6 +1,7 @@
 NOT READY:
 provenance check: pending version .github/workflows/ci.yml 9a1c2d589c73909dc3141d8ef8e5dc41e03681b8
 provenance check: pending version .github/workflows/ci.yml ef8fab5366f98d52809c64ac518519b2b3735117
+provenance check: pending version .github/workflows/ci.yml 794c580d1ed2fe0afaa7008772445f5979a51996
 provenance check: pending version .gitignore 3d43339293004eaa6de63cf66c6ef986a0922141
 provenance check: pending version CLAUDE.md eda128d2c61e5ed24a2bedb9981df7780a60f1b1
 provenance check: pending version COPYRIGHT.magiblot a200eaeb79f6095c5c8dcbc4f41b2f17267ec1da
