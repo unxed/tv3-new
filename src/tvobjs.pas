@@ -111,145 +111,311 @@ implementation
 
 class procedure TvObject.DestroyObject(O: TvObject);
 begin
+  if O <> nil then
+    O.ShutDown;
+  O.Free;
 end;
 
 procedure TvObject.ShutDown;
 begin
 end;
 
-constructor TNSCollection.Create;
-begin
-end;
-
-procedure TNSCollection.FreeItem(Item: Pointer);
-begin
-end;
-
 constructor TNSCollection.Create(ALimit, ADelta: ccIndex);
 begin
+  { The fields of a new instance are zero: no storage, no items, no limit. }
+  inherited Create;
+  Delta := ADelta;
+  ShouldDelete := True;
+  SetLimit(ALimit);
+end;
+
+constructor TNSCollection.Create;
+begin
+  inherited Create;
+  ShouldDelete := True;
 end;
 
 destructor TNSCollection.Destroy;
 begin
+  if Items <> nil then
+    FreeMem(Items);
+  inherited Destroy;
 end;
 
 procedure TNSCollection.ShutDown;
 begin
+  if ShouldDelete then
+    FreeAll
+  else
+    RemoveAll;
+  SetLimit(0);
+  inherited ShutDown;
 end;
 
 function TNSCollection.At(Index: ccIndex): Pointer;
 begin
-  Result := nil;
-end;
-
-function TNSCollection.IndexOf(Item: Pointer): ccIndex;
-begin
-  Result := 0;
-end;
-
-procedure TNSCollection.AtFree(Index: ccIndex);
-begin
+  if (Index < 0) or (Index >= Count) then
+    Error(1, 0);
+  Result := Items^[Index];
 end;
 
 procedure TNSCollection.AtRemove(Index: ccIndex);
+var
+  J: ccIndex;
 begin
+  if (Index < 0) or (Index >= Count) then
+    Error(1, 0);
+
+  Dec(Count);
+  for J := Index to Count - 1 do
+    Items^[J] := Items^[J + 1];
 end;
 
-procedure TNSCollection.Remove(Item: Pointer);
+procedure TNSCollection.AtFree(Index: ccIndex);
+var
+  Item: Pointer;
 begin
-end;
-
-procedure TNSCollection.RemoveAll;
-begin
-end;
-
-procedure TNSCollection.Free(Item: Pointer);
-begin
-end;
-
-procedure TNSCollection.FreeAll;
-begin
+  Item := At(Index);
+  AtRemove(Index);
+  FreeItem(Item);
 end;
 
 procedure TNSCollection.AtInsert(Index: ccIndex; Item: Pointer);
 begin
+  if Index < 0 then
+    Error(1, 0);
+  if Count = Limit then
+    SetLimit(Count + Delta);
+
+  Move(Items^[Index], Items^[Index + 1], (Count - Index) * SizeOf(Pointer));
+  Inc(Count);
+
+  Items^[Index] := Item;
 end;
 
 procedure TNSCollection.AtPut(Index: ccIndex; Item: Pointer);
 begin
+  if Index >= Count then
+    Error(1, 0);
+
+  Items^[Index] := Item;
 end;
 
-function TNSCollection.Insert(Item: Pointer): ccIndex;
+procedure TNSCollection.Remove(Item: Pointer);
 begin
-  Result := 0;
+  AtRemove(IndexOf(Item));
+end;
+
+procedure TNSCollection.RemoveAll;
+begin
+  Count := 0;
 end;
 
 procedure TNSCollection.Error(Code, Info: ccIndex);
 begin
+  Halt(212 - Code);
 end;
 
 function TNSCollection.FirstThat(Test: ccTestFunc; Arg: Pointer): Pointer;
+var
+  I: ccIndex;
 begin
+  for I := 0 to Count - 1 do
+    if Test(Items^[I], Arg) then
+      Exit(Items^[I]);
   Result := nil;
 end;
 
 function TNSCollection.LastThat(Test: ccTestFunc; Arg: Pointer): Pointer;
+var
+  I: ccIndex;
 begin
+  for I := Count downto 1 do
+    if Test(Items^[I - 1], Arg) then
+      Exit(Items^[I - 1]);
   Result := nil;
 end;
 
 procedure TNSCollection.ForEach(Action: ccAppFunc; Arg: Pointer);
+var
+  I: ccIndex;
 begin
+  for I := 0 to Count - 1 do
+    Action(Items^[I], Arg);
 end;
 
-procedure TNSCollection.Pack;
+procedure TNSCollection.Free(Item: Pointer);
 begin
+  Remove(Item);
+  FreeItem(Item);
+end;
+
+procedure TNSCollection.FreeAll;
+var
+  I: ccIndex;
+begin
+  I := 0;
+  while I < Count do
+  begin
+    FreeItem(At(I));
+    Inc(I);
+  end;
+  Count := 0;
+end;
+
+{ The default releases a block of memory from GetMem. It cannot run the destructor of an object, so a collection of
+  objects overrides it. }
+procedure TNSCollection.FreeItem(Item: Pointer);
+begin
+  if Item <> nil then
+    FreeMem(Item);
+end;
+
+function TNSCollection.IndexOf(Item: Pointer): ccIndex;
+var
+  I: ccIndex;
+begin
+  for I := 0 to Count - 1 do
+    if Item = Items^[I] then
+      Exit(I);
+
+  Error(1, 0);
+  Result := 0;
+end;
+
+function TNSCollection.Insert(Item: Pointer): ccIndex;
+begin
+  Result := Count;
+  AtInsert(Count, Item);
+end;
+
+{ Moves the items that are not nil to the front, in their order. Count stays as it was. }
+procedure TNSCollection.Pack;
+var
+  Dst, Src: ccIndex;
+begin
+  Dst := 0;
+  for Src := 0 to Count - 1 do
+    if Items^[Src] <> nil then
+    begin
+      Items^[Dst] := Items^[Src];
+      Inc(Dst);
+    end;
 end;
 
 procedure TNSCollection.SetLimit(ALimit: ccIndex);
+var
+  Wanted: ccIndex;
 begin
+  Wanted := ALimit;
+  if Wanted > maxCollectionSize then
+    Wanted := maxCollectionSize;
+  if Wanted < Count then
+    Wanted := Count;
+  if Wanted <> Limit then
+  begin
+    if Wanted > 0 then
+      ReAllocMem(Items, SizeInt(Wanted) * SizeOf(Pointer))
+    else
+    begin
+      if Items <> nil then
+        FreeMem(Items);
+      Items := nil;
+    end;
+    Limit := Wanted;
+  end;
 end;
 
 function TNSCollection.GetCount: ccIndex;
 begin
-  Result := 0;
-end;
-
-constructor TNSSortedCollection.Create;
-begin
+  Result := Count;
 end;
 
 constructor TNSSortedCollection.Create(ALimit, ADelta: ccIndex);
 begin
+  inherited Create(ALimit, ADelta);
+  Duplicates := False;
+  Delta := ADelta;
+  SetLimit(ALimit);
 end;
 
-function TNSSortedCollection.Search(Key: Pointer; var Index: ccIndex): Boolean;
+constructor TNSSortedCollection.Create;
 begin
-  Index := 0;
-  Result := False;
+  inherited Create;
+  Duplicates := False;
 end;
 
 function TNSSortedCollection.IndexOf(Item: Pointer): ccIndex;
+var
+  First, I: ccIndex;
 begin
   Result := ccNotFound;
+  if not Search(KeyOf(Item), First) then
+    Exit;
+  if Duplicates then
+  begin
+    { Among the items of an equal key, the one that is Item itself. }
+    for I := First to Count - 1 do
+      if Items^[I] = Item then
+        Exit(I);
+  end
+  else if First < Count then
+    Result := First;
 end;
 
 function TNSSortedCollection.Insert(Item: Pointer): ccIndex;
+var
+  I: ccIndex;
 begin
-  Result := 0;
+  if (not Search(KeyOf(Item), I)) or Duplicates then
+    AtInsert(I, Item);
+  Result := I;
 end;
 
 function TNSSortedCollection.KeyOf(Item: Pointer): Pointer;
 begin
-  Result := nil;
+  Result := Item;
+end;
+
+{ Looks for the first place where a key is not before Key, in the half-open range Lo..Hi. Without duplicates it
+  stops at the first item whose key equals Key. }
+function TNSSortedCollection.Search(Key: Pointer; var Index: ccIndex): Boolean;
+var
+  Lo, Hi, Mid, Order: ccIndex;
+begin
+  Lo := 0;
+  Hi := Count;
+  Result := False;
+  while Lo < Hi do
+  begin
+    Mid := (Lo + Hi - 1) shr 1;
+    Order := Compare(KeyOf(Items^[Mid]), Key);
+    if Order < 0 then
+      Lo := Mid + 1
+    else
+    begin
+      Hi := Mid;
+      if Order = 0 then
+      begin
+        Result := True;
+        if not Duplicates then
+          Lo := Mid;
+      end;
+    end;
+  end;
+  Index := Lo;
 end;
 
 constructor TCollection.Create(ALimit, ADelta: ccIndex);
 begin
+  inherited Create;
+  Delta := ADelta;
+  SetLimit(ALimit);
 end;
 
 constructor TSortedCollection.Create(ALimit, ADelta: ccIndex);
 begin
+  inherited Create(ALimit, ADelta);
 end;
 
 end.
