@@ -1,0 +1,26 @@
+{
+  "path": "src/tvscreen.pas",
+  "kind": "translation",
+  "sources": [
+    {"source": "magiblot/tvision", "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524", "file": "include/tvision/system.h", "lines": "1-560"},
+    {"source": "magiblot/tvision", "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524", "file": "source/tvision/tscreen.cpp", "lines": "1-339"}
+  ],
+  "inputs": [
+    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/system.h", "sha256": "2012b6d6efab5627525bb124c0695fda1a530b80a2157dc3e21d8f12ed8fc266"},
+    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tscreen.cpp", "sha256": "1c118e4241050a85acfd666a44a0a2a9e91bddae722e64eee8c7a1a007446409"},
+    {"origin": "repository:docs/API-NAMES.md", "sha256": "c2931bb2e2184ccbcc1fb5b1e885ad5461f42e7aae93ed5e785e307282e3447f"},
+    {"origin": "repository:docs/ASYNC.md", "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"},
+    {"origin": "repository:src/tvclip.pas", "sha256": "672e3edc41a22f243f3ff4f06ca3f7c7768757bc892c6db291e3eb560335a203"},
+    {"origin": "repository:src/tvsys.pas", "sha256": "5cc8894b6d166144aeb295a6445c0144041a43e103d360f2d5215317ddf967ac"},
+    {"origin": "repository:src/tvdrawbuf.pas", "sha256": "5b15c1b4ca87f7d3db0ad2170f9e804ff497287b3163ef11f945288153fcb51d"},
+    {"origin": "repository:src/tvcell.pas", "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"}
+  ],
+  "implementer": "implementer 27",
+  "proofs": [
+    "ac79111846297a3aa78ee68c13d9f9b29395821312b365cfff3311193ab0ee96"
+  ],
+  "versions": [
+    {"blob": "67e2cce67e5487478d7cbdd0eaa5f995938422be", "commit": null, "pr": null, "audit_run": null},
+    {"blob": "05a1954f8b53a1e24b64f8e9c8a113988fd530b6", "commit": null, "pr": null, "audit_run": null}
+  ]
+}
