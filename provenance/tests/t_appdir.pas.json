@@ -1,0 +1,65 @@
+{
+  "path": "tests/t_appdir.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvappdir"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvappdir",
+      "sha256": "adf585698405f17c45964e971668aab6ed2d140cd0b4d09eeb1c668f3bfe89f5"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "c2931bb2e2184ccbcc1fb5b1e885ad5461f42e7aae93ed5e785e307282e3447f"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:CLAUDE.md",
+      "sha256": "87723313bd40369e38c6de75ae2adb40283b277d6097b8d4a0316fd4c303fdd5"
+    },
+    {
+      "origin": "repository:docs/CLEANROOM.md",
+      "sha256": "498f4416469c3cc49ddcac38ce8a89fadae5e6c350ad1ed95b934431175a6c2a"
+    },
+    {
+      "origin": "repository:src/tvpath.pas",
+      "sha256": "c0e691cb281ac17505924082f4a25b751d890dcd74ad56e9ca961cc0fdd78816"
+    },
+    {
+      "origin": "repository:src/tvwild.pas",
+      "sha256": "d9d1fbce3f3166ffc8d6ee4c036e3a299715cffd96424195bddc0b4806edee4e"
+    },
+    {
+      "origin": "repository:tests/testlib.inc",
+      "sha256": "096b4f4c541c4ef4716079c3d1eeb67cdd02bb36a3711cf15f7aec58114afb3a"
+    },
+    {
+      "origin": "repository:tests/t_path.pas",
+      "sha256": "a40b9d9306bb8a986ea3772b090d3bff04097abbea9619eba0c5bdb10ad766ce"
+    },
+    {
+      "origin": "repository:tests/t_keyname.pas",
+      "sha256": "5fbbdb8ccc4f123a7876a29b99c928837b9bf2e191dd5bd17de640e3476da965"
+    },
+    {
+      "origin": "repository:src/tvappdir.pas",
+      "sha256": "f9cab4d091036492c0de716a579e9f582caee1f8ab4098ee956af8775d0fc29c"
+    }
+  ],
+  "implementer": "implementer 29",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "f06a58e341ffda54fe47c38cb8dc92f22c535b99",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
