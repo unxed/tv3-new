@@ -94,6 +94,12 @@ type
 
 implementation
 
+uses
+  TvSys;
+
+var
+  DefaultBackend: TScreenBackend;
+
 { TScreenBackend }
 
 procedure TScreenBackend.SetUpConsole;
@@ -153,34 +159,37 @@ end;
 
 class procedure TDisplay.ClearScreen(W, H: Byte);
 begin
+  Backend.ClearScreen(W, H);
 end;
 
 class procedure TDisplay.SetCursorType(CT: Word);
 begin
+  Backend.SetCaretSize(CT and $FF);
 end;
 
 class function TDisplay.GetCursorType: Word;
 begin
-  Result := 0;
+  Result := Backend.GetCaretSize;
 end;
 
 class function TDisplay.GetRows: Word;
 begin
-  Result := 0;
+  Result := Backend.GetScreenRows;
 end;
 
 class function TDisplay.GetCols: Word;
 begin
-  Result := 0;
+  Result := Backend.GetScreenCols;
 end;
 
 class procedure TDisplay.SetCrtMode(Mode: Word);
 begin
+  Backend.SetScreenMode(Mode);
 end;
 
 class function TDisplay.GetCrtMode: Word;
 begin
-  Result := 0;
+  Result := Backend.GetScreenMode;
 end;
 
 { TScreen }
@@ -188,40 +197,95 @@ end;
 constructor TScreen.Create;
 begin
   inherited Create;
+  Backend.SetUpConsole;
+  StartupMode := GetCrtMode;
+  StartupCursor := GetCursorType;
+  ScreenBuffer := Backend.AllocateScreenBuffer;
+  SetCrtData;
 end;
 
 destructor TScreen.Destroy;
 begin
+  Suspend;
+  Backend.FreeScreenBuffer(ScreenBuffer);
   inherited Destroy;
 end;
 
-class procedure TScreen.SetVideoMode(Mode: Word);
+class procedure TScreen.Resume;
 begin
+  Backend.SetUpConsole;
+  StartupMode := GetCrtMode;
+  StartupCursor := GetCursorType;
+  if ScreenMode <> StartupMode then
+    SetCrtMode(ScreenMode);
+  SetCrtData;
 end;
 
-class procedure TScreen.ClearScreen;
+class procedure TScreen.Suspend;
 begin
+  if StartupMode <> ScreenMode then
+    SetCrtMode(StartupMode);
+  if ClearOnSuspend then
+    ClearScreen;
+  SetCursorType(StartupCursor);
+  Backend.RestoreConsole;
 end;
 
-class procedure TScreen.FlushScreen;
-begin
-end;
-
-class procedure TScreen.SetCrtData;
-begin
-end;
-
+{ Only the compilers of Borland change the mode; here it stays as it is. }
 class function TScreen.FixCrtMode(Mode: Word): Word;
 begin
   Result := Mode;
 end;
 
-class procedure TScreen.Suspend;
+class procedure TScreen.SetCrtData;
 begin
+  ScreenMode := GetCrtMode;
+  ScreenWidth := GetCols;
+  ScreenHeight := GetRows;
+  HiResScreen := ScreenHeight > 25;
+  CursorLines := GetCursorType;
+  SetCursorType(0);
 end;
 
-class procedure TScreen.Resume;
+class procedure TScreen.ClearScreen;
 begin
+  TDisplay.ClearScreen(Byte(ScreenWidth), Byte(ScreenHeight));
 end;
+
+class procedure TScreen.FlushScreen;
+begin
+  Backend.FlushScreen;
+end;
+
+class procedure TScreen.SetVideoMode(Mode: Word);
+begin
+  if Mode <> smUpdate then
+    SetCrtMode(FixCrtMode(Mode))
+  else
+  begin
+    Backend.FreeScreenBuffer(ScreenBuffer);
+    ScreenBuffer := Backend.AllocateScreenBuffer;
+  end;
+  SetCrtData;
+  if TEventQueue.Backend.MousePresent then
+    TEventQueue.Backend.MouseSetRange(GetCols - 1, GetRows - 1);
+end;
+
+initialization
+  DefaultBackend := TScreenBackend.Create;
+  TDisplay.Backend := DefaultBackend;
+  TScreen.StartupMode := $FFFF;
+  TScreen.StartupCursor := 0;
+  TScreen.ScreenMode := 0;
+  TScreen.HiResScreen := False;
+  TScreen.CheckSnow := True;
+  TScreen.ScreenBuffer := nil;
+  TScreen.CursorLines := 0;
+  TScreen.ClearOnSuspend := True;
+
+finalization
+  if TDisplay.Backend = DefaultBackend then
+    TDisplay.Backend := nil;
+  DefaultBackend.Free;
 
 end.
