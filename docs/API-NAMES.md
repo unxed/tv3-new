@@ -92,3 +92,55 @@ difference: thread safety of TTimerQueue.SetTimer
 difference: thread safety of TTimerQueue.KillTimer
 difference: thread safety of TTimerQueue.CollectExpiredTimers
 difference: thread safety of TTimerQueue.TimeUntilNextTimeout
+
+## Added by the translation of TvMenus
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: HotKeyStrHook
+added: THotKeyStrFunc
+added: EqualsIgnoreCaseHook
+added: TEqualsIgnoreCaseFunc
+added: ApplicationHook
+added: TApplicationFunc
+added: TMenuAction
+added: TMenuItem.Ptr
+added: TMenuItem.GetParam
+added: TMenuItem.SetParam
+added: TMenuItem.GetSubMenu
+added: TMenuItem.SetSubMenu
+added: TMenuView.DoASelect
+added: TMenuBox.CNormal
+added: TMenuBox.Color
+added: MenuViewPalette
+added: StatusLinePalette
+added: CStrOf
+added: HotKeyStrOf
+added: SetCommandEvent
+added: PostCommand
+added: EqualsIgnoreCase
+
+THotKeyStrFunc, TEqualsIgnoreCaseFunc and TApplicationFunc are the procedural types of the hooks that stand for parts
+of the C++ that no unit has yet and no input defines. HotKeyStrHook stands for the function hotKeyStr, which gives the
+shortcut of the name of a menu item; EqualsIgnoreCaseHook stands for TText::equalsIgnoreCase; ApplicationHook stands
+for TProgram::application and gives the root of the application. While HotKeyStrHook or EqualsIgnoreCaseHook is nil,
+FindItem finds no item, and while ApplicationHook is nil, PopupMenu answers 0 and does not take the items. HotKeyStrOf
+and EqualsIgnoreCase call the hooks, and CStrOf turns a char pointer that may be null into a string. SetCommandEvent turns an event into a command event for a given command, and PostCommand does so, puts the event through a view and clears it.
+
+The tables frameChars of TMenuBox and hintSeparator of TStatusLine are the class variables TMenuBox.FrameChars and
+TStatusLine.HintSeparator, which the unit sets to their values when it starts.
+
+A char pointer of the C++ that can be null (name and param of TMenuItem, text of TStatusItem) is a PAnsiChar, and the
+members and arguments that are a TStringView are strings. The union of param and subMenu of TMenuItem is the private
+pointer Ptr, which the properties Param and SubMenu read and write through GetParam, SetParam, GetSubMenu and
+SetSubMenu. A Pascal string has no null value, so the constructors of TMenuItem always allocate the name, and NewLine,
+which has a null name in the C++, releases it. The constructor of TMenuView that takes a parent menu has no default
+for it, because a default would make a call of the constructors of TMenuBar ambiguous. The function hint of
+TStatusLine returns a string.
+
+The operators + of menu.cpp, which chain menu items, sub menus, status items and status definitions, are global
+operators with the same operand types. The enumeration menuAction of tmnuview.cpp is TMenuAction and the function
+do_a_select is DoASelect. The static variables cNormal and color of tmenubox.cpp, which frameLine and draw share, are
+the private fields CNormal and Color of TMenuBox. The static palettes of TMenuView and TStatusLine are the variables
+MenuViewPalette and StatusLinePalette, which are created and released with the unit. The functions of the files that
+are not members are NewLine, PopupMenu and, inside the unit, GetRect and AutoPlacePopup.
