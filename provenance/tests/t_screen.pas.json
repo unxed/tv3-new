@@ -1,0 +1,26 @@
+{
+  "path": "tests/t_screen.pas",
+  "kind": "translation",
+  "sources": [
+    {"source": "magiblot/tvision", "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524", "file": "include/tvision/system.h", "lines": "1-560"},
+    {"source": "magiblot/tvision", "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524", "file": "source/tvision/tscreen.cpp", "lines": "1-339"}
+  ],
+  "inputs": [
+    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/system.h", "sha256": "2012b6d6efab5627525bb124c0695fda1a530b80a2157dc3e21d8f12ed8fc266"},
+    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tscreen.cpp", "sha256": "1c118e4241050a85acfd666a44a0a2a9e91bddae722e64eee8c7a1a007446409"},
+    {"origin": "repository:tests/testlib.inc", "sha256": "096b4f4c541c4ef4716079c3d1eeb67cdd02bb36a3711cf15f7aec58114afb3a"},
+    {"origin": "repository:src/tvscreen.pas", "sha256": "f2873e429b57760fcc8e877f1c8e755f88251f7e37911ce6050959b193e67e3a"},
+    {"origin": "repository:src/tvsys.pas", "sha256": "5cc8894b6d166144aeb295a6445c0144041a43e103d360f2d5215317ddf967ac"},
+    {"origin": "repository:src/tvdrawbuf.pas", "sha256": "5b15c1b4ca87f7d3db0ad2170f9e804ff497287b3163ef11f945288153fcb51d"},
+    {"origin": "repository:src/tvcell.pas", "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"},
+    {"origin": "repository:docs/API-NAMES.md", "sha256": "c2931bb2e2184ccbcc1fb5b1e885ad5461f42e7aae93ed5e785e307282e3447f"},
+    {"origin": "repository:docs/ASYNC.md", "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"},
+    {"origin": "repository:tests/t_clip.pas", "sha256": "44d1d4f8b12ed4730f5771852c407b5d4fb5e5bd62c0848d0436c6dbec67ee95"},
+    {"origin": "repository:tests/t_drawbuf.pas", "sha256": "5ea13e099ac727e89d869a10ed1bc195997d32cf942b89a58cc0a1abd92344f1"}
+  ],
+  "implementer": "implementer 27",
+  "proofs": [],
+  "versions": [
+    {"blob": "4a70cf86833b3a272d5ee8e356837cc1439e653b", "commit": null, "pr": null, "audit_run": null}
+  ]
+}
