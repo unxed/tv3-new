@@ -61,6 +61,7 @@
 | `tests/t_path.pas` | specification | specification:tvpath | 1 | 1 | 0 |
 | `tests/t_proc.pas` | specification | specification:tvproc | 1 | 1 | 0 |
 | `tests/t_screen.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tscreen.cpp:1-339 | 3 | 3 | 0 |
+| `tests/t_streams.pas` | translation | magiblot/tvision:include/tvision/tobjstrm.h:1-662; magiblot/tvision:source/tvision/tobjstrm.cpp:1-885; magiblot/tvision:source/tvision/strmstat.cpp:1-17 | 1 | 1 | 0 |
 | `tests/t_termosbase.pas` | specification | specification:tvtermosbase | 1 | 1 | 0 |
 | `tests/t_text.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
 | `tests/t_timer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 1 | 1 | 0 |
