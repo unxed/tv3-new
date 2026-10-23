@@ -30,12 +30,20 @@ added: TTransformAttr
 added: TPackedUtf8Func
 added: CodePageToPackedUtf8
 added: TClipboardBackend
+added: TStreamBuf
+added: TMemBuf
+added: TFileBuf
 
-The last five are added by the rules of the translation, not by rule P5. A Pascal class cannot be extended in another
+The last eight are added by the rules of the translation, not by rule P5. A Pascal class cannot be extended in another
 unit, so the members of the C++ class TText that write into screen cells are class methods of TTextCells in TvText.
 TTransformAttr and TPackedUtf8Func are the procedural types that stand for a function template parameter and for the
 code page conversion of a control character, and CodePageToPackedUtf8 is the variable that holds the latter.
 TClipboardBackend is the class of the hook for the system clipboard, which THardwareInfo provides in the C++.
+
+TStreamBuf stands for the streambuf of the C++ standard library, which the streams of TvStreams use through the
+pointer bp; TMemBuf and TFileBuf are its buffers in memory and on a file (the filebuf). The constants iosGoodBit to
+iosEnd of TvStreams stand for the state bits, open modes and seek directions of ios. The stream operators >> and <<
+are the members Get and Put of the streams, and the operators void * and ! of pstream are OpVoidPtr and OpNot.
 
 Utf8Enabled is a variable of TvUtf8 that has no counterpart in the C++ API; it switches the text routines between
 UTF-8 and the one-byte code page.
