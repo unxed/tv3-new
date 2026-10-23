@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 8 | 8 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 9 | 9 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvansi.pas` | translation | magiblot/tvision:include/tvision/internal/ansiwrit.h:1-151; magiblot/tvision:source/platform/ansiwrit.cpp:1-449 | 2 | 2 | 0 |

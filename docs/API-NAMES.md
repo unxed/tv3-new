@@ -53,6 +53,32 @@ and Destroy belong to System.TObject and its destructor, and a class of the same
 System.TObject for every unit that uses it. The members that are private virtual in the C++ (FreeItem, Compare)
 are protected, so that a class of another unit can override them.
 
+## Added by the translation of the views
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: MessageHook
+added: TMessageFunc
+added: CaretPositionHook
+added: TCaretPositionProc
+added: ScreenWriteHook
+added: TScreenWriteProc
+added: EventTimeoutMs
+added: TForEachFunc
+added: TFirstThatFunc
+added: TPhaseType
+added: TSelectMode
+added: PColorAttr
+
+TMessageFunc, TCaretPositionProc and TScreenWriteProc are the procedural types of the hooks that stand for parts of
+the C++ that have no unit yet. MessageHook stands for the function message, CaretPositionHook for
+THardwareInfo::setCaretPosition and ScreenWriteHook for THardwareInfo::screenWrite. EventTimeoutMs is
+TProgram::eventTimeoutMs, which the members of TView read and set. TForEachFunc and TFirstThatFunc are the types of
+the function pointers that TGroup.ForEach and TGroup.FirstThat take. TPhaseType and TSelectMode are the enumerations
+phaseType and selectMode that are nested in TView, and PColorAttr is the pointer to a TColorAttr that a TPalette
+holds. The operators & and | of TCommandSet are the operators * and +, and the operators +=, -=, &= and |= are the
+methods AddAssign, SubAssign, AndAssign and OrAssign.
+
 ## Differences
 
 State protected by rule P4 of `docs/ASYNC.md` is listed here, one per line, as "difference: thread safety of
