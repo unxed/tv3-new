@@ -69,6 +69,7 @@
 | `tests/t_ustr.pas` | specification | specification:tvustr | 1 | 1 | 0 |
 | `tests/t_utf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 2 | 2 | 0 |
 | `tests/t_util.pas` | translation | magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/drivers2.cpp:1-118; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/newstr.cpp:1-48; magiblot/tvision:source/tvision/fmtstr.cpp:1-61 | 1 | 1 | 0 |
+| `tests/t_views.pas` | translation | magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:include/tvision/tstrview.h:1-319; magiblot/tvision:include/tvision/tspan.h:1-161; magiblot/tvision:source/tvision/tview.cpp:1-945; magiblot/tvision:source/tvision/tgroup.cpp:1-656; magiblot/tvision:source/tvision/tcmdset.cpp:1-122; magiblot/tvision:source/tvision/tvwrite.cpp:1-391; magiblot/tvision:source/tvision/tvexposd.cpp:1-166; magiblot/tvision:source/tvision/tvcursor.cpp:1-77; magiblot/tvision:source/tvision/tgrmv.cpp:1-35 | 1 | 1 | 0 |
 | `tests/t_wild.pas` | specification | specification:tvwild | 1 | 1 | 0 |
 | `tests/t_wordnav.pas` | specification | specification:tvwordnav | 1 | 1 | 0 |
 | `tests/testlib.inc` | specification | specification:infra-requirements | 1 | 1 | 0 |
