@@ -30,7 +30,7 @@
 | `src/tvpath.pas` | specification | specification:tvpath | 2 | 2 | 0 |
 | `src/tvproc.pas` | specification | specification:tvproc | 2 | 2 | 0 |
 | `src/tvscreen.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tscreen.cpp:1-339 | 2 | 2 | 1 |
-| `src/tvstreams.pas` | translation | magiblot/tvision:include/tvision/tobjstrm.h:1-662; magiblot/tvision:source/tvision/tobjstrm.cpp:1-885; magiblot/tvision:source/tvision/strmstat.cpp:1-17 | 1 | 1 | 0 |
+| `src/tvstreams.pas` | translation | magiblot/tvision:include/tvision/tobjstrm.h:1-662; magiblot/tvision:source/tvision/tobjstrm.cpp:1-885; magiblot/tvision:source/tvision/strmstat.cpp:1-17 | 2 | 2 | 0 |
 | `src/tvsys.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 2 | 2 | 0 |
 | `src/tvtermosbase.pas` | specification | specification:tvtermosbase | 2 | 2 | 0 |
 | `src/tvtext.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
