@@ -16,7 +16,9 @@
     {"origin": "repository:src/tvcell.pas", "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"}
   ],
   "implementer": "implementer 27",
-  "proofs": [],
+  "proofs": [
+    "ac79111846297a3aa78ee68c13d9f9b29395821312b365cfff3311193ab0ee96"
+  ],
   "versions": [
     {"blob": "67e2cce67e5487478d7cbdd0eaa5f995938422be", "commit": null, "pr": null, "audit_run": null},
     {"blob": "05a1954f8b53a1e24b64f8e9c8a113988fd530b6", "commit": null, "pr": null, "audit_run": null}

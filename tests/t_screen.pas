@@ -20,7 +20,7 @@ type
   TFakeDisplay = class(TScreenBackend)
   public
     Log: string;
-    Mode: Word;
+    CurMode: Word;
     Cols: Word;
     Rows: Word;
     Caret: Word;
@@ -103,14 +103,14 @@ end;
 function TFakeDisplay.GetScreenMode: Word;
 begin
   Note('M');
-  Result := Mode;
+  Result := CurMode;
 end;
 
 { A mode with the 8x8 font has fifty rows. }
 procedure TFakeDisplay.SetScreenMode(Mode: Word);
 begin
   Note('m' + IntToHex(Mode, 1));
-  Self.Mode := Mode;
+  CurMode := Mode;
   if (Mode and TDisplay.smFont8x8) <> 0 then
     Rows := 50
   else
@@ -202,7 +202,7 @@ begin
   Base.Free;
 
   Fake := TFakeDisplay.Create;
-  Fake.Mode := TDisplay.smCO80;
+  Fake.CurMode := TDisplay.smCO80;
   Fake.Cols := 80;
   Fake.Rows := 25;
   Fake.Caret := 25;
@@ -231,8 +231,8 @@ begin
   Fake.Log := '';
   TDisplay.SetCrtMode(TDisplay.smBW80);
   Check(Fake.Log = 'm2', 'set mode');
-  Check(Fake.Mode = 2, 'mode is set');
-  Fake.Mode := TDisplay.smCO80;
+  Check(Fake.CurMode = 2, 'mode is set');
+  Fake.CurMode := TDisplay.smCO80;
   Fake.Caret := 25;
 
   { Creating the screen. }
@@ -324,12 +324,12 @@ begin
   Fake.Log := '';
   TScreen.Suspend;
   Check(Fake.Log = 'm3 X80x50 c25 R', 'suspend calls: ' + Fake.Log);
-  Check(Fake.Mode = 3, 'mode of the start is back');
+  Check(Fake.CurMode = 3, 'mode of the start is back');
   Check(Fake.Caret = 25, 'cursor of the start is back');
   Fake.Log := '';
   TScreen.Resume;
   Check(Fake.Log = 'U M C m103 M W H C c0', 'resume calls: ' + Fake.Log);
-  Check(Fake.Mode = $0103, 'mode of the screen is back');
+  Check(Fake.CurMode = $0103, 'mode of the screen is back');
   Check(TScreen.StartupMode = 3, 'startup mode after the resume');
   Check(TScreen.StartupCursor = 25, 'startup cursor after the resume');
   Check(Fake.Caret = 0, 'cursor is hidden after the resume');

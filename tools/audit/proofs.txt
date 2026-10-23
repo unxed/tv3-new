@@ -10,3 +10,4 @@ raw	bc0562501c3c39b57f34651c4558291db08a6eaadffccd1bfeb920a61aba8dc4	src/tvevent
 lit	d5c404091dcb80dbc5d7b665a6bb29113ae5290e55a08b69e97487ff586c694c	src/tvcodepg.pas	translation magiblot/tvision:source/platform/codepage.cpp:14-29
 raw	40d5adc6423d6e7122054a7dc36f7ef67b8f2819c22b97a48cba32ad4bf58352	src/tvcodepg.pas	translation magiblot/tvision:source/platform/codepage.cpp:38-83
 raw	ffc09f7e7b874f8b28ae7ff094278aa90883aaa1a82d410f9c294757902d559d	src/tvcodepg.pas	translation magiblot/tvision:source/platform/codepage.cpp:14-29
+raw	ac79111846297a3aa78ee68c13d9f9b29395821312b365cfff3311193ab0ee96	src/tvscreen.pas	translation magiblot/tvision:include/tvision/system.h:403-409
