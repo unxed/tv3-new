@@ -51,6 +51,8 @@ provenance check: pending version src/tvobjs.pas 6b5d855f31f4acb6c92adeb872b59cc
 provenance check: pending version src/tvobjs.pas 67c94e710fe10348193de2416ad433c42341b8e1
 provenance check: pending version src/tvpath.pas eedb5b32d37ce702a024f59cf80004cf3e12f4c3
 provenance check: pending version src/tvpath.pas 895c08d69c98978fcb2bcebac225c49c441d07d2
+provenance check: pending version src/tvscreen.pas 67e2cce67e5487478d7cbdd0eaa5f995938422be
+provenance check: pending version src/tvscreen.pas 05a1954f8b53a1e24b64f8e9c8a113988fd530b6
 provenance check: pending version src/tvsys.pas 4b74514d23c2bed52a8da2a61b5d076f9ee8ff9b
 provenance check: pending version src/tvsys.pas 97b5263a52a51e4221bac43263f5e58d9543be78
 provenance check: pending version src/tvtermosbase.pas fb1b8205239fc93529ddb0a368c1dacceacd3ded
@@ -89,6 +91,9 @@ provenance check: pending version tests/t_keyname.pas 01ddcb30f316799ccdde3e5ad2
 provenance check: pending version tests/t_keys.pas 5239e0309fc3b5e450c68678f75c43ec871cea27
 provenance check: pending version tests/t_objs.pas a9ac02a2aafce1c75d83ef7f6979bf13bb089dee
 provenance check: pending version tests/t_path.pas 7df8a93b37dade291b83b2fe7c62fe55911f58db
+provenance check: pending version tests/t_screen.pas 4a70cf86833b3a272d5ee8e356837cc1439e653b
+provenance check: pending version tests/t_screen.pas e57bcd08f07990a08b0161b142e3b74e27d0f066
+provenance check: pending version tests/t_screen.pas 7597e24718365a2a9974376045a061557ea0f800
 provenance check: pending version tests/t_termosbase.pas 0404ecb0d3bab2bfa9907125752df89b12a40abc
 provenance check: pending version tests/t_text.pas 73cfa8a3559be87f4de027051f8dadba95fe175a
 provenance check: pending version tests/t_timer.pas 41b9c344ad769483e144bab63ed252f6728c91f6
@@ -112,6 +117,7 @@ provenance check: pending version tools/audit/proofs.txt e9664550ed252303d4532b6
 provenance check: pending version tools/audit/proofs.txt 344ae53682403627db040fc14325cc3ac7f2841e
 provenance check: pending version tools/audit/proofs.txt 4a880675bbe29902d02fd9d0208404894687f3bc
 provenance check: pending version tools/audit/proofs.txt 7a3acecc105f545216bb3d0507e3ff6ac0e4df58
+provenance check: pending version tools/audit/proofs.txt a13f88cf3ae8a9aaa4da6a1f178f73605ab10166
 provenance check: pending version tools/audit/prove.py a02d469dc3f78e9e4111d67318f31c4b41e47970
 provenance check: pending version tools/audit/provenance_lint.py b01a7898954185700979a71a411bc2decbfa3459
 provenance check: pending version tools/audit/provenance_lint.py b1a65539df244ab6adb0bdbc1f163a7e1b5cf0ee
