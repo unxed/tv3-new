@@ -92,3 +92,27 @@ difference: thread safety of TTimerQueue.SetTimer
 difference: thread safety of TTimerQueue.KillTimer
 difference: thread safety of TTimerQueue.CollectExpiredTimers
 difference: thread safety of TTimerQueue.TimeUntilNextTimeout
+
+## Added by the translation of TvWindow
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TCreateFrameFunc
+added: TWindow.Create with CFrame
+added: TWindow.Setup
+
+TCreateFrameFunc is the type of the function pointer `TFrame *(*)( TRect )` that TWindowInit holds. A Pascal class has
+one parent, so TWindowInit, which the C++ inherits virtually beside TGroup, is the class between TGroup and TWindow;
+its constructor takes the bounds of the group and the function. The constructor of TWindow with three parameters
+passes TWindow.InitFrame, which is what the C++ constructor does. A class that derives from TWindow and has a frame
+of its own calls the constructor of TWindow with CFrame, which stands for the initializer of TWindowInit that the
+most derived class gives in the C++. TWindow.Setup is a private routine that holds the body of the constructor of
+TWindow, so that both constructors share it.
+
+The tables of TFrame (initFrame, frameChars, closeIcon, zoomIcon, unZoomIcon, dragIcon, dragLeftIcon) and of
+TScrollBar (vChars, hChars) are the class variables InitFrame, FrameChars, CloseIcon, ZoomIcon, UnZoomIcon, DragIcon and
+DragLeftIcon of TFrame and VChars and HChars of TScrollBar. They get their C++ values, in code page 437, when the unit
+starts, and a program may change them. The icons are strings in the notation of a command string, with tildes. The
+palettes cpBlueWindow, cpCyanWindow and cpGrayWindow are constants of the unit; cpFrame, cpScrollBar and cpScroller are
+private to it. The message() calls of TScrollBar and TWindow go through MessageHook of TvViews. The private members
+frameLine and dragWindow of TFrame and getPartCode of TScrollBar are private here as well.
