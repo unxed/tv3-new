@@ -22,10 +22,13 @@ provenance check: pending version docs/API-NAMES.md 29c4b87f3c1cbec803ca84ba3e1a
 provenance check: pending version docs/API-NAMES.md 0c9598f80967d963cfab3b9f33f96fc8f2e3b050
 provenance check: pending version docs/API-NAMES.md b43f231292b05f32aa3e16d92c829c20686d96c2
 provenance check: pending version docs/API-NAMES.md db730f89b06490d2f7de737c67ca73bbec471178
+provenance check: pending version docs/API-NAMES.md 90eaa8a3ab646f28d605069edf2070d552a3a2d5
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvansi.pas 7ef6de68228626e3013cbef9805b91681da37060
 provenance check: pending version src/tvansi.pas 31669af0911295c571e9f4078b3af956d21365d8
+provenance check: pending version src/tvapp.pas 5654c79dc571622a5fb3c3494709204ddbe40063
+provenance check: pending version src/tvapp.pas c389a814b5ac6a6fa863361cb5ae6edde4ab44df
 provenance check: pending version src/tvappdir.pas 22a704a0308cbaff32878a804d47d91a1c400b30
 provenance check: pending version src/tvappdir.pas 3e44c1f7c1c5f2b89b63a048e53887759d78259e
 provenance check: pending version src/tvcell.pas 778a73ffae8b4c1166fdfb7ff2e6921e190d6ebf
@@ -93,6 +96,7 @@ provenance check: pending version src/tvwindow.pas e3f07296400b7f49fa2502304540e
 provenance check: pending version src/tvwordnav.pas ce98451477ad25de6b9c32918b7e7e5113b4330b
 provenance check: pending version src/tvwordnav.pas af0efa1633c91418427ede5d57634cbdb97a1c88
 provenance check: pending version tests/t_ansi.pas 4c9ec15af9e77a8915a0a35e299d3325f32ba5e1
+provenance check: pending version tests/t_app.pas 5843a781a494c31f812f228628ab68412fa598c2
 provenance check: pending version tests/t_appdir.pas f06a58e341ffda54fe47c38cb8dc92f22c535b99
 provenance check: pending version tests/t_async.pas 14ce5137adfefb1119864153c133111c849cae54
 provenance check: pending version tests/t_cell.pas c140b91e20cd2ea8d6a0606800195cb3acc735c6
