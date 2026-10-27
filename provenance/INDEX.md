@@ -65,6 +65,7 @@
 | `tests/t_evqueue.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 1 | 1 | 0 |
 | `tests/t_format.pas` | specification | specification:tvformat | 1 | 1 | 0 |
 | `tests/t_geom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 1 | 1 | 0 |
+| `tests/t_ini.pas` | specification | specification:tvini | 1 | 1 | 0 |
 | `tests/t_keyname.pas` | specification | specification:tvkeyname | 1 | 1 | 0 |
 | `tests/t_keys.pas` | translation | magiblot/tvision:include/tvision/tkeys.h:1-216; magiblot/tvision:source/tvision/tkey.cpp:1-286; magiblot/tvision:source/tvision/drivers2.cpp:1-118 | 1 | 1 | 0 |
 | `tests/t_menus.pas` | translation | magiblot/tvision:include/tvision/menus.h:1-555; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tmnuview.cpp:1-680; magiblot/tvision:source/tvision/tmenubar.cpp:1-120; magiblot/tvision:source/tvision/tmenubox.cpp:1-149; magiblot/tvision:source/tvision/tmenupop.cpp:1-77; magiblot/tvision:source/tvision/tstatusl.cpp:1-314; magiblot/tvision:source/tvision/menu.cpp:1-96; magiblot/tvision:source/tvision/popupmnu.cpp:1-87; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
