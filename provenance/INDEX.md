@@ -16,6 +16,7 @@
 | `src/tvappdir.pas` | specification | specification:tvappdir | 2 | 2 | 0 |
 | `src/tvcell.pas` | translation | magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
 | `src/tvclip.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tclipbrd.cpp:1-44 | 2 | 2 | 0 |
+| `src/tvclipcmd.pas` | specification | specification:tvclipcmd | 1 | 1 | 0 |
 | `src/tvcodepg.pas` | translation | magiblot/tvision:include/tvision/internal/codepage.h:1-43; magiblot/tvision:source/platform/codepage.cpp:1-89 | 2 | 2 | 3 |
 | `src/tvcolors.pas` | translation | magiblot/tvision:include/tvision/colors.h:1-855; magiblot/tvision:source/platform/colors.cpp:1-253 | 2 | 2 | 0 |
 | `src/tvcrc.pas` | specification | specification:tvcrc | 2 | 2 | 0 |
