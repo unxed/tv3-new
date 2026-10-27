@@ -19,6 +19,7 @@ provenance check: pending version docs/API-NAMES.md 34f380d37de68e9bf703f1ca3539
 provenance check: pending version docs/API-NAMES.md 0d293f92d2ecef0157cb209d830580c26e006d63
 provenance check: pending version docs/API-NAMES.md 66933f96b441a339656b664c30bf7d40fc3a482d
 provenance check: pending version docs/API-NAMES.md 29c4b87f3c1cbec803ca84ba3e1a4f7ba3cde613
+provenance check: pending version docs/API-NAMES.md 0c9598f80967d963cfab3b9f33f96fc8f2e3b050
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvansi.pas 7ef6de68228626e3013cbef9805b91681da37060
@@ -79,6 +80,8 @@ provenance check: pending version src/tvviews.pas 5976dabe3879191ea648644d2b1930
 provenance check: pending version src/tvwidth.inc 0135fc30f9f884fbf0e1d93f581665505d95a787
 provenance check: pending version src/tvwild.pas e8dea26cbdba2db72ff59cfd9090d44a177151ae
 provenance check: pending version src/tvwild.pas 9687fa8da0fba677c3711266859d2ff72a453a82
+provenance check: pending version src/tvwindow.pas 3f04b6f58055e5b351c168510459a4340acb386d
+provenance check: pending version src/tvwindow.pas e3f07296400b7f49fa2502304540eab25018d012
 provenance check: pending version src/tvwordnav.pas ce98451477ad25de6b9c32918b7e7e5113b4330b
 provenance check: pending version src/tvwordnav.pas af0efa1633c91418427ede5d57634cbdb97a1c88
 provenance check: pending version tests/t_ansi.pas 4c9ec15af9e77a8915a0a35e299d3325f32ba5e1
@@ -113,6 +116,7 @@ provenance check: pending version tests/t_utf8.pas 3ebd4452d0e44435c961f1aae25d7
 provenance check: pending version tests/t_util.pas 1af0e582f1dc476fa6bf9a4f2d9482631cf28f08
 provenance check: pending version tests/t_views.pas 7f9048d2e9a96b1349ccb6938806202c99e49e8e
 provenance check: pending version tests/t_wild.pas 0000df297f6e869e6d312419652eb5d1ad594287
+provenance check: pending version tests/t_window.pas 87fe2594d54bd748c8bde8eea9d6fe444e5b7b44
 provenance check: pending version tests/t_wordnav.pas d3f9b3cbfdca79f550d07152dedbc417156fa4a4
 provenance check: pending version tests/testlib.inc 0822cbaece08a16b0760fd01ea7bf1ca0f61601d
 provenance check: pending version tools/audit/audit.py a3e15023e4aaa3ae21cad7121f4949b7474a8510
