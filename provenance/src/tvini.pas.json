@@ -1,0 +1,47 @@
+{
+  "path": "src/tvini.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvini"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvini",
+      "sha256": "1a686fd8442a5585ac6ff3b1f8791ddf8320e316c46941dd8d9a83f5dd152063"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "af3b8b0a707abc9e8b5c6a765a219920d1a50d186de57c1fce52761cff1267ff"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvustr.pas",
+      "sha256": "7e7989c298bdd93549a1e6e05f2fa46afffb3e8d1899d5f9107bf551c2dcfdc4"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    }
+  ],
+  "implementer": "implementer 35",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "a44c13b571127024c20ae05d2644499597a73db7",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "55a7ff96cdf8fe0588481427c28fbcd8d7c26bf6",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
