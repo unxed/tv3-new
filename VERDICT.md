@@ -31,6 +31,8 @@ provenance check: pending version src/tvcell.pas 778a73ffae8b4c1166fdfb7ff2e6921
 provenance check: pending version src/tvcell.pas 1201291008a0e44fbea44c57db075dec63222d40
 provenance check: pending version src/tvclip.pas 2682a491b0a468af86636ed63e4b97b5305518e5
 provenance check: pending version src/tvclip.pas 34d463a7e16070ac9d016510b28a0abfb88760f3
+provenance check: pending version src/tvclipcmd.pas bd08025442b7d172256a3b5ce74308698a519b2e
+provenance check: pending version src/tvclipcmd.pas a58a935a2c512094da2976c7d19c0835b551f9fc
 provenance check: pending version src/tvcodepg.pas 2a3276dc58cc1eb46ad93a93e7f17822241bf565
 provenance check: pending version src/tvcodepg.pas 9f802bd415b91505ac992d71a4cac25a2c62aa20
 provenance check: pending version src/tvcolors.pas 6bbad51cb883678ede6925b0e8e8606f6a79b1c9
@@ -92,6 +94,7 @@ provenance check: pending version tests/t_appdir.pas f06a58e341ffda54fe47c38cb8d
 provenance check: pending version tests/t_async.pas 14ce5137adfefb1119864153c133111c849cae54
 provenance check: pending version tests/t_cell.pas c140b91e20cd2ea8d6a0606800195cb3acc735c6
 provenance check: pending version tests/t_clip.pas aa537d4f456345057afb0e6dbdcfb1286d54ea27
+provenance check: pending version tests/t_clipcmd.pas 832a10b698ef9c756a3a36bd17a4f81aab338737
 provenance check: pending version tests/t_codepg.pas d5aa702210c34adefd49035e7002e97fc7f05b4c
 provenance check: pending version tests/t_colors.pas 2efb824f08c544f3b9d6900a3514b7ce355eac41
 provenance check: pending version tests/t_crc.pas 402c1c8f77a9db939b45e016448fbd3c159005b7
