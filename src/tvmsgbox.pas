@@ -90,4 +90,193 @@ function InputBox(const Caption, Prompt: string; Buffer: PAnsiChar; MaxLen: Byte
 
 implementation
 
+uses
+  TvObjs, TvUtil, TvDialog, TvApp;
+
+const
+  ClassMask = $0003;
+  FirstButtonFlag = $0100;
+  KnownButtons = 4;
+  ButtonWidth = 10;
+  ButtonHeight = 2;
+  ButtonGap = 2;
+  ButtonCommands: array[0..KnownButtons - 1] of Word = (cmYes, cmNo, cmOK, cmCancel);
+
+  { The size of the rectangle that MessageBox starts from, and the cells around the text that the rectangle keeps
+    free. }
+  BoxWidth = 40;
+  BoxHeight = 9;
+  SideMargin = 7;
+  RowMargin = 6;
+
+  InputBoxWidth = 60;
+  InputBoxHeight = 8;
+
+function ButtonCaption(Slot: Integer): string;
+begin
+  case Slot of
+    0: Result := MsgBoxText.YesText;
+    1: Result := MsgBoxText.NoText;
+    2: Result := MsgBoxText.OkText;
+  else
+    Result := MsgBoxText.CancelText;
+  end;
+end;
+
+function ClassCaption(BoxClass: Integer): string;
+begin
+  case BoxClass of
+    0: Result := MsgBoxText.WarningText;
+    1: Result := MsgBoxText.ErrorText;
+    2: Result := MsgBoxText.InformationText;
+  else
+    Result := MsgBoxText.ConfirmText;
+  end;
+end;
+
+{ Tells whether the button of the slot Slot (0 is Yes, 3 is Cancel) is asked for by Options. }
+function WantsButton(Options: Word; Slot: Integer): Boolean;
+var
+  slotFlag: Integer;
+begin
+  slotFlag := FirstButtonFlag shl Slot;
+  Result := (Options and slotFlag) <> 0;
+end;
+
+function MessageBoxRect(const R: TRect; const Msg: string; AOptions: Word): Word;
+var
+  box: TDialog;
+  buttons: array[0..KnownButtons - 1] of TView;
+  buttonTotal, slot, rowWidth, nextLeft, shown: Integer;
+  textArea, buttonArea: TRect;
+begin
+  box := TDialog.Create(R, ClassCaption(AOptions and ClassMask));
+
+  textArea := TRect.Create(3, 2, box.Size.X - 2, box.Size.Y - 3);
+  box.Insert(TStaticText.Create(textArea, Msg));
+
+  buttonTotal := 0;
+  rowWidth := -ButtonGap;
+  buttonArea := TRect.Create(0, 0, ButtonWidth, ButtonHeight);
+  slot := 0;
+  while slot < KnownButtons do
+  begin
+    if WantsButton(AOptions, slot) then
+    begin
+      buttons[buttonTotal] := TButton.Create(buttonArea, ButtonCaption(slot), ButtonCommands[slot], bfNormal);
+      rowWidth := rowWidth + buttons[buttonTotal].Size.X + ButtonGap;
+      Inc(buttonTotal);
+    end;
+    Inc(slot);
+  end;
+
+  nextLeft := (box.Size.X - rowWidth) div 2;
+  shown := 0;
+  while shown < buttonTotal do
+  begin
+    box.Insert(buttons[shown]);
+    buttons[shown].MoveTo(SmallInt(nextLeft), SmallInt(box.Size.Y - 3));
+    nextLeft := nextLeft + buttons[shown].Size.X + ButtonGap;
+    Inc(shown);
+  end;
+
+  box.SelectNext(False);
+
+  Result := TProgram.Application.ExecView(box);
+
+  TvObject.DestroyObject(box);
+end;
+
+function MessageBoxRect(const R: TRect; AOptions: Word; const Fmt: string; const Args: array of const): Word;
+var
+  formatted: string;
+begin
+  formatted := VFormatStr(Fmt, Args);
+  Result := MessageBoxRect(R, formatted, AOptions);
+end;
+
+{ The rectangle of a message box for Text: 40 cells wide, 9 tall or taller when the text needs more rows, centred in
+  the desktop. }
+function CenteredBoxRect(const Text: string): TRect;
+var
+  textWidth, freeColumns, capacity, boxRows: Integer;
+  deskSize: TPoint;
+begin
+  freeColumns := BoxWidth - SideMargin;
+  capacity := freeColumns * (BoxHeight - RowMargin);
+  boxRows := BoxHeight;
+  textWidth := Strwidth(Text);
+  if textWidth > capacity then
+    boxRows := textWidth div freeColumns + RowMargin + 1;
+
+  deskSize := TProgram.DeskTop.Size;
+  Result := TRect.Create(0, 0, BoxWidth, boxRows);
+  Result.Move((deskSize.X - BoxWidth) div 2, (deskSize.Y - boxRows) div 2);
+end;
+
+function MessageBox(const Msg: string; AOptions: Word): Word;
+var
+  area: TRect;
+begin
+  area := CenteredBoxRect(Msg);
+  Result := MessageBoxRect(area, Msg, AOptions);
+end;
+
+function MessageBox(AOptions: Cardinal; const Fmt: string; const Args: array of const): Word;
+var
+  formatted: string;
+  area: TRect;
+begin
+  formatted := VFormatStr(Fmt, Args);
+  area := CenteredBoxRect(formatted);
+  Result := MessageBoxRect(area, formatted, Word(AOptions));
+end;
+
+function InputBox(const Caption, Prompt: string; Buffer: PAnsiChar; MaxLen: Byte): Word;
+var
+  area: TRect;
+  deskSize: TPoint;
+begin
+  deskSize := TProgram.DeskTop.Size;
+  area := TRect.Create(0, 0, InputBoxWidth, InputBoxHeight);
+  area.Move((deskSize.X - InputBoxWidth) div 2, (deskSize.Y - InputBoxHeight) div 2);
+  Result := InputBoxRect(area, Caption, Prompt, Buffer, MaxLen);
+end;
+
+function InputBoxRect(const Bounds: TRect; const Caption, Prompt: string; Buffer: PAnsiChar;
+  MaxLen: Byte): Word;
+var
+  box: TDialog;
+  entry: TView;
+  area: TRect;
+  promptLength: Integer;
+  answer: Word;
+begin
+  box := TDialog.Create(Bounds, Caption);
+  promptLength := Length(Prompt);
+
+  area := TRect.Create(4 + promptLength, 2, box.Size.X - 3, 3);
+  entry := nil;
+  if Assigned(InputLineHook) then
+    entry := InputLineHook(area, MaxLen);
+  box.Insert(entry);
+
+  area := TRect.Create(2, 2, 3 + promptLength, 3);
+  box.Insert(TLabel.Create(area, Prompt, entry));
+
+  area := TRect.Create(box.Size.X - 24, box.Size.Y - 4, box.Size.X - 14, box.Size.Y - 2);
+  box.Insert(TButton.Create(area, MsgBoxText.OkText, cmOK, bfDefault));
+
+  area.Move(12, 0);
+  box.Insert(TButton.Create(area, MsgBoxText.CancelText, cmCancel, bfNormal));
+
+  box.SelectNext(False);
+  box.SetData(Buffer);
+  answer := TProgram.Application.ExecView(box);
+  if answer <> cmCancel then
+    box.GetData(Buffer);
+  TvObject.DestroyObject(box);
+  Result := answer;
+end;
+
 end.
