@@ -55,6 +55,8 @@ provenance check: pending version src/tvformat.pas d0880fdb30dadf7c619a1d1471e1e
 provenance check: pending version src/tvformat.pas a622eccd4ecb7b07193ba563449f92fc967da852
 provenance check: pending version src/tvgeom.pas d4716d8b2b2055d774e551c6f50826f6a683c107
 provenance check: pending version src/tvgeom.pas f96b3d45377fc6002853ab81cc2e2aee60aa222b
+provenance check: pending version src/tvini.pas a44c13b571127024c20ae05d2644499597a73db7
+provenance check: pending version src/tvini.pas 55a7ff96cdf8fe0588481427c28fbcd8d7c26bf6
 provenance check: pending version src/tvkeyname.pas de675897b07971232a6d9d9d13821ffa2e631734
 provenance check: pending version src/tvkeyname.pas e30f0bb0233a7ccd4ee85c9f8d573c38133fdaba
 provenance check: pending version src/tvkeys.pas 0192bff4a0043f1df3c69c2bba072633f53fd224
@@ -112,6 +114,7 @@ provenance check: pending version tests/t_events.pas 9c022f8e25dddd634a3ec065c1b
 provenance check: pending version tests/t_evqueue.pas fc3da252b87a36c917c1a2e23a4782d6573c57b2
 provenance check: pending version tests/t_format.pas 7f4e7c2987639003b13efe21c052df70a18a9b06
 provenance check: pending version tests/t_geom.pas 0963e364eb639398f1482e79f60fdd0bf1b5ff0f
+provenance check: pending version tests/t_ini.pas 9d590e5c5299038df61d22fc1e29fd329b76f8a1
 provenance check: pending version tests/t_keyname.pas 01ddcb30f316799ccdde3e5ad268440b7c2c16de
 provenance check: pending version tests/t_keys.pas 5239e0309fc3b5e450c68678f75c43ec871cea27
 provenance check: pending version tests/t_menus.pas 3eab75d3c652f2a17ae5199b437f61282c362f8b
