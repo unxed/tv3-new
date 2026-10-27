@@ -1,0 +1,41 @@
+{
+  "path": "tests/t_clipcmd.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvclipcmd"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvclipcmd",
+      "sha256": "bbe3aca496ddf9778c62a6a03d220dc8871786df0785d3da42e2b51346a4f4e1"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "c728e85fd1f8fca9e499c239e9da4356ebc0ae09a8727e81ad94e0d8fab66771"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvpath.pas",
+      "sha256": "c0e691cb281ac17505924082f4a25b751d890dcd74ad56e9ca961cc0fdd78816"
+    },
+    {
+      "origin": "repository:src/tvclipcmd.pas",
+      "sha256": "19c9a4b7f45b69c4ab0357bbda1e57fbf5683a255ff5b693b485dbd878ea5bd6"
+    }
+  ],
+  "implementer": "implementer 36",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "832a10b698ef9c756a3a36bd17a4f81aab338737",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
