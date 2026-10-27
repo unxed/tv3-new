@@ -1,0 +1,103 @@
+{
+  "path": "src/tvactions.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvactions"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvactions",
+      "sha256": "26f583518ed0e164948e6b7a6e68d85eedb990fb9fda8848f92522681a27b0d0"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "3d29c75dea6d5c14f13dbd333572a8165de58af9f2ef231824308b6cb636af7e"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvevents.pas",
+      "sha256": "a24fb07f4e2d82e2c244fdd66f3e766cc1ee88becdb1ac4a2af47fcacff07cb4"
+    },
+    {
+      "origin": "repository:src/tvgeom.pas",
+      "sha256": "4c3f83cc5e6e59e830e188ec1e28fe0ce36c8850089b164fb5e18d9fa6598de6"
+    },
+    {
+      "origin": "repository:src/tvkeys.pas",
+      "sha256": "848d6f19d94f0dde035810006d5999f0f0b6224fd6df0fdfd1495aa1730e1de5"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    },
+    {
+      "origin": "repository:src/tvkeyname.pas",
+      "sha256": "ad16a33a4779d2c5988a73ae72d4c6719e24331aa13df6b2b77f6cf85fdf99d6"
+    },
+    {
+      "origin": "repository:src/tvmenus.pas",
+      "sha256": "19c5c49a590de1a823b93015029ce7bf48d42061074377beb4d5491ebd71422e"
+    },
+    {
+      "origin": "repository:src/tvcolors.pas",
+      "sha256": "9fda94548caec8f5fb349c444977016783f51b8800d264539cb2f3f60a597037"
+    },
+    {
+      "origin": "repository:src/tvdrawbuf.pas",
+      "sha256": "5b15c1b4ca87f7d3db0ad2170f9e804ff497287b3163ef11f945288153fcb51d"
+    },
+    {
+      "origin": "repository:src/tvcell.pas",
+      "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"
+    },
+    {
+      "origin": "repository:src/tvtext.pas",
+      "sha256": "4b54630ae6cec87f74565c01ce9af1d049dd553e843938c804fb27043b9ec3b2"
+    },
+    {
+      "origin": "repository:src/tvobjs.pas",
+      "sha256": "15936ba3a0283b4e064afd6d7e3a17bc374e9a71d73b1058a27d6683b225ea4d"
+    },
+    {
+      "origin": "repository:src/tvutil.pas",
+      "sha256": "29df78abd9dea01246adf9a6a98c713992770bae81c14de2db62390805c7a9b5"
+    },
+    {
+      "origin": "repository:src/tvviews.pas",
+      "sha256": "3c26f46bf04fe01af80b902acc3fc30c99e286b19a4c1b70af328f0094ce1717"
+    },
+    {
+      "origin": "repository:src/tvscreen.pas",
+      "sha256": "f2873e429b57760fcc8e877f1c8e755f88251f7e37911ce6050959b193e67e3a"
+    },
+    {
+      "origin": "repository:src/tvsys.pas",
+      "sha256": "5cc8894b6d166144aeb295a6445c0144041a43e103d360f2d5215317ddf967ac"
+    },
+    {
+      "origin": "repository:src/tvtimer.pas",
+      "sha256": "220c50e7d99eb23ef8badecda4b385b778bf61dc254fb7b0c2ba902a59f63e2f"
+    }
+  ],
+  "implementer": "implementer 44",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "959a5bd05279e29dbc23beb3e1d04d6306ece9a1",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "52c6aebab0b64d131abe82463e82ee6105600f8a",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
