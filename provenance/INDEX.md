@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 11 | 11 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 12 | 12 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvansi.pas` | translation | magiblot/tvision:include/tvision/internal/ansiwrit.h:1-151; magiblot/tvision:source/platform/ansiwrit.cpp:1-449 | 2 | 2 | 0 |
@@ -56,6 +56,7 @@
 | `tests/t_colors.pas` | translation | magiblot/tvision:include/tvision/colors.h:1-855; magiblot/tvision:source/platform/colors.cpp:1-253 | 1 | 1 | 0 |
 | `tests/t_crc.pas` | specification | specification:tvcrc | 1 | 1 | 0 |
 | `tests/t_cstr.pas` | specification | specification:tvcstr | 1 | 1 | 0 |
+| `tests/t_dialog.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tdialog.cpp:1-116; magiblot/tvision:source/tvision/tbutton.cpp:1-344; magiblot/tvision:source/tvision/tstatict.cpp:1-148; magiblot/tvision:source/tvision/tlabel.cpp:1-136; magiblot/tvision:source/tvision/tparamte.cpp:1-89; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
 | `tests/t_drawbuf.pas` | translation | magiblot/tvision:include/tvision/drawbuf.h:1-82; magiblot/tvision:source/tvision/drivers.cpp:1-395 | 1 | 1 | 0 |
 | `tests/t_events.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/platform/win32con.cpp:1-694; magiblot/tvision:include/tvision/internal/win32con.h:1-111; magiblot/tvision:source/platform/termio.cpp:1-1004; magiblot/tvision:include/tvision/internal/termio.h:1-171; magiblot/tvision:source/platform/far2l.cpp:1-258 | 1 | 1 | 0 |
 | `tests/t_evqueue.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 1 | 1 | 0 |

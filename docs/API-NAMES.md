@@ -116,3 +116,37 @@ starts, and a program may change them. The icons are strings in the notation of 
 palettes cpBlueWindow, cpCyanWindow and cpGrayWindow are constants of the unit; cpFrame, cpScrollBar and cpScroller are
 private to it. The message() calls of TScrollBar and TWindow go through MessageHook of TvViews. The private members
 frameLine and dragWindow of TFrame and getPartCode of TScrollBar are private here as well.
+
+## Added by the translation of TvDialog
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: THotKeyFunc
+added: HotKeyHook
+added: TButton.StartAnimation
+added: TButton.TrackMouse
+added: TButton.HandleKeyDown
+added: TButton.HandleBroadcast
+added: TButton.FaceRect
+
+THotKeyFunc is the type of a function that takes the text of a label or a button and returns its hot key, and
+HotKeyHook stands for the function hotKey, which has no unit yet. While HotKeyHook is nil no text has a hot key
+(the result is #0), so a label and a button answer to no letter and to no Alt key. TButton.StartAnimation is a
+private routine that holds the two actions that the C++ repeats in the key and the cmDefault branches of
+TButton::handleEvent: draw the button pressed down and set the timer of 100 milliseconds when none runs; the caller
+then clears the event. TButton.TrackMouse, TButton.HandleKeyDown and TButton.HandleBroadcast are private routines that hold the mouse, key
+and broadcast branches of TButton::handleEvent, and TButton.FaceRect is the private function that gives the
+click area of the button. The message() calls of TButton go through MessageHook of TvViews.
+
+The tables of tvtext1.cpp that belong to these classes are variables that get their C++ values, in code page 437,
+when the unit starts, and a program may change them: shadows and markers of TButton are the class variables Shadows
+and Markers, and specialChars is the variable SpecialChars. The macros cpGrayDialog, cpBlueDialog, cpCyanDialog and
+cpDialog are constants of the unit, and the palettes of the other classes (cpStaticText, cpLabel, cpButton) are
+private to it. The constants cmGrabDefault and cmReleaseDefault, which tbutton.cpp keeps to itself, and the
+button flags and cmRecordHistory of dialogs.h are constants of the unit.
+
+The text of a TStaticText is a block of characters with a terminating zero, as in the C++, and getText takes a
+pointer to a buffer of 256 characters. The variadic setText of TParamText takes a format string and an array of
+const, and its format is the one of FormatStr of TvUtil. A TParamText has no text of the base class, so its Text is
+nil. The members of the C++ that are declared and never defined (pressButton and getActiveRect of TButton) are not
+translated. TDialog.Valid calls the Valid of the class above it where the C++ calls TGroup::valid.
