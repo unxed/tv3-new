@@ -1,0 +1,218 @@
+{
+  "path": "src/tvmenus.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/menus.h",
+      "lines": "1-555"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/views.h",
+      "lines": "1-1060"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/ttypes.h",
+      "lines": "1-126"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/tv.h",
+      "lines": "1-782"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/config.h",
+      "lines": "1-42"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tmnuview.cpp",
+      "lines": "1-680"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tmenubar.cpp",
+      "lines": "1-120"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tmenubox.cpp",
+      "lines": "1-149"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tmenupop.cpp",
+      "lines": "1-77"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tstatusl.cpp",
+      "lines": "1-314"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/menu.cpp",
+      "lines": "1-96"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/popupmnu.cpp",
+      "lines": "1-87"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tvtext1.cpp",
+      "lines": "1-127"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/menus.h",
+      "sha256": "48751f547a459e9819b0e1890a624bc25fd2541a61fc0c5287a244d6ca427a4a"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/views.h",
+      "sha256": "1632378ede0aab57713b810dc00ea20627b7328d442c4164ed853ac40043a8c0"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/ttypes.h",
+      "sha256": "35d54dac4675e12a8db8c298fde3225d05c019aba0585b27051613a8b6e44b0d"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/tv.h",
+      "sha256": "1b683ecee17f382c9599eb04e06876998766db0351f9a4e02b6ba733fef802fb"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/config.h",
+      "sha256": "b6174d5d24dfd8fbf1a084bfc5b9196084246bd51a4a871d0de967a364a80ba7"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tmnuview.cpp",
+      "sha256": "0d5edc230fc100c9a6f202269b5d025e3dcc8150bf64c43edf3a7e5231d702be"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tmenubar.cpp",
+      "sha256": "59ad00c7197246e4f39cea86e3a69c543352479af359be1ae5ec9e135d9f6819"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tmenubox.cpp",
+      "sha256": "2cd401080f17f314df7772b600bc5baee481e1c1687806f5b0a621d6de550e05"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tmenupop.cpp",
+      "sha256": "7787955cd34c9ca372ef3be135806544847c3d247702f6c0a0a663f4277c66a2"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tstatusl.cpp",
+      "sha256": "ad4c8407d00819eee64082a1761937e11aedcd7dd07e7f2f92ec726761ab7677"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/menu.cpp",
+      "sha256": "924095d0fd34e61d016b92cc2fe193496a0019214bb1e01824d0371160cbeb2a"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/popupmnu.cpp",
+      "sha256": "06f9a297577a5340ae1b82e41b4977eca1523773c45981374247fce5d950d08b"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvtext1.cpp",
+      "sha256": "b68c9961de830f501a906dd16500c5b76f49510f5f9fb49f681cb8721dbd35fb"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "97da411b5628fe571397a761e20b56d9227ab8698afd3708c7ad962218aa3484"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvcolors.pas",
+      "sha256": "9fda94548caec8f5fb349c444977016783f51b8800d264539cb2f3f60a597037"
+    },
+    {
+      "origin": "repository:src/tvdrawbuf.pas",
+      "sha256": "5b15c1b4ca87f7d3db0ad2170f9e804ff497287b3163ef11f945288153fcb51d"
+    },
+    {
+      "origin": "repository:src/tvcell.pas",
+      "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    },
+    {
+      "origin": "repository:src/tvtext.pas",
+      "sha256": "4b54630ae6cec87f74565c01ce9af1d049dd553e843938c804fb27043b9ec3b2"
+    },
+    {
+      "origin": "repository:src/tvevents.pas",
+      "sha256": "a24fb07f4e2d82e2c244fdd66f3e766cc1ee88becdb1ac4a2af47fcacff07cb4"
+    },
+    {
+      "origin": "repository:src/tvgeom.pas",
+      "sha256": "4c3f83cc5e6e59e830e188ec1e28fe0ce36c8850089b164fb5e18d9fa6598de6"
+    },
+    {
+      "origin": "repository:src/tvkeys.pas",
+      "sha256": "848d6f19d94f0dde035810006d5999f0f0b6224fd6df0fdfd1495aa1730e1de5"
+    },
+    {
+      "origin": "repository:src/tvobjs.pas",
+      "sha256": "15936ba3a0283b4e064afd6d7e3a17bc374e9a71d73b1058a27d6683b225ea4d"
+    },
+    {
+      "origin": "repository:src/tvutil.pas",
+      "sha256": "29df78abd9dea01246adf9a6a98c713992770bae81c14de2db62390805c7a9b5"
+    },
+    {
+      "origin": "repository:src/tvviews.pas",
+      "sha256": "3c26f46bf04fe01af80b902acc3fc30c99e286b19a4c1b70af328f0094ce1717"
+    },
+    {
+      "origin": "repository:src/tvscreen.pas",
+      "sha256": "f2873e429b57760fcc8e877f1c8e755f88251f7e37911ce6050959b193e67e3a"
+    },
+    {
+      "origin": "repository:src/tvsys.pas",
+      "sha256": "5cc8894b6d166144aeb295a6445c0144041a43e103d360f2d5215317ddf967ac"
+    },
+    {
+      "origin": "repository:src/tvtimer.pas",
+      "sha256": "220c50e7d99eb23ef8badecda4b385b778bf61dc254fb7b0c2ba902a59f63e2f"
+    }
+  ],
+  "implementer": "implementer 33",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "3d4f334bb2f094762523d03aa221a312200896be",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "856218a11b9f594f6b441a279ad7e6ee4a1d41c9",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
