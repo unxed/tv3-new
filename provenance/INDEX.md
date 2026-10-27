@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 16 | 16 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 17 | 17 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvansi.pas` | translation | magiblot/tvision:include/tvision/internal/ansiwrit.h:1-151; magiblot/tvision:source/platform/ansiwrit.cpp:1-449 | 2 | 2 | 0 |
@@ -75,6 +75,7 @@
 | `tests/t_keys.pas` | translation | magiblot/tvision:include/tvision/tkeys.h:1-216; magiblot/tvision:source/tvision/tkey.cpp:1-286; magiblot/tvision:source/tvision/drivers2.cpp:1-118 | 1 | 1 | 0 |
 | `tests/t_list.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tlstview.cpp:1-431; magiblot/tvision:source/tvision/tlistbox.cpp:1-108; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
 | `tests/t_menus.pas` | translation | magiblot/tvision:include/tvision/menus.h:1-555; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tmnuview.cpp:1-680; magiblot/tvision:source/tvision/tmenubar.cpp:1-120; magiblot/tvision:source/tvision/tmenubox.cpp:1-149; magiblot/tvision:source/tvision/tmenupop.cpp:1-77; magiblot/tvision:source/tvision/tstatusl.cpp:1-314; magiblot/tvision:source/tvision/menu.cpp:1-96; magiblot/tvision:source/tvision/popupmnu.cpp:1-87; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
+| `tests/t_msgbox.pas` | translation | magiblot/tvision:include/tvision/msgbox.h:1-83; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/msgbox.cpp:1-192; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
 | `tests/t_objs.pas` | translation | magiblot/tvision:include/tvision/tvobjs.h:1-152; magiblot/tvision:include/tvision/objects.h:209-302; magiblot/tvision:source/tvision/tobject.cpp:1-20; magiblot/tvision:source/tvision/tcollect.cpp:1-251; magiblot/tvision:source/tvision/tsortcol.cpp:1-104; magiblot/tvision:source/tvision/nmcollct.cpp:1-17; magiblot/tvision:source/tvision/nmscoll.cpp:1-17 | 1 | 1 | 0 |
 | `tests/t_path.pas` | specification | specification:tvpath | 1 | 1 | 0 |
 | `tests/t_proc.pas` | specification | specification:tvproc | 1 | 1 | 0 |
