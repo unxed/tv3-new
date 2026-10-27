@@ -238,47 +238,92 @@ which always allocates a text, has made them. The calls getMouseEvent and getKey
 procedures GetMouseEvent and GetKeyEvent of TEventQueue. GetEvent of TProgram reads the posted events of the event
 queue before the mouse and the keyboard, and Idle runs only when none of the three gave an event.
 
-## Added by the translation of TvCluster
+## Added by the translation of TvList
 
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
 
-added: ClusterPalette
-added: MarkerAt
-added: HotKeyOfItem
-added: TCluster.StepFrom
-added: TCluster.Travel
-added: TCluster.TrackMouse
-added: TCluster.MatchesKey
-added: TCluster.HandleOtherKey
-added: TCluster.ItemUnderMouse
-added: TCluster.PressSelectedAndRedraw
-added: TCluster.ShowCursorIfOverSelection
-added: TMultiCheckBoxes.FieldMask
-added: TMultiCheckBoxes.FieldShift
-added: TMultiCheckBoxes.FieldOf
+added: PListBoxRec
+added: ListViewerPalette
+added: ListMarkers
+added: DividerCode
+added: AutosPerStep
+added: TListViewer.ShowBarWhenLive
+added: TListViewer.DragTarget
+added: TListViewer.KeyTarget
+added: TListViewer.HandleMouseDown
+added: TListViewer.HandleKeyDown
+added: TListViewer.HandleBroadcast
+added: LowAttr
+added: Notify
+added: AnyBit
 
-ClusterPalette holds the static palette that getPalette of TCluster returns; the unit creates it when it starts and
-releases it when it ends. MarkerAt and HotKeyOfItem are functions of the unit that are not visible outside it:
-MarkerAt gives the character of a marker string at a position and #0 outside the string, and HotKeyOfItem gives the
-hot key of the string of an item through the HotKeyHook of TvDialog, which stands for hotKey and answers #0 while it
-is nil. No new hook is added for it.
+PListBoxRec is the pointer to a TListBoxRec, which GetData and SetData of TListBox take from the untyped pointer of
+their argument. The names ListViewerPalette, ListMarkers, DividerCode, AutosPerStep, LowAttr, Notify and AnyBit are
+inside the unit and are not visible outside it. ListViewerPalette is the palette that the static variable of
+getPalette of tlstview.cpp holds, made from cpListViewer when the unit starts and released when it ends. ListMarkers
+is the table specialChars of tvtext1.cpp, which TvDialog keeps for its own use. DividerCode is the character '\xB3'
+that draw writes between two columns, and AutosPerStep is the local mouseAutosToSkip of handleEvent. LowAttr gives the
+attribute that a conversion of the result of getColor to a TColorAttr gives, which is the low one of the pair. Notify
+sends a message through MessageHook, as the function message does in the C++, and does nothing while the hook is nil.
+AnyBit tells whether a flag of a mask is set, as the tests with & of the C++ do.
 
-The private members StepFrom, Travel, TrackMouse, MatchesKey and HandleOtherKey of TCluster split handleEvent into
-the parts that the C++ writes in one function: StepFrom is the step of the selection that one of the four arrow keys
-makes, Travel repeats it until a button is enabled and then moves the selection, TrackMouse is the branch of the
-mouse press, MatchesKey is the test of a key against the hot key of an item, and HandleOtherKey is the branch of the
-keys that are not arrows. ItemUnderMouse is the item at the place of a mouse event, PressSelectedAndRedraw is the
-press of the selected item followed by a redraw, and ShowCursorIfOverSelection shows or hides the cursor by the place
-of the mouse. FieldMask, FieldShift and FieldOf of TMultiCheckBoxes are the three expressions that
-multiMark and press of the C++ both compute: the bits of the field of an item in place, the position of its lowest
-bit, and its value. The tables button of TRadioButtons and TCheckBoxes are the class variables TRadioButtons.Button and
-TCheckBoxes.Button, and specialChars is the variable SpecialChars of TvDialog.
+The members of TListViewer that handleEvent of the C++ holds in one body are split in three, one for each kind of
+event: HandleMouseDown, HandleKeyDown and HandleBroadcast. DragTarget is the part of the mouse loop that gives the
+item for a mouse outside the view, and it keeps the count of the automatic events; KeyTarget is the switch of the
+key codes, and it tells whether the key moves the focus. ShowBarWhenLive is the repeated code of setState that shows
+a scroll bar while the view is active and visible and hides it otherwise. These five are private.
 
-TStringCollection has no unit, so the strings of a cluster are a TCollection of blocks of characters from NewStr, which
-the collection releases with FreeMem. A TSItem is a class of TvObject that owns the block of its value. The
-constructor of TCluster takes the items of the list and releases them, as the C++ does, and the constructor of
-TMultiCheckBoxes takes its TRect as a const parameter because it does not change it. The data members value,
-enableMask and sel are the protected fields Value, EnableMask and Sel, and strings is Strings. The record of getData
-and setData is read and written through a PWord (a PLongWord for TMultiCheckBoxes). buttonState gives False for a
-negative item, which the C++ loop does not define, and MarkerAt gives #0 for a marker that is not in the string of
-markers, where the C++ reads beyond it.
+The function getText has no buffer here: GetText returns the text as a string, and its second parameter is the
+largest length of the text, which is the third parameter of the C++. In TListBox the text is the block of characters
+of the item up to its terminating zero or up to that length. A nil item gives an empty text. The static member
+emptyText of TListViewer is defined in a file that is not among the sources of the unit, so it is the class variable
+EmptyText, which starts as an empty text and which the program sets. The member list of TListBox is the function
+List, and the protected member items is Items. The record TListBoxRec keeps its name, with the members Items and
+Selection. The destructor of TListBox does not free its list, as the destructor of the C++ is empty; the list is
+freed by NewList when another list is given, by SetData and by the owner of the list.
+
+## Added by the translation of TvValid
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TErrorBoxProc
+added: ErrorBoxHook
+added: PLongValue
+added: TRangeValidator.RangeErrorMsg
+added: TPXPictureValidator.RunPicture
+added: TPXPictureValidator.PicAt
+added: AllCharsIn
+added: ScanDecimal
+
+TErrorBoxProc is the procedural type of the hook that stands for a part of the C++ that no unit has yet and no input
+defines. ErrorBoxHook stands for the call messageBox(mfError | mfOKButton, ...) that Error of TPXPictureValidator,
+TFilterValidator, TRangeValidator and TStringLookupValidator makes; it takes the message text and the arguments of the
+call (the picture, or the two limits of the range) and does nothing while it is nil. The constants mfError and
+mfOKButton are not passed, because every call of the validators has the same two.
+
+The texts errorMsg of the classes and validUnsignedChars and validSignedChars of TRangeValidator are defined in files
+that are not among the sources of the unit, so they are the class variables ErrorMsg of TPXPictureValidator,
+TFilterValidator and TStringLookupValidator, and ValidUnsignedChars and ValidSignedChars of TRangeValidator, which
+start as empty texts and which the program sets. The errorMsg of TRangeValidator is RangeErrorMsg, because a class
+variable of a derived class does not take the name of one of its base class. TStringCollection is not defined by a unit
+or by an input, so TStringLookupValidator takes and holds a TNSCollection whose items are blocks of characters with a
+terminating zero, and its destructor and NewStringList destroy it with TvObject.DestroyObject, as destroy does.
+
+A char pointer of the C++ is a string. The arguments s of isValidInput, transfer and picture, which the routines may
+change, are var parameters, and the argument of the constructors that take a TStringView is a const string. The member
+pic of TPXPictureValidator is a string that is never nil, and the members validChars and strings are a string and a
+collection. The members min and max of TRangeValidator are the fields Min and Max of type LongInt (int32_t). The type
+long of transfer and of the conversion %ld is clong of the unit ctypes; ScanDecimal is that conversion: white space, a
+sign and digits, with the nearest limit for a number beyond the range, and no result when there is no digit. When
+vtGetData finds no number, the buffer gets 0, where the C++ stores a value that was never set. The functions isNumber,
+isLetter, isSpecial, numChar, isComplete and isIncomplete are IsNumber, IsLetter, IsSpecial, NumChar, IsComplete and
+IsIncomplete and are visible outside the unit; the static function uppercase and the static function stringMatch are
+Uppercase and StringMatch inside the unit. The enumerations TVTransfer and TPicResult and the constants vsOk, vsSyntax,
+voFill, voTransfer and voReserved keep their names.
+
+The constructor of TPXPictureValidator calls picture, which is virtual; RunPicture holds the body of the function and
+the constructor calls it, so a class derived in Pascal does not take part in the check of the constructor, as in the
+C++ where a call in a constructor reaches the function of the class that is being made. Picture calls RunPicture.
+PicAt gives the character of the picture at a position, and the character with the code 0 after its end, as the
+reading of the terminating zero of the C++. AllCharsIn is the test strspn(s, chars) == strlen(s) of the filter
+validators.
