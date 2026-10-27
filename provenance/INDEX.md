@@ -12,7 +12,7 @@
 | `docs/API-NAMES.md` | specification | specification:infra-requirements | 17 | 17 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
-| `src/tvactions.pas` | specification | specification:tvactions | 1 | 1 | 0 |
+| `src/tvactions.pas` | specification | specification:tvactions | 2 | 2 | 0 |
 | `src/tvansi.pas` | translation | magiblot/tvision:include/tvision/internal/ansiwrit.h:1-151; magiblot/tvision:source/platform/ansiwrit.cpp:1-449 | 2 | 2 | 0 |
 | `src/tvapp.pas` | translation | magiblot/tvision:include/tvision/app.h:1-353; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tprogram.cpp:1-354; magiblot/tvision:source/tvision/tapplica.cpp:1-136; magiblot/tvision:source/tvision/tdesktop.cpp:1-255; magiblot/tvision:source/tvision/tbkgrnd.cpp:1-69; magiblot/tvision:source/tvision/syserr.cpp:1-174; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/tevent.cpp:1-472 | 2 | 2 | 0 |
 | `src/tvappdir.pas` | specification | specification:tvappdir | 2 | 2 | 0 |
