@@ -937,6 +937,63 @@ block of characters to the descriptor 2, as fprintf to stderr does, without allo
 program is written with SayOnStderr from its parts, with the same text, and the message of the failed fork is built as a
 string before it is passed to the callback.
 
+## Added by the translation of TvVtCore
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: RowRange.RangeEnd
+added: RowRange.Unset
+added: PRowRange
+added: SelectionRange.RangeEnd
+added: SelectionRange.Create
+added: SelectionAnchor.ToPoint
+added: SelectionAnchor.Compare
+added: GrowArray.Buf
+added: GrowArray.Used
+added: GrowArray.Cap
+added: TerminalEvent.Type_
+added: TerminalEmulatorFactory.Make
+added: TEnvironmentVarSpan
+added: PEnvironmentVar
+added: TWordSpan
+added: TMutexProc
+added: Mutex.Section
+added: Mutex.Item
+
+The namespace tvterm is not a prefix. The members end of RowRange and SelectionRange and type of TerminalEvent are
+reserved words, so they are RangeEnd and Type_. A record has no default constructor: the default constructor of
+RowRange, which gives the range {INT_MAX, INT_MIN}, is the class function Unset, and the constructors of the
+other records take their values. The aggregate initialisation of SelectionRange is its constructor Create. The operator
+TPoint of SelectionAnchor is the function ToPoint, and the constructor from a TPoint is the constructor Create that
+takes a TPoint. Compare is the three-way comparison on which the operators <, > and = of SelectionAnchor rest. TerminalSurface descends publicly from TDrawSurface, so its base members are all public,
+where the C++ makes only size and at visible. The functions damageAtRow give no reference: DamageAtRow gives a PRowRange,
+and the const overload has no counterpart. Its parameter and the one of AddDamageAtRow are SizeUInt (size_t), and the
+parameters begin and end of AddDamageAtRow are ABegin and AEnd. Resize of TerminalSurface hides Resize of TDrawSurface,
+which is not virtual, as it does in the C++. The member damageByRow is the private field DamageByRow.
+
+TerminalState is a class, because its members are a TerminalSurface and a GrowArray, which are objects: its
+constructor makes them and its destructor frees them. GrowArray is a class whose struct p is the three private fields Buf,
+Used and Cap; the member functions data and size are Data and Size, and the move constructor and the operator = are not
+translated. A failure of the memory manager raises the exception of the run-time library, where the C++ calls abort.
+The enumeration TerminalEventType is declared with scoped enumerators, which are written TerminalEventType.KeyDown and so
+on. The union of TerminalEvent is the variant part of the record, which is selected by the member Type_. The
+member data of ClientDataReadEvent is a PAnsiChar and its size is SizeUInt.
+
+TSpan has no unit. A span that is a parameter is a const open array (Writer.Write); a span that is a result is a record
+with a pointer to the first element and a count, which are TEnvironmentVarSpan for TSpan<const EnvironmentVar> and TWordSpan for
+TSpan<const ushort>, with PEnvironmentVar the pointer to an EnvironmentVar. The function create of TerminalEmulatorFactory
+is Make, because Create is the constructor, and its reference parameters are a const TPoint and a Writer, and its result
+is a TerminalEmulator. The members of TVTermConstants have the prefix of their names in capitals (CmGrabInput, HcSelecting),
+FocusedCmds is the span from CmGrabInput to CmStartSelection, and the record keeps the nine fields contiguous.
+The member view of TerminalUpdatedMsg is a TObject, because the class TerminalView is not part of this unit and a class
+that is only forward declared has no counterpart in Pascal; a user casts it to the class.
+
+Mutex<T> is the generic class Mutex, specialised as specialize Mutex<LongInt>. Its constructor takes the initial value
+of the item, or none, in the place of the arguments that the C++ passes on. The std::mutex m is the critical section
+Section of the run-time library, which is recursive, and the item is Item. The member lock takes a procedure of object,
+the generic type TMutexProc, which receives the item as a var parameter; its result is not returned, because a Pascal
+generic method has no deduced result type, so a procedure that wants to give a value stores it in a field.
+
 ## Added by the translation of TvTextView
 
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
