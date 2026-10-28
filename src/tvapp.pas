@@ -2,6 +2,7 @@
   C++ sources: include/tvision/app.h, include/tvision/views.h, source/tvision/tprogram.cpp,
   source/tvision/tapplica.cpp, source/tvision/tbkgrnd.cpp, source/tvision/tdesktop.cpp, source/tvision/syserr.cpp,
   source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp (message),
+  include/tvision/system.h (TMouse), source/tvision/tmouse.cpp (TMouse::hide, TMouse::show),
   source/tvision/tvtext2.cpp (exitText, defaultBkgrnd)
   See COPYRIGHT.magiblot.
 
@@ -23,7 +24,6 @@
   Parts of the C++ that have no unit yet, or that no input defines, are reached through hooks, which do nothing
   while they are nil:
     - lowMemory() is LowMemoryHook; while it is nil, memory is never low;
-    - TMouse::hide and TMouse::show are MouseHideHook and MouseShowHook;
     - initHistory and doneHistory are InitHistoryHook and DoneHistoryHook;
     - THardwareInfo::setCtrlBrkHandler is SetCtrlBrkHandlerHook;
     - TProgram::application is given to TvMenus through its ApplicationHook when this unit starts.
@@ -246,8 +246,6 @@ type
 
 var
   LowMemoryHook: TLowMemoryFunc;
-  MouseHideHook: TVoidProc;
-  MouseShowHook: TVoidProc;
   InitHistoryHook: TVoidProc;
   DoneHistoryHook: TVoidProc;
   SetCtrlBrkHandlerHook: TSetCtrlBrkHandlerProc;
@@ -266,7 +264,7 @@ implementation
 
 uses
   {$IFDEF MSWINDOWS}SysUtils,{$ELSE}BaseUnix,{$ENDIF}
-  TvObjs, TvColors, TvDrawBuf, TvKeys, TvUtil;
+  TvObjs, TvColors, TvDrawBuf, TvKeys, TvUtil, TvMouse;
 
 const
   { The three palettes of the application, two hexadecimal digits for each entry. }
@@ -927,8 +925,7 @@ procedure TProgram.SetScreenMode(Mode: Word);
 var
   Whole: TRect;
 begin
-  if Assigned(MouseHideHook) then
-    MouseHideHook();
+  TMouse.Hide;
   TScreen.SetVideoMode(Mode);
   InitScreen;
   Buffer := TScreen.ScreenBuffer;
@@ -937,8 +934,7 @@ begin
   SetState(sfExposed, False);
   SetState(sfExposed, True);
   Redraw;
-  if Assigned(MouseShowHook) then
-    MouseShowHook();
+  TMouse.Show;
 end;
 
 function TProgram.SetTimer(TimeoutMs: Cardinal; PeriodMs: Integer): TTimerId;

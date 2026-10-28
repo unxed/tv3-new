@@ -1,6 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/system.h (TEventQueue), source/tvision/tevent.cpp,
-  include/tvision/internal/events.h, source/platform/events.cpp
+  include/tvision/internal/events.h, source/platform/events.cpp,
+  include/tvision/hardware.h (getButtonCount, cursorOn, cursorOff)
   See COPYRIGHT.magiblot. }
 program t_evqueue;
 
@@ -80,6 +81,12 @@ begin
   TEventQueue.Backend := B;
   TEventQueue.DoubleDelay := 100;
   Q := TEventQueue.Create;
+
+  { the mouse calls of the hardware: no buttons, and the cursor calls do nothing }
+  Check(B.GetButtonCount = 0, 'the base backend has no mouse buttons');
+  B.CursorOn;
+  B.CursorOff;
+  Check(NextMouse.What = evNothing, 'the cursor calls of the base backend change no input');
 
   { keys come out in the order they went in }
   B.Feed(KeyEv(kbF1));

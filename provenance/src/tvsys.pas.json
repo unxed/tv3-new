@@ -25,6 +25,12 @@
       "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
       "file": "source/platform/events.cpp",
       "lines": "1-301"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/hardware.h",
+      "lines": "1-327"
     }
   ],
   "inputs": [
@@ -67,9 +73,13 @@
     {
       "origin": "repository:src/tvevents.pas",
       "sha256": "a24fb07f4e2d82e2c244fdd66f3e766cc1ee88becdb1ac4a2af47fcacff07cb4"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/hardware.h",
+      "sha256": "62ce1286269c6b0dce76ac9deb9ba70d261f70c19f0e4851520d060da036dc41"
     }
   ],
-  "implementer": "implementer 6",
+  "implementer": "implementer 6, implementer 55",
   "proofs": [],
   "versions": [
     {
@@ -80,6 +90,12 @@
     },
     {
       "blob": "97b5263a52a51e4221bac43263f5e58d9543be78",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "a39ad27eb16f0a8dab13778d42a11f2ea708e217",
       "commit": null,
       "pr": null,
       "audit_run": null
