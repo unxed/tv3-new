@@ -1639,3 +1639,55 @@ TText::equalsIgnoreCase is EqualsIgnoreCase, a function of the unit, because the
 member from another unit. The texts are strings; the function reads the characters with TText.Next of TvUtf8 and
 Utf8To32, and takes a byte that does not begin a valid UTF-8 sequence as a code page character, as CpTranslator.ToUtf8
 gives it. ReadChar does this for one character inside the unit.
+
+## Added by the implementation of TvVtExt
+
+TvVtExt declares the hooks, the clipboard routines and the key release code that no other unit of the library
+provides; every name starts with Vt or TVt.
+
+added: TVtNotifyProc
+The procedural type of the hook that shows a notification.
+added: TVtFKeyTitlesProc
+The procedural type of the hook that shows the titles of the function keys.
+added: TVtColorBitsFunc
+The procedural type of the hook that gives the colour depth.
+added: TVtWindowMaxSizeFunc
+The procedural type of the hook that gives the largest window size.
+added: TVtWindowMaximizeProc
+The procedural type of the hook that maximizes or restores the window.
+added: TVtQuickEditProc
+The procedural type of the hook that switches the quick edit of the mouse.
+added: VtOnNotify
+The hook that the base host calls for a notification; nil does nothing.
+added: VtOnSetFKeyTitles
+The hook that the base host calls for the titles of the function keys; the base host reports True when it is set.
+added: VtOnColorBits
+The hook that gives the colour depth to the base host; when it is not set or gives 0, the base host reports 4.
+added: VtOnWindowMaxSize
+The hook that gives the largest window size to the base host; when it is not set the base host reports False.
+added: VtOnWindowMaximize
+The hook that the base host calls to maximize or restore the window.
+added: VtOnQuickEdit
+The hook that the base host calls for the quick edit of the mouse.
+added: VtEvKeyUp
+The event code of a key release; every other key event counts as a press.
+added: VtCfText
+The clipboard format of text.
+added: VtCfUnicodeText
+The clipboard format of UTF-32 little-endian text; it names the same text slot as VtCfText.
+added: TVtClipItem
+A format and its data, one item of the clipboard that the server serves.
+added: VtClipItem
+Makes a TVtClipItem.
+added: VtClipSetItems
+Replaces all items of the clipboard that the server serves, and gives its text to TClipboard.
+added: VtClipGetItem
+Gets the data of a format; the text formats give the UTF-8 text.
+added: VtClipHasItem
+Tells whether the clipboard holds a format.
+added: VtClipRegisterFormat
+Gives the number of a named format, starting at $C000; the same name gives the same number.
+added: VtClipGetText
+Gives the text of the clipboard.
+added: VtVerticalBlockFormat
+Gives the number of the format FAR_VerticalBlock_Unicode, registering it on first use.

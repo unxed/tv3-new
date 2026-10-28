@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 44 | 44 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 45 | 45 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvactions.pas` | specification | specification:tvactions | 2 | 2 | 0 |
@@ -78,6 +78,7 @@
 | `src/tvvt.pas` | translation | magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744; magiblot/tvterm:include/tvterm/vtermemu.h:1-118 | 1 | 1 | 0 |
 | `src/tvvtcore.pas` | translation | magiblot/tvterm:include/tvterm/termemu.h:1-288; magiblot/tvterm:include/tvterm/array.h:1-89; magiblot/tvterm:include/tvterm/mutex.h:1-33; magiblot/tvterm:include/tvterm/consts.h:1-41 | 1 | 1 | 0 |
 | `src/tvvtctrl.pas` | translation | magiblot/tvterm:include/tvterm/termctrl.h:1-75; magiblot/tvterm:source/tvterm-core/termctrl.cc:1-328; magiblot/tvterm:include/tvterm/termemu.h:1-288; magiblot/tvterm:include/tvterm/pty.h:1-66 | 1 | 1 | 0 |
+| `src/tvvtext.pas` | specification | specification:tvvtext | 2 | 2 | 0 |
 | `src/tvvtkeys.pas` | translation | magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744; magiblot/tvterm:include/tvterm/vtermemu.h:1-118 | 1 | 1 | 0 |
 | `src/tvvtscreen.pas` | translation | magiblot/tvterm:include/tvterm/vtermemu.h:1-118; magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744 | 1 | 1 | 0 |
 | `src/tvvtview.pas` | translation | magiblot/tvterm:include/tvterm/termview.h:1-62; magiblot/tvterm:source/tvterm-core/termview.cc:1-340; magiblot/tvterm:include/tvterm/termwnd.h:1-69; magiblot/tvterm:source/tvterm-core/termwnd.cc:1-168; magiblot/tvterm:include/tvterm/termframe.h:1-24; magiblot/tvterm:source/tvterm-core/termframe.cc:1-34; magiblot/tvterm:include/tvterm/consts.h:1-41; magiblot/tvterm:include/tvterm/termemu.h:1-288; magiblot/tvterm:include/tvterm/termctrl.h:1-75 | 1 | 1 | 0 |
@@ -151,6 +152,7 @@
 | `tests/t_vt.pas` | translation | magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744; magiblot/tvterm:include/tvterm/vtermemu.h:1-118 | 1 | 1 | 0 |
 | `tests/t_vtcore.pas` | translation | magiblot/tvterm:include/tvterm/termemu.h:1-288; magiblot/tvterm:include/tvterm/array.h:1-89; magiblot/tvterm:include/tvterm/mutex.h:1-33; magiblot/tvterm:include/tvterm/consts.h:1-41 | 1 | 1 | 0 |
 | `tests/t_vtctrl.pas` | translation | magiblot/tvterm:include/tvterm/termctrl.h:1-75; magiblot/tvterm:source/tvterm-core/termctrl.cc:1-328 | 1 | 1 | 0 |
+| `tests/t_vtext.pas` | specification | specification:tvvtext | 1 | 1 | 0 |
 | `tests/t_vtkeys.pas` | translation | magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744; magiblot/tvterm:include/tvterm/vtermemu.h:1-118 | 1 | 1 | 0 |
 | `tests/t_vtscreen.pas` | translation | magiblot/tvterm:include/tvterm/vtermemu.h:1-118; magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744 | 1 | 1 | 0 |
 | `tests/t_vtview.pas` | translation | magiblot/tvterm:include/tvterm/termview.h:1-62; magiblot/tvterm:source/tvterm-core/termview.cc:1-340; magiblot/tvterm:include/tvterm/termwnd.h:1-69; magiblot/tvterm:source/tvterm-core/termwnd.cc:1-168; magiblot/tvterm:include/tvterm/termframe.h:1-24; magiblot/tvterm:source/tvterm-core/termframe.cc:1-34; magiblot/tvterm:include/tvterm/consts.h:1-41; magiblot/tvterm:include/tvterm/termemu.h:1-288; magiblot/tvterm:include/tvterm/termctrl.h:1-75 | 1 | 1 | 0 |
