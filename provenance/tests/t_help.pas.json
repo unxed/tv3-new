@@ -1,0 +1,68 @@
+{
+  "path": "tests/t_help.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/help.h",
+      "lines": "1-93"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/helpbase.h",
+      "lines": "1-198"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/help.cpp",
+      "lines": "1-290"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/helpbase.cpp",
+      "lines": "1-674"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tvtext2.cpp",
+      "lines": "1-227"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/help.h",
+      "sha256": "61838da25bf63aa11b70a282ffed70b628a853db7756fc09e1adc8cdb1e89bbe"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/helpbase.h",
+      "sha256": "b0730420520ee50aa22aeac57ef698948aa2d0b828a978b9b5dc157befe7de04"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/help.cpp",
+      "sha256": "84da98335b2b442ff7891d84479c534bced1580ba8c54018b4ea1074d5c818d3"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/helpbase.cpp",
+      "sha256": "9a1fa7a9c150b2578aa1bde0b22921788fd0a512d2dc4b1ee1b077a186ab95f0"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvtext2.cpp",
+      "sha256": "3b09041411da28340e66fc764cc7c6e04f82145220eb954f348b0277f663b6a6"
+    }
+  ],
+  "implementer": "implementer 56",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "3d2fc6b6bab05dafc49e5b23e5f47c32ae42bfe5",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

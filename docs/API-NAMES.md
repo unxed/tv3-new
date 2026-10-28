@@ -570,3 +570,51 @@ TMessageEvent in TvEvents is, and so is its result: the Pointer that the receive
 the event, or nil. The functions strnzcpy and strnzcat are Strnzcpy and Strnzcat of TvUtil. The buffer dst of dstSize
 characters is the var parameter Dst, a string whose length stays below DstSize, and the length of the string is what
 the two functions return. The function lowMemory is LowMemoryHook of TvApp.
+
+## Added by the translation of TvHelp
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: PCrossRef
+added: IntMax
+added: PairLow
+added: TextSlice
+added: HelpViewerPalette
+added: HelpWindowPalette
+added: THelpViewer.RefreshLimit
+
+THelpViewer.RefreshLimit is the private call of SetLimit with the longest line and the number of lines of the topic, which the
+constructor, ChangeBounds and SwitchToTopic make. The code of HandleEvent and of MakeSelectVisible is split in routines
+that are local to them (StepSelection, FollowRef, AskToClose, RefAt, Reveal and the routines for the three kinds of event).
+
+PCrossRef is the pointer type that stands for TCrossRef *; the list of the cross references of a topic is a block of
+TCrossRef records that CrossRefs points to, and it is nil while the topic has none. TParagraph is a class with the public
+fields Next, Wrap, Size and Text, and TCrossRef is a record with the fields Ref, Offset and Length. The text of a paragraph
+is a PAnsiChar block of Size bytes and a terminating zero, which the topic releases with FreeMem. The int32_t of the index
+is a LongInt, and the array index of THelpIndex is the PLongInt Index; its size is a Word, as ushort is. IntMax is the
+INT_MAX of limits.h, PairLow gives the low attribute of the pair that GetColor returns, which is the conversion of a
+TAttrPair to a TColorAttr, and TextSlice gives the bytes of a block of characters from a position as a string. The
+palettes that the static variables of the two getPalette functions hold are the variables HelpViewerPalette and
+HelpWindowPalette, made from cHelpViewer and cHelpWindow when the unit starts and released when it ends. None of
+these six is visible outside the unit except PCrossRef.
+
+The name of THelpTopic and of THelpIndex is the public class variable Name, a PChar that holds the type name when the unit
+starts, and the objects RHelpTopic and RHelpIndex are made at that time. The texts helpWinTitle of THelpWindow and
+invalidContext of THelpFile are the private class variables HelpWinTitle and InvalidContext, which hold the texts of
+tvtext2.cpp when the unit starts. The functions read, write, build and streamableName are Read, Write, Build and
+StreamableName; Build is a class function without Self, and the constructors that take StreamableInit are not translated.
+The operators >> and << of the helpbase.h for the pointers of the two classes are Get of ipstream, with a Pointer, and Put of
+opstream and iopstream. The type TCrossRefHandler takes an opstream and a LongInt, the variable crossRefHandler is
+CrossRefHandler, and notAssigned is NotAssigned; the handler counts as unassigned while it holds the address of
+NotAssigned.
+
+A TStringView that getLine gives is an AnsiString that holds a copy of the line, the parameter text of wrapText is a PAnsiChar and
+its parameter wrap is DoWrap. The functions isBlank, getLineAtOffset and discardTrailingWhitespaces are IsBlank,
+GetLineAtOffset and DiscardTrailingWhitespaces inside the unit, and the static ensureStreamSize is the private class
+procedure EnsureStreamSize. The reference parameters of GetCrossRef, which it sets, are var parameters. The reference
+parameter of SetCrossRef is a non-const reference in the C++ that the function only reads, so here it is a const parameter. The members hFile, topic and
+selected of THelpViewer are the public fields HFile, Topic and Selected, and the parameter selected of makeSelectVisible is
+ASelected. A THelpTopic that is asked for a cross reference whose offset lies beyond its text gives the point (0, 0), the
+length 0 and the number of the reference, and a length that reaches beyond its paragraph is cut at the end of the
+paragraph, where the C++ reads beyond the block. A negative number is not an entry of THelpIndex, and SetCrossRef ignores
+a number below 0 as it ignores a number beyond the list. The bars of THelpWindow are made one after the other, the horizontal bar first.
