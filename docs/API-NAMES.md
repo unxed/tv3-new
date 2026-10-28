@@ -151,9 +151,7 @@ are not members are NewLine, PopupMenu and, inside the unit, GetRect and AutoPla
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
 
 added: TVoidProc
-added: TLowMemoryFunc
 added: TSetCtrlBrkHandlerProc
-added: LowMemoryHook
 added: InitHistoryHook
 added: DoneHistoryHook
 added: SetCtrlBrkHandlerHook
@@ -172,7 +170,6 @@ added: TAppInit.SharedQueue
 added: TAppInit.SharedSysErr
 added: TAppInit.Shutdown
 added: TApplication.Subsystems
-added: MemoryIsLow
 added: ApplicationRoot
 added: HexDigitValue
 added: DecodeHex
@@ -189,12 +186,11 @@ added: DeliverTimerExpired
 added: BackgroundPalette
 added: AppPalettes
 
-TVoidProc, TLowMemoryFunc and TSetCtrlBrkHandlerProc are the procedural types of the hooks that stand for parts of the
-C++ that no unit has yet and no input defines. LowMemoryHook stands for the function lowMemory, which validView asks
-whether the memory is low; InitHistoryHook and DoneHistoryHook stand for initHistory and doneHistory, which the constructor
-and the destructor of TApplication call; SetCtrlBrkHandlerHook stands for THardwareInfo::setCtrlBrkHandler, which
-TSystemError.Resume and TSystemError.Suspend call with True and False. While a hook is nil it does nothing, and while
-LowMemoryHook is nil the memory is never low. TvApp gives TProgram.Application to the ApplicationHook of TvMenus when
+TVoidProc and TSetCtrlBrkHandlerProc are the procedural types of the hooks that stand for parts of the
+C++ that no unit has yet and no input defines. InitHistoryHook and DoneHistoryHook stand for initHistory and doneHistory,
+which the constructor and the destructor of TApplication call; SetCtrlBrkHandlerHook stands for
+THardwareInfo::setCtrlBrkHandler, which TSystemError.Resume and TSystemError.Suspend call with True and False. While a
+hook is nil it does nothing. ValidView asks LowMemory of TvMem whether the memory is low. TvApp gives TProgram.Application to the ApplicationHook of TvMenus when
 the unit starts. EventTimeoutMs of TvViews, which is
 TProgram::eventTimeoutMs, is set to its value 20 when the unit starts.
 
@@ -569,7 +565,47 @@ The function message is Message of TvViews. Its parameter infoPtr is a Pointer, 
 TMessageEvent in TvEvents is, and so is its result: the Pointer that the receiver leaves in the event when it clears
 the event, or nil. The functions strnzcpy and strnzcat are Strnzcpy and Strnzcat of TvUtil. The buffer dst of dstSize
 characters is the var parameter Dst, a string whose length stays below DstSize, and the length of the string is what
-the two functions return. The function lowMemory is LowMemoryHook of TvApp.
+the two functions return. The function lowMemory is LowMemory of TvMem.
+
+## Added by the translation of TvMem
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: PBufListEntry
+added: TBufListEntry.NewBlock
+added: TBufListEntry.FreeBlock
+added: TVMemMgr.ClearSafetyPool
+added: GetBlockOrNil
+added: ResizeBlockOrNil
+added: EntryOf
+added: DataOf
+added: ShrinkDiscardable
+
+TBufListEntry is a record whose fields Next, Prev, Owner and Sz are private to the unit, and the data of a buffer
+follows the record in the same block of memory. PBufListEntry is the pointer to it, and the member owner, which is a
+reference to a pointer, is the PPointer Owner. The static member bufList is the class variable BufList. The operator
+new with an extra size is the class function NewBlock, which gives the memory of a header and the extra bytes, and the
+operator delete is the class procedure FreeBlock. The operator new without an extra size, which gives a null pointer
+so that the class is not made by a plain new, has no counterpart. The constructor and the destructor are Create and
+Destroy of the record: Create sets up the header in the memory that NewBlock gave, and Destroy takes the header out
+of the list, sets the owner to nil and frees the memory. The function freeHead is private in the C++ and is public
+here, because its only user, the function allocBlock, is not translated; it tells whether a buffer was discarded.
+
+The members of TVMemMgr that are static are class procedures and class functions, and the static variables
+safetyPool, safetyPoolSize and inited are the private class variables SafetyPool, SafetyPoolSize and Inited. The
+argument sz of resizeSafetyPool has the default DEFAULT_SAFETY_POOL_SIZE, which keeps its name. The type size_t is
+PtrUInt, the type void *& of the owner and of the first argument of allocateDiscardable and reallocateDiscardable is a
+var Pointer, and safetyPoolExhausted gives an Integer, as the C++ does. ClearSafetyPool is the call
+ResizeSafetyPool(0). GetBlockOrNil and ResizeBlockOrNil are malloc and realloc on the memory manager of the
+run-time library: EOutOfMemory is caught and becomes the nil pointer. EntryOf and DataOf are the two conversions
+between the address of the data of a buffer and its header, which the C++ writes with sizeof(TBufListEntry), and
+ShrinkDiscardable is the branch of reallocateDiscardable that makes a buffer smaller. These four are inside the unit
+and are not visible outside it.
+
+The object memMgr is the variable MemMgr of the unit. It is made when the unit starts and freed when the unit ends,
+so the safety pool exists from the start, as the initialization of the C++ object does. The global operators new and
+delete of new.cpp, with allocBlock and deleteBlock, are compiled only for one compiler and are not translated; the
+member initMemMgr, which is declared and never defined, is not translated.
 
 ## Added by the translation of TvHelp
 
