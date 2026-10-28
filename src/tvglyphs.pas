@@ -131,4 +131,163 @@ procedure SetCellGlyph(var Cell: TScreenCell; CodePoint: LongWord);
 
 implementation
 
+uses
+  TvUtf8, TvCodePages;
+
+const
+  MaxUnicode = $10FFFF;
+  MaxShortLength = 255;
+
+{ The position of the glyph in the IBM PC character set; 0 for a code point that is not a glyph. }
+function TableByte(CodePoint: LongWord): Byte;
+begin
+  case CodePoint of
+    $2591: Result := $B0;
+    $2592: Result := $B1;
+    $2593: Result := $B2;
+    $2502: Result := $B3;
+    $2524: Result := $B4;
+    $2561: Result := $B5;
+    $2562: Result := $B6;
+    $2556: Result := $B7;
+    $2555: Result := $B8;
+    $2563: Result := $B9;
+    $2551: Result := $BA;
+    $2557: Result := $BB;
+    $255D: Result := $BC;
+    $255C: Result := $BD;
+    $255B: Result := $BE;
+    $2510: Result := $BF;
+    $2514: Result := $C0;
+    $2534: Result := $C1;
+    $252C: Result := $C2;
+    $251C: Result := $C3;
+    $2500: Result := $C4;
+    $253C: Result := $C5;
+    $255E: Result := $C6;
+    $255F: Result := $C7;
+    $255A: Result := $C8;
+    $2554: Result := $C9;
+    $2569: Result := $CA;
+    $2566: Result := $CB;
+    $2560: Result := $CC;
+    $2550: Result := $CD;
+    $256C: Result := $CE;
+    $2567: Result := $CF;
+    $2568: Result := $D0;
+    $2564: Result := $D1;
+    $2565: Result := $D2;
+    $2559: Result := $D3;
+    $2558: Result := $D4;
+    $2552: Result := $D5;
+    $2553: Result := $D6;
+    $256B: Result := $D7;
+    $256A: Result := $D8;
+    $2518: Result := $D9;
+    $250C: Result := $DA;
+    $2588: Result := $DB;
+    $2584: Result := $DC;
+    $258C: Result := $DD;
+    $2590: Result := $DE;
+    $2580: Result := $DF;
+    $25A0: Result := $FE;
+    $2219: Result := $F9;
+    $221A: Result := $FB;
+    $00B7: Result := $FA;
+    $25B2: Result := $1E;
+    $25BC: Result := $1F;
+    $25BA: Result := $10;
+    $25C4: Result := $11;
+    $2195: Result := $12;
+    $2191: Result := $18;
+    $2193: Result := $19;
+    $2192: Result := $1A;
+    $2190: Result := $1B;
+    $2261: Result := $F0;
+  else
+    Result := 0;
+  end;
+end;
+
+function GlyphByte(CodePoint: LongWord): Byte;
+var
+  PageByte: Byte;
+  IsAsciiRange: Boolean;
+begin
+  PageByte := CpFromUnicode(CodePoint);
+  IsAsciiRange := (PageByte >= $20) and (PageByte < $7F);
+  if (PageByte <> 0) and (not IsAsciiRange) and (CodePoint > $7F) then
+  begin
+    Result := PageByte;
+    Exit;
+  end;
+  Result := TableByte(CodePoint);
+end;
+
+function GlyphChar(CodePoint: LongWord): Char;
+begin
+  Result := Chr(GlyphByte(CodePoint));
+end;
+
+{ Writes the UTF-8 form of CodePoint into Encoded and returns its length; 0 when the value cannot be encoded. }
+function EncodeCodePoint(CodePoint: LongWord; var Encoded: TUtf8Bytes): Integer;
+begin
+  if CodePoint > MaxUnicode then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  Result := Utf32To8(CodePoint, Encoded);
+end;
+
+function Utf8Text(CodePoint: LongWord): string;
+var
+  Encoded: TUtf8Bytes;
+  EncodedLength: Integer;
+  Index: Integer;
+begin
+  Result := '';
+  EncodedLength := EncodeCodePoint(CodePoint, Encoded);
+  if EncodedLength <= 0 then
+    Exit;
+  SetLength(Result, EncodedLength);
+  for Index := 0 to EncodedLength - 1 do
+    Result[Index + 1] := Chr(Encoded[Index]);
+end;
+
+function GlyphStr(CodePoint: LongWord): ShortString;
+begin
+  if Utf8Enabled then
+    Result := ShortString(Utf8Text(CodePoint))
+  else
+  begin
+    SetLength(Result, 1);
+    Result[1] := GlyphChar(CodePoint);
+  end;
+end;
+
+function GlyphRun(CodePoint: LongWord; Count: Integer): ShortString;
+var
+  Piece: ShortString;
+  CopyIndex: Integer;
+begin
+  Result := '';
+  if Count <= 0 then
+    Exit;
+  Piece := GlyphStr(CodePoint);
+  if Length(Piece) = 0 then
+    Exit;
+  for CopyIndex := 1 to Count do
+  begin
+    if Length(Result) + Length(Piece) > MaxShortLength then
+      Break;
+    Result := Result + Piece;
+  end;
+end;
+
+procedure SetCellGlyph(var Cell: TScreenCell; CodePoint: LongWord);
+begin
+  Cell.Character.InitWithMultiByteChar(Utf8Text(CodePoint), False);
+end;
+
 end.
