@@ -681,7 +681,53 @@ length 0 and the number of the reference, and a length that reaches beyond its p
 paragraph, where the C++ reads beyond the block. A negative number is not an entry of THelpIndex, and SetCrossRef ignores
 a number below 0 as it ignores a number beyond the list. The bars of THelpWindow are made one after the other, the horizontal bar first.
 
-## Added by the translation of TvTermIo
+## Added by the translation of TvDispBuf
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: PScreenCell
+added: TDisplayClockFunc
+added: DisplayClock
+added: DisplayBuffer.InitState
+added: DisplayBuffer.Range.RangeBegin
+added: DisplayBuffer.Range.RangeEnd
+added: SignalSafeMutexState.Section
+added: SignalSafeMutexState.Depth
+added: SignalSafeMutexState.Create
+added: SignalSafeMutexState.Destroy
+added: FlushScreenAlgorithm.Create
+added: FlushScreenAlgorithm.CellIdx
+added: IsTrailCell
+added: IsWideCell
+added: NegateAttribute
+added: PackedUtf8Of
+added: SystemClock
+added: CellCountOf
+
+CellCountOf gives the number of cells for a size, the product x*y of resizeBuffer, with zero for a side that is not positive.
+
+The classes DisplayAdapter, DisplayBuffer and SignalSafeMutexState keep their names. PScreenCell is the pointer type that
+stands for TScreenCell *; ReloadScreenInfo of DisplayBuffer gives it, nil while the screen has no cells, and ScreenWrite
+takes it. TDisplayClockFunc is the type of the clock of the buffer and DisplayClock is the variable that holds it. It
+stands for std::chrono::steady_clock::now and gives microseconds in a QWord; the default counts the milliseconds of the
+run-time library, and the time points lastFlush and pendingFlush, the duration flushDelay and the zero time point are
+QWord values in microseconds. The members begin and end of DisplayBuffer::Range are RangeBegin and RangeEnd, because
+both are reserved words. The private members of DisplayBuffer are private to the unit, so the class FlushScreenAlgorithm,
+which the C++ declares a friend and which is inside the unit, reads them. InitState is the part of the constructor that
+reset calls again with the destructor and the placement new; it sets every member to its first value and keeps the
+resolved rate. The pointer cell of FlushScreenAlgorithm is the index CellIdx into the buffer, and its aggregate
+initialisation is the constructor Create. IsTrailCell and IsWideCell are isTrail and isWide, NegateAttribute is
+negateAttribute, and PackedUtf8Of is the call CpTranslator::toPackedUtf8 through CodePageToPackedUtf8 of TvText. The
+function SystemClock is the default of DisplayClock. The member functions that take a DisplayAdapter & take the class
+as a plain parameter, and the parameters of DisplayAdapter that are TPoint and TColorAttr are const parameters.
+
+The spin lock of mutex.h is the class SignalSafeMutexState, whose Acquire and Release stand for the static functions
+acquire and release; it holds a recursive critical section (Section), the thread that holds it and the nesting depth,
+so a thread that holds the lock takes it again as SignalSafeReentrantMutex does, and LockedByCurrentThread is the member
+of the same name. A critical section is not safe in a signal handler. The template SignalSafeReentrantMutex, the type
+LockGuard and currentThreadId are not translated. The platform member that holds the lock around the calls of the
+buffer is not part of this unit.
+
 
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
 
