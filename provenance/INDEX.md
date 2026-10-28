@@ -90,6 +90,7 @@
 | `tests/t_ascii.pas` | specification | specification:tvascii | 2 | 2 | 0 |
 | `tests/t_async.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 1 | 1 | 0 |
 | `tests/t_cell.pas` | translation | magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
+| `tests/t_charset.pas` | specification | specification:tvcharset | 1 | 1 | 0 |
 | `tests/t_chdir.pas` | translation | magiblot/tvision:include/tvision/stddlg.h:1-737; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tchdrdlg.cpp:1-241; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/tdircoll.cpp:1-171 | 4 | 4 | 0 |
 | `tests/t_clip.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tclipbrd.cpp:1-44 | 1 | 1 | 0 |
 | `tests/t_clipcmd.pas` | specification | specification:tvclipcmd | 1 | 1 | 0 |
