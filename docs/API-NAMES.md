@@ -499,3 +499,31 @@ a name, FindCode is strchr of a character in a block, NewSearchRecord is the ope
 CopyFoundEntry is its member readFf_blk. SearchKey is the static record of getKey, NoFileRecord is the static record
 noFile of readDirectory, and CurrentDisk, IndentStep and DefaultParentTime are the values 'C', 2 and 0x210000 that the
 C++ writes in its code. The routines validFileName, getCurDir, fexpand, squeeze and getHomeDir are not in this unit.
+
+## Added by the translation of TvChDir
+
+added: TGetCurDirFunc
+added: GetCurDirHook
+added: MaxPathLength
+added: MakeChDirButtonDefault
+
+TGetCurDirFunc is the procedural type of the hook that stands for a part of the C++ that no unit has yet and no input
+defines. GetCurDirHook stands for the function getCurDir, which getCurrentDir of tchdrdlg.cpp calls; the hook gives
+the directory with the two characters of a drive in front, as the C++ function writes it, and the dialog removes those
+two characters. While the hook is nil the current directory is empty. The function strnzcpy is StrNZCopyHook of
+TvHist, so while that hook is nil the input line of the dialog keeps its text. The functions fexpand and chdir are made
+with PathExpand of TvPath and SetCurrentDir of SysUtils, as TvFiles makes the functions of the compatibility headers,
+and setdisk is left out because the target has no drives.
+
+MaxPathLength stands for MAXPATH, which a header outside the sources defines; its value 257 gives the input line a
+limit of 255 characters, the longest text of a string of this library. MakeChDirButtonDefault is the routine that TvChDir
+gives to ChDirButtonDefaultHook of TvFiles when the unit starts: it makes chDirButton of the TChDirDialog that owns the
+list box the default button, or stops it from being so, and it does nothing when the list box has no such owner.
+
+The texts changeDirTitle, dirNameText, dirTreeText, okText, chdirText, revertText, helpText, drivesText and invalidText
+are not in the sources, so they are the class variables ChangeDirTitle, DirNameText, DirTreeText, OkText, ChdirText,
+RevertText, HelpText, DrivesText and InvalidText of TChDirDialog, empty until the program sets them; DrivesText must
+equal Drives of TDirListBox. The constants cdNormal, cdNoLoadDir and cdHelpButton keep their names. The members
+dirInput, dirList, okButton and chDirButton are the protected members DirInput, DirList, OkButton and ChDirButton. The
+separator that a directory gets in the change of directory is PathSep, and a change of directory with no list or with
+no focused entry is not handled, where the C++ would use a null pointer.
