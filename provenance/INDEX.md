@@ -191,6 +191,7 @@
 | `tools/audit/facts/charsets/CP866.TXT` | standard | Character set mapping table CP866.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/CP869.TXT` | standard | Character set mapping table CP869.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/CP874.TXT` | standard | Character set mapping table CP874.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/IBMGRAPH.TXT` | standard | IBM PC memory-mapped video graphics to Unicode (IBMGRAPH.TXT) | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/KOI8-R.TXT` | standard | Character set mapping table KOI8-R.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/KOI8-U.TXT` | standard | Character set mapping table KOI8-U.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/ROMAN.TXT` | standard | Character set mapping table ROMAN.TXT | 1 | 1 | 0 |

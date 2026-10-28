@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/IBMGRAPH.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "IBM PC memory-mapped video graphics to Unicode (IBMGRAPH.TXT)",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MISC/IBMGRAPH.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:IBM PC memory-mapped video graphics to Unicode (IBMGRAPH.TXT)",
+      "sha256": "5c8052b5a9c3852b1cb4b6a1b5d1591e8d26604e7ed457cbdc6f1cbe09463cf2"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "10d88c04080ac288fb607422f613561e808f8ec5",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
