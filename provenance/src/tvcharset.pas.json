@@ -1,0 +1,37 @@
+{
+  "path": "src/tvcharset.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvcharset"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvcharset",
+      "sha256": "b8aab5f340366a07861a9733e3fc1a7043149779fc4b95cf966e562f7e69d038"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "36b8589aa7136bef2842bab58dc5abd556e8982e5e1923e49ed2e60ea4861bf6"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    }
+  ],
+  "implementer": "implementer 76",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "a9f7d92e86f7d7d590d4243ced99f4e8837fa80d",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
