@@ -131,6 +131,7 @@
 | `tools/audit/corpora.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/audit/facts/windows-console-mouse-event-record-str.md` | standard | MOUSE_EVENT_RECORD structure | 1 | 1 | 0 |
 | `tools/audit/facts/windows-virtual-key-codes.md` | standard | Virtual-Key Codes (Winuser.h) | 1 | 1 | 0 |
+| `tools/audit/facts/xterm-ctlseqs.txt` | standard | XTerm Control Sequences | 1 | 1 | 0 |
 | `tools/audit/proofs.txt` | specification | specification:infra-requirements | 6 | 6 | 0 |
 | `tools/audit/prove.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/provenance_lint.py` | specification | specification:infra-requirements | 2 | 2 | 0 |

@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/xterm-ctlseqs.txt",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "XTerm Control Sequences",
+      "url": "https://invisible-island.net/xterm/ctlseqs/ctlseqs.txt"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:XTerm Control Sequences",
+      "sha256": "364c1c1987c85b1c1135e57a93e9008054f46d09a338de8dcc66ea9a7c613709"
+    }
+  ],
+  "implementer": "maintainer (document copy, trailing white space removed)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "236c79fdb101ae50df1f128a207aeb29dbc9e744",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
