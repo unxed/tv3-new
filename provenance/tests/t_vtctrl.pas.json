@@ -1,0 +1,38 @@
+{
+  "path": "tests/t_vtctrl.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termctrl.h",
+      "lines": "1-75"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "source/tvterm-core/termctrl.cc",
+      "lines": "1-328"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termctrl.h",
+      "sha256": "15f04bb44aa8aa9717ad3699fac17ff990b075ec391c17f254966011657684d3"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:source/tvterm-core/termctrl.cc",
+      "sha256": "9cb413377252242b42038f278e15c5105798b2c513a8bd164ff7bd09e4e8dec2"
+    }
+  ],
+  "implementer": "implementer 69",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "df895de112fde4ff3fb40b860bcbc4227ce20224",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

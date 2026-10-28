@@ -1388,3 +1388,52 @@ and FullReset is RIS, which keeps the history and the title.
 The answers are written with Reply. PrimaryAnswer is the reply to DA1; the other replies are built at the place of the
 request, with CsiIntro, DcsIntro and StringEnd as the introducers and the terminator. OscLimit and DcsLimit are the
 longest strings that are kept (4096 and 64 bytes). The titles of OSC 0, 1 and 2 are all taken as the title.
+
+## Added by the translation of TvVtCtrl
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TerminalController.Make
+added: TerminalController.LetGo
+added: TStateProc
+added: TCharBytes
+added: TQueuedEvents
+added: TQueuedEvents.Push
+added: TQueuedEvents.Pop
+added: TerminalEventLoop.IsTerminated
+added: TerminalEventLoop.WaitForWake
+added: TerminalEventLoop.UpdateEmulatorState
+added: TerminalEventLoop.TakePending
+added: TStateRunner
+added: TLoopRole
+added: TLoopThread
+added: NowTicks
+
+The classes TerminalController, TerminalEventLoop and GrowArrayWriter keep their names; the members create, shutDown,
+sendEvent, stateHasBeenUpdated, clientIsDisconnected and lockState are Make, ShutDown, SendEvent, StateHasBeenUpdated,
+ClientIsDisconnected and LockState, and the members of the event loop are RunWriterLoop, RunReaderLoop, ProcessEvents,
+UpdateState, UpdateTimeouts, WritePendingData and NotifyMainThread. The static function create is the class function
+Make, because Create is the constructor; the constructor of the controller is private, and so are the fields, which
+carry the prefix F (FPty for ptyMaster, FState and FStateLock for terminalState, FLoop, FEmulator, FUpdated,
+FDisconnected). TerminalEventLoop is declared in the interface because a forward declaration of a class is solved in the
+same section; its members are private to the unit. The parameter onError is a TPtyErrorProc, and the span of the
+environment is copied from the TEnvironmentVarSpan of the factory into the array that CreatePty takes.
+
+The flags updated, disconnected and terminated are LongInt values that are read and changed with the Interlocked
+functions. The std::mutex of the loop is the critical section FLock and the lock of the queue is FQueueLock; the
+queue std::queue is TQueuedEvents, a first-in first-out list. The condition variable condVar is the event FWake of
+the run-time library: SendEvent, ShutDown and the reader loop set it, and WaitForWake waits for it, until the time of
+the timeout when there is one, and resets it after the wait. A wake-up that comes while no thread waits stays set, so
+the writer loop may run once more without a cause, as a spurious wake-up of a condition variable does. The time points
+are milliseconds of GetTickCount64 plus 1, with 0 for the time point of the C++ that stands for no time, and a timeout
+is reached when the clock is not before it. The two threads are TLoopThread objects, each told its role by TLoopRole,
+that free themselves when they end. The self-owning shared pointer is the count FHolders, which starts at 3 (the user
+and the two loops); ShutDown and each loop at its end call LetGo, and the one that makes the count 0 frees the
+controller. The buffer that clientDataWriter holds is moved to the local array of characters of the writer loop by
+TakePending, which copies the bytes and clears the buffer.
+
+The template lockState is the method LockState, which takes a TStateProc, a procedure of object with the state as a
+parameter; TStateRunner adapts it to the procedure of the lock of TvVtCore, which takes the state as a var parameter.
+The result of func is not returned. The class TerminalState is an object, so the controller keeps the one that
+the lock holds in FState and frees it. A shut down controller that has a user thread in LockState is not protected,
+as in the C++. The reader loop buffer has ReadBufSize characters. A write that would run on an empty span is not made.
