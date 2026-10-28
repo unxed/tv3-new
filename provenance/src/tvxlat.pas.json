@@ -1,0 +1,55 @@
+{
+  "path": "src/tvxlat.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvxlat"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvxlat",
+      "sha256": "ca31bc4bc0ba259a938bee050b20829f1d91f753d787028f42cdfb09461e5d24"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "36b8589aa7136bef2842bab58dc5abd556e8982e5e1923e49ed2e60ea4861bf6"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvevents.pas",
+      "sha256": "a24fb07f4e2d82e2c244fdd66f3e766cc1ee88becdb1ac4a2af47fcacff07cb4"
+    },
+    {
+      "origin": "repository:src/tvgeom.pas",
+      "sha256": "4c3f83cc5e6e59e830e188ec1e28fe0ce36c8850089b164fb5e18d9fa6598de6"
+    },
+    {
+      "origin": "repository:src/tvkeys.pas",
+      "sha256": "848d6f19d94f0dde035810006d5999f0f0b6224fd6df0fdfd1495aa1730e1de5"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    }
+  ],
+  "implementer": "implementer 79",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "f90bcfd60d89a0d612129ea481ebe9fa27404337",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "6bd23409f1e86824fbdec4a15561ecbabcb7da14",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
