@@ -40,6 +40,7 @@ provenance check: pending version docs/API-NAMES.md ce1c28adee35959eb570c50b5a00
 provenance check: pending version docs/API-NAMES.md 05f3ceee3c46a5fa72b4ff668c2324c5871a028f
 provenance check: pending version docs/API-NAMES.md c3b8dafef5375379352e599842d4edbb7eeecc7c
 provenance check: pending version docs/API-NAMES.md 25f35b3ff9ef8c44fad092a384bfa9cf2bab74a3
+provenance check: pending version docs/API-NAMES.md b11ef95fbab2eb1420faadacb6594bc36de7ee42
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvactions.pas 959a5bd05279e29dbc23beb3e1d04d6306ece9a1
@@ -140,6 +141,7 @@ provenance check: pending version src/tvstreams.pas 0d6f2eaf7d575beb72b17341aa58
 provenance check: pending version src/tvsys.pas 4b74514d23c2bed52a8da2a61b5d076f9ee8ff9b
 provenance check: pending version src/tvsys.pas 97b5263a52a51e4221bac43263f5e58d9543be78
 provenance check: pending version src/tvsys.pas a39ad27eb16f0a8dab13778d42a11f2ea708e217
+provenance check: pending version src/tvtermio.pas 1d45df599be2bc7456deb5a38a3207a153469e16
 provenance check: pending version src/tvtermos.pas 0aa2e65fc94137536a70c0c25c397f293f396c1a
 provenance check: pending version src/tvtermosbase.pas fb1b8205239fc93529ddb0a368c1dacceacd3ded
 provenance check: pending version src/tvtermosbase.pas 2bffb85d2e67b48d55a3d8fb6a47281182572906
@@ -234,6 +236,7 @@ provenance check: pending version tests/t_screen.pas 4a70cf86833b3a272d5ee8e3568
 provenance check: pending version tests/t_screen.pas e57bcd08f07990a08b0161b142e3b74e27d0f066
 provenance check: pending version tests/t_screen.pas 7597e24718365a2a9974376045a061557ea0f800
 provenance check: pending version tests/t_streams.pas be4aee5bd0c3c26d1aad6eaeb4759513233947dd
+provenance check: pending version tests/t_termio.pas aa4540c7806e59dd1891d3714721cceeab1f16d4
 provenance check: pending version tests/t_termos.pas 755b978bca4ff5f1f0a7cdbe5bd1be5d78ed98ce
 provenance check: pending version tests/t_termosbase.pas 0404ecb0d3bab2bfa9907125752df89b12a40abc
 provenance check: pending version tests/t_text.pas 73cfa8a3559be87f4de027051f8dadba95fe175a
