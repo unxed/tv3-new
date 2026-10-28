@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 21 | 21 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 22 | 22 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvactions.pas` | specification | specification:tvactions | 2 | 2 | 0 |
@@ -24,6 +24,7 @@
 | `src/tvcluster.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tcluster.cpp:1-478; magiblot/tvision:source/tvision/tradiobu.cpp:1-56; magiblot/tvision:source/tvision/tcheckbo.cpp:1-45; magiblot/tvision:source/tvision/tmulchkb.cpp:1-110; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 2 | 2 | 0 |
 | `src/tvcodepg.pas` | translation | magiblot/tvision:include/tvision/internal/codepage.h:1-43; magiblot/tvision:source/platform/codepage.cpp:1-89 | 2 | 2 | 3 |
 | `src/tvcolors.pas` | translation | magiblot/tvision:include/tvision/colors.h:1-855; magiblot/tvision:source/platform/colors.cpp:1-253 | 2 | 2 | 0 |
+| `src/tvcolorsel.pas` | translation | magiblot/tvision:include/tvision/colorsel.h:1-467; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/colorsel.cpp:1-881; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 2 | 2 | 0 |
 | `src/tvcrc.pas` | specification | specification:tvcrc | 2 | 2 | 0 |
 | `src/tvcstr.pas` | specification | specification:tvcstr | 2 | 2 | 0 |
 | `src/tvdialog.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tdialog.cpp:1-116; magiblot/tvision:source/tvision/tbutton.cpp:1-344; magiblot/tvision:source/tvision/tstatict.cpp:1-148; magiblot/tvision:source/tvision/tlabel.cpp:1-136; magiblot/tvision:source/tvision/tparamte.cpp:1-89; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 2 | 2 | 0 |
@@ -72,6 +73,7 @@
 | `tests/t_cluster.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tcluster.cpp:1-478; magiblot/tvision:source/tvision/tradiobu.cpp:1-56; magiblot/tvision:source/tvision/tcheckbo.cpp:1-45; magiblot/tvision:source/tvision/tmulchkb.cpp:1-110; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
 | `tests/t_codepg.pas` | translation | magiblot/tvision:include/tvision/internal/codepage.h:1-43; magiblot/tvision:source/platform/codepage.cpp:1-89 | 1 | 1 | 0 |
 | `tests/t_colors.pas` | translation | magiblot/tvision:include/tvision/colors.h:1-855; magiblot/tvision:source/platform/colors.cpp:1-253 | 1 | 1 | 0 |
+| `tests/t_colorsel.pas` | translation | magiblot/tvision:include/tvision/colorsel.h:1-467; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/colorsel.cpp:1-881; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
 | `tests/t_crc.pas` | specification | specification:tvcrc | 1 | 1 | 0 |
 | `tests/t_cstr.pas` | specification | specification:tvcstr | 1 | 1 | 0 |
 | `tests/t_dialog.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tdialog.cpp:1-116; magiblot/tvision:source/tvision/tbutton.cpp:1-344; magiblot/tvision:source/tvision/tstatict.cpp:1-148; magiblot/tvision:source/tvision/tlabel.cpp:1-136; magiblot/tvision:source/tvision/tparamte.cpp:1-89; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
