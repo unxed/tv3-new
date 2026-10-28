@@ -53,6 +53,7 @@ provenance check: pending version docs/API-NAMES.md d55722ee6ca413eee67d1b31a7d0
 provenance check: pending version docs/API-NAMES.md 8dc10da6418166ccd05bba4d3c89e49e69a8e887
 provenance check: pending version docs/API-NAMES.md 5e2427d812f7f91911291c610b43fc757ad6c592
 provenance check: pending version docs/API-NAMES.md b5ce9f14c9f134018b70a66442833dc8169980d7
+provenance check: pending version docs/API-NAMES.md f308fa96a575eea3f3f9b66190c66de867bdcc2b
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvactions.pas 959a5bd05279e29dbc23beb3e1d04d6306ece9a1
@@ -135,9 +136,11 @@ provenance check: pending version src/tvlist.pas b87ddac43239a12d409335b9491091e
 provenance check: pending version src/tvlist.pas a26ee305d8ec7ff0a99b51f04a2a8243c19db4a6
 provenance check: pending version src/tvlist.pas d397eb96f13f327aad984fc057a8b0602e44c65e
 provenance check: pending version src/tvlist.pas 8c9f45828b7c09ae46b954450070f0b334560ceb
+provenance check: pending version src/tvlocale.pas 72029e53d3f3d22d943b63b2ee1e5ba121405fae
 provenance check: pending version src/tvmem.pas 6d49732adb6eee9e451b77cdad145fa288924746
 provenance check: pending version src/tvmenus.pas 3d4f334bb2f094762523d03aa221a312200896be
 provenance check: pending version src/tvmenus.pas 856218a11b9f594f6b441a279ad7e6ee4a1d41c9
+provenance check: pending version src/tvmenus.pas aa99f85ab965435e7bc6283a855d1d528e34e7e9
 provenance check: pending version src/tvmouse.pas a29146f23299c75a8cfd70ebbd74024b85da555d
 provenance check: pending version src/tvmsgbox.pas 5f5ec008eb8c10fb616a0b5139db3a1273440938
 provenance check: pending version src/tvmsgbox.pas 80847dada2d28b10d6684b4be1fa0ed23c200074
@@ -249,9 +252,11 @@ provenance check: pending version tests/t_keys.pas 5239e0309fc3b5e450c68678f75c4
 provenance check: pending version tests/t_list.pas a6fe5a17557dfb877ec78b251e7f3341bae87e31
 provenance check: pending version tests/t_list.pas 84f1f762c345385a322800732bb5e47d9b7bbbb5
 provenance check: pending version tests/t_list.pas f17d1c4672a059a7c80f36518c65d7e624914b77
+provenance check: pending version tests/t_locale.pas 8cfb442d8c15bd2171a2645f04debc0b29542826
 provenance check: pending version tests/t_mem.pas 0a5332470bee9cd50735e52dc693196cea39767f
 provenance check: pending version tests/t_menus.pas 3eab75d3c652f2a17ae5199b437f61282c362f8b
 provenance check: pending version tests/t_menus.pas fe115eb74c7bb0d49eb3254b04d1582af08048b2
+provenance check: pending version tests/t_menus.pas 4e7a0f81e4194e8b2eb8faf73ed78ef220e91cc9
 provenance check: pending version tests/t_mouse.pas b3a2a7541ba1cd74f802b63b78abec01371f254b
 provenance check: pending version tests/t_msgbox.pas 8cba2bf2740b85d7936ebb1f362834842a928af9
 provenance check: pending version tests/t_msgbox.pas 89101d9d30eada1d751f6845bdd8736e9a649501
