@@ -967,3 +967,25 @@ discardPossiblyTruncatedCharsAtEnd; MaxCharSize is maxCharSize of config.h and L
 constructor. LeastOf and GreatestOf are min and max inside the unit. These five are not visible outside the unit
 except TLineChunk, which is the type of the parameters of the two private members. The members read, write, build and
 streamableName are not translated. A negative count of Do_sputn is taken as 0.
+
+## Added by the translation of TvSurface
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TSurfaceView.PutRows
+added: TSurfaceView.ShowSurface
+added: SurfaceViewPalette
+added: NotBelowZero
+
+TDrawSurface and TSurfaceView keep their names. The members dataLength and data of TDrawSurface are the private fields
+DataLength and Data, and size, surface and delta are the public fields Size, Surface and Delta. The constructors are
+the two overloads of Create. The functions at have no reference result in Pascal, so At gives a PScreenCell, the
+address of the cell, and S.At(Y, X)^ stands for the reference; the const overload has no counterpart. The surface that
+a TSurfaceView holds is a TDrawSurface, and the default of the constructor argument is nil. A memory failure of Resize
+raises the exception of the run-time library, where the C++ calls abort.
+
+The part of draw that writes rows straight from the surface is PutRows, and the part that draws a surface is
+ShowSurface; both are private. The static function fillWithSpaces is FillWithSpaces inside the unit. NotBelowZero is
+max(v, 0). The palette of the static variable of getPalette is SurfaceViewPalette, made from cpSurfaceView when the
+unit starts and released when it ends; cpSurfaceView keeps its name and is inside the unit. The members read, write,
+build and streamableName are not translated.

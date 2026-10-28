@@ -1,0 +1,38 @@
+{
+  "path": "tests/t_surface.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/surface.h",
+      "lines": "1-88"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tsurface.cpp",
+      "lines": "1-146"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/surface.h",
+      "sha256": "eb761a2ea793268576ebf7da7d56302d6877c597fd6523d7c450c39fd49449ed"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tsurface.cpp",
+      "sha256": "c5b741746933f0bfbedeccde90907b654babc17572dda2d1df6100a5b4d826b4"
+    }
+  ],
+  "implementer": "implementer 64",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "b374dc2632ad90955f92176f2b11c07ded5c90a0",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
