@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 20 | 20 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 21 | 21 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvactions.pas` | specification | specification:tvactions | 2 | 2 | 0 |
@@ -66,6 +66,7 @@
 | `tests/t_ascii.pas` | specification | specification:tvascii | 1 | 1 | 0 |
 | `tests/t_async.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 1 | 1 | 0 |
 | `tests/t_cell.pas` | translation | magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
+| `tests/t_chdir.pas` | translation | magiblot/tvision:include/tvision/stddlg.h:1-737; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tchdrdlg.cpp:1-241; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
 | `tests/t_clip.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tclipbrd.cpp:1-44 | 1 | 1 | 0 |
 | `tests/t_clipcmd.pas` | specification | specification:tvclipcmd | 1 | 1 | 0 |
 | `tests/t_cluster.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tcluster.cpp:1-478; magiblot/tvision:source/tvision/tradiobu.cpp:1-56; magiblot/tvision:source/tvision/tcheckbo.cpp:1-45; magiblot/tvision:source/tvision/tmulchkb.cpp:1-110; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
