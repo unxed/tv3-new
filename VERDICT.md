@@ -39,6 +39,8 @@ provenance check: pending version src/tvapp.pas 5654c79dc571622a5fb3c3494709204d
 provenance check: pending version src/tvapp.pas c389a814b5ac6a6fa863361cb5ae6edde4ab44df
 provenance check: pending version src/tvappdir.pas 22a704a0308cbaff32878a804d47d91a1c400b30
 provenance check: pending version src/tvappdir.pas 3e44c1f7c1c5f2b89b63a048e53887759d78259e
+provenance check: pending version src/tvascii.pas dbbce8251af73b1263499faa2c6ad4090e3ff570
+provenance check: pending version src/tvascii.pas 76ff80ae8c63c9e329a60c1d0d83729ba9549411
 provenance check: pending version src/tvcell.pas 778a73ffae8b4c1166fdfb7ff2e6921e190d6ebf
 provenance check: pending version src/tvcell.pas 1201291008a0e44fbea44c57db075dec63222d40
 provenance check: pending version src/tvclip.pas 2682a491b0a468af86636ed63e4b97b5305518e5
@@ -123,6 +125,7 @@ provenance check: pending version tests/t_actions.pas 91d2aa0627c3bb803dd8a66f7b
 provenance check: pending version tests/t_ansi.pas 4c9ec15af9e77a8915a0a35e299d3325f32ba5e1
 provenance check: pending version tests/t_app.pas 5843a781a494c31f812f228628ab68412fa598c2
 provenance check: pending version tests/t_appdir.pas f06a58e341ffda54fe47c38cb8dc92f22c535b99
+provenance check: pending version tests/t_ascii.pas 2c1d394aaac96e5a72ded05840842b6dfba0b513
 provenance check: pending version tests/t_async.pas 14ce5137adfefb1119864153c133111c849cae54
 provenance check: pending version tests/t_cell.pas c140b91e20cd2ea8d6a0606800195cb3acc735c6
 provenance check: pending version tests/t_clip.pas aa537d4f456345057afb0e6dbdcfb1286d54ea27
