@@ -1,0 +1,48 @@
+{
+  "path": "tests/t_termos.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/internal/conctl.h",
+      "lines": "1-66"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/platform/conctl.cpp",
+      "lines": "1-352"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/internal/getenv.h",
+      "lines": "1-31"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/conctl.h",
+      "sha256": "4c0eb98d93956063371b79fafd21330e948182ced0efe585692f82073625d280"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/conctl.cpp",
+      "sha256": "7339c25db71756463d5702e60625187cba0f73658c00262c3069329b7d60f399"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/getenv.h",
+      "sha256": "542f64e559449c3ef0fd484504b38894951047cad9c937967760b40e6bd3abff"
+    }
+  ],
+  "implementer": "implementer 58",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "755b978bca4ff5f1f0a7cdbe5bd1be5d78ed98ce",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

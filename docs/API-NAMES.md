@@ -559,6 +559,32 @@ protected and the destructor is public. Only the branch of the files for the fla
 handlerInstalled and registerHandler do not exist, SetRange does nothing and GetEvent clears the buttons, the wheel,
 the position and the flags and leaves ControlKeyState as it is.
 
+## Added by the translation of TvTermOs
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: ConsoleCtl.FdIn
+added: ConsoleCtl.FdOut
+added: ConsoleCtl.UseDescriptors
+added: EnvLookup
+added: ParseEnvInt
+
+Only the branch _TV_UNIX of conctl.cpp is translated. The members in and out are FdIn and FdOut, because in and out are
+reserved words. The members fin and fout and the data members files and ownsFiles are not translated: a FILE of the C
+library has no counterpart, the descriptors are opened and closed directly, and the flush of fout that write makes
+first has nothing to flush. The data member fds is the private field FFds, instance is the private class variable
+FInstance, and the constructor and the destructor are Create (private) and Destroy. GetInstance and DestroyInstance are
+class functions, and IsLinuxConsole exists on Linux only.
+
+UseDescriptors replaces the descriptors of an instance, closes the ones that the instance opened itself and leaves
+the new ones open when the instance ends; it exists so that the routines of the instance can be used on pipes.
+
+The function template getEnv is the two overloaded functions GetEnv: the one with a string default stands for the
+instantiation for TStringView and the one with a LongInt default for the specialisation for int. EnvLookup is the
+call of getenv, which tells whether the variable exists, and ParseEnvInt is the call of strtol with the base 0 and the
+test that digits were read, with the result cut to the low 32 bits as the conversion of long to int does. The record
+winsize and the types and constants of the font request are inside the unit and are not visible outside it.
+
 ## The functions of misc.cpp
 
 The function message is Message of TvViews. Its parameter infoPtr is a Pointer, as the member InfoPtr of
