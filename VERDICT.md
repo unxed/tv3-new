@@ -49,6 +49,7 @@ provenance check: pending version docs/API-NAMES.md 20b7fa529f83c32625fe8f3cfb72
 provenance check: pending version docs/API-NAMES.md 6709b312f59096c61b69db979da33afc42f2de84
 provenance check: pending version docs/API-NAMES.md 7871525b6893ff2a6707de82570d5e9994c9b275
 provenance check: pending version docs/API-NAMES.md babae558d073d251a0ace5559d05d1d0c30695ad
+provenance check: pending version docs/API-NAMES.md d55722ee6ca413eee67d1b31a7d041f457533cd8
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvactions.pas 959a5bd05279e29dbc23beb3e1d04d6306ece9a1
@@ -176,6 +177,7 @@ provenance check: pending version src/tvvalid.pas 639887504983840461eb56c65f3aae
 provenance check: pending version src/tvviews.pas cea53f0387f8ecfd39078b7a384f058044a7b8c5
 provenance check: pending version src/tvviews.pas 5976dabe3879191ea648644d2b193099f9081e6f
 provenance check: pending version src/tvviews.pas d7b58c53600804fc7cc1110ad70377bac0d2ce84
+provenance check: pending version src/tvvt.pas 983ab83e4e1fcfc7eca1b490c18ecdfb503c565e
 provenance check: pending version src/tvvtcore.pas 982c1927560d456151c835772b09718d843fefe0
 provenance check: pending version src/tvvtkeys.pas fff4f0dcfd2e3867519e4a22525365e0f8506648
 provenance check: pending version src/tvvtscreen.pas 64c8dc5338e10e176abeac2680beab8991acd187
@@ -271,6 +273,7 @@ provenance check: pending version tests/t_valid.pas 270d95b73f049b3c5041f1ccbbfc
 provenance check: pending version tests/t_valid.pas 34205d2fab94509c7735b2bc3886a07f22a5f53a
 provenance check: pending version tests/t_views.pas 7f9048d2e9a96b1349ccb6938806202c99e49e8e
 provenance check: pending version tests/t_views.pas 28d91b48a16f8d3231123e298057042cdfa54fc5
+provenance check: pending version tests/t_vt.pas dc6eb6dbb92f8934f56cb7889ab3a72fd7fbf0b0
 provenance check: pending version tests/t_vtcore.pas e64bf3a61f468e07c92e0c2eec837c572123b1b8
 provenance check: pending version tests/t_vtkeys.pas 838ff8ceb6e8118042fe69031c6a254aed59eab2
 provenance check: pending version tests/t_vtscreen.pas 737288b0c5e69a868505e9c15446cd490138c3d4
