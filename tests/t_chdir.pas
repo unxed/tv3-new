@@ -1,6 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (the options cdNormal, cdNoLoadDir and cdHelpButton, the commands cmChangeDir
-  and cmRevert, TChDirDialog), source/tvision/tchdrdlg.cpp, include/tvision/ttypes.h (EOS),
+  and cmRevert, TChDirDialog), source/tvision/tchdrdlg.cpp, source/tvision/tdircoll.cpp (getCurDir),
+  include/tvision/ttypes.h (EOS),
   source/tvision/tvtext1.cpp (the text of the drives), include/tvision/util.h, source/tvision/misc.cpp,
   source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
@@ -8,9 +9,10 @@
   Test program of the unit TvChDir.
 
   The display is a screen of 60 by 20 cells in memory and the application has only a desktop. The application counts
-  the expired timers that it gets. A command that a list box sends to its owner reaches the dialog. The hook that
-  stands for getCurDir gives a directory that does not exist, so that the lists of directories hold only the path to
-  it. The texts of the dialog are checked as the unit sets them. The
+  the expired timers that it gets. A command that a list box sends to its owner reaches the dialog. The tests that
+  read the current directory make a tree of directories of their own under the directory of temporary files, change
+  to it and remove it at the end; the tests of the commands of the list load a path that does not exist, so that the
+  lists of directories hold only the path to it. The texts of the dialog are checked as the unit sets them. The
   application puts the command cmOK from its Idle when a flag is set, which closes a message box, and takes a copy of
   the text and the title of the box that is on top when the loop first asks for an event. The posted event and the
   wake-up of the threads reach the loop of ExecView on the desktop. }
@@ -33,7 +35,7 @@ const
   ScrW = 3 * ScrH;
   { A wait that lasts longer than this means a failure, which ends the program. }
   Guard = 4000;
-  { The directory that the hook of getCurDir gives, after the two characters of a drive that the dialog removes. }
+  { A directory that does not exist, which the tests of the commands of the list load. }
   DeepDir = '/nosuchroot/alpha/beta/';
 
 type
@@ -122,7 +124,8 @@ var
   App: TTestApp;
   WakeFlag: LongInt;
   TimerMsgCount: Integer;
-  FakeDir: string;
+  { The directory of the tests, with a separator at its end. }
+  TempRoot: string;
 
 { The fake devices and the hooks }
 
@@ -187,11 +190,6 @@ end;
 
 procedure OnScreenWrite(X, Y: Integer; Cells: PScreenCell; Count: Integer);
 begin
-end;
-
-function FakeCurDir: string;
-begin
-  Result := 'C:' + FakeDir;
 end;
 
 function MakeDesk(R: TRect): TDeskTop;
@@ -270,6 +268,44 @@ end;
 function EntryDir(Box: TDirListBox; Index: Integer): string;
 begin
   Result := Box.List.At(Index).Dir;
+end;
+
+{ The number of separators in Text. }
+function CountSeps(const Text: string): Integer;
+var
+  position: Integer;
+begin
+  Result := 0;
+  for position := 1 to Length(Text) do
+    if Text[position] = '/' then
+      Inc(Result);
+end;
+
+{ Path without its last name and the separator before it. }
+function ParentOf(const Path: string): string;
+var
+  position: Integer;
+begin
+  position := Length(Path);
+  while (position > 0) and (Path[position] <> '/') do
+    Dec(position);
+  Result := Copy(Path, 1, position - 1);
+end;
+
+procedure MakeTree;
+begin
+  TempRoot := IncludeTrailingPathDelimiter(GetTempDir(False)) + 'tvchdir_' + IntToStr(GetProcessID) + '/';
+  RemoveDir(TempRoot + 'alpha/beta');
+  RemoveDir(TempRoot + 'alpha');
+  RemoveDir(TempRoot);
+  ForceDirectories(TempRoot + 'alpha/beta');
+end;
+
+procedure RemoveTree;
+begin
+  RemoveDir(TempRoot + 'alpha/beta');
+  RemoveDir(TempRoot + 'alpha');
+  RemoveDir(TempRoot);
 end;
 
 { The classes of the test }
@@ -438,7 +474,6 @@ begin
   Check(TChDirDialog.HelpText = 'Help', 'helpText is the text of the C++');
   Check(TChDirDialog.DrivesText = 'Drives', 'drivesText is the text of the C++');
   Check(TChDirDialog.InvalidText = 'Invalid directory', 'invalidText is the text of the C++');
-  Check(not Assigned(GetCurDirHook), 'the hook of getCurDir is not given by the unit');
   Check(Assigned(ChDirButtonDefaultHook), 'the unit gives the hook of makeDefault to TvFiles');
   Check(TDirListBox.Drives = 'Drives', 'the text of the drives of the list box');
 end;
@@ -552,44 +587,52 @@ end;
 procedure TestSetUp;
 var
   dlg: TPeekDialog;
+  savedDir, here: string;
+  seps: Integer;
 begin
-  FakeDir := DeepDir;
+  savedDir := GetCurrentDir;
+  Check(SetCurrentDir(TempRoot + 'alpha/beta'), 'the directory alpha/beta of the tests exists');
+  here := GetCurrentDir;
+  seps := CountSeps(here + '/');
   dlg := TPeekDialog.Create(cdNormal, 1);
-  Check(dlg.InputOf.Data = '/nosuchroot/alpha/beta', 'the line shows the current directory without its separator');
+  Check(dlg.InputOf.Data = here, 'the line shows the current directory without its separator');
   Check(dlg.ListOf.List <> nil, 'the list is loaded');
-  Check(dlg.ListOf.List.GetCount = 4, 'the list has the root and three directories');
-  Check((EntryDir(dlg.ListOf, 0) = '/') and (EntryDir(dlg.ListOf, 1) = '/nosuchroot') and
-    (EntryDir(dlg.ListOf, 2) = '/nosuchroot/alpha') and (EntryDir(dlg.ListOf, 3) = '/nosuchroot/alpha/beta'),
+  Check(dlg.ListOf.List.GetCount = seps, 'the list has the root and the directories of the path, and no subdirectory');
+  Check((EntryDir(dlg.ListOf, 0) = '/') and (EntryDir(dlg.ListOf, seps - 1) = here) and
+    (EntryDir(dlg.ListOf, seps - 2) = ParentOf(here)),
     'the entries of the list are the paths up to the current directory');
-  Check(dlg.ListOf.Focused = 3, 'the last directory of the path is focused');
+  Check(dlg.ListOf.Focused = seps - 1, 'the last directory of the path is focused');
   TvObject.DestroyObject(dlg);
 
-  FakeDir := '/a/';
+  Check(SetCurrentDir('/'), 'the root exists');
   dlg := TPeekDialog.Create(cdNormal, 1);
-  Check(dlg.InputOf.Data = '/a/', 'a path of three characters keeps its separator');
+  Check(dlg.InputOf.Data = '/', 'the root keeps its separator');
+  Check((dlg.ListOf.List <> nil) and (EntryDir(dlg.ListOf, 0) = '/'), 'the first entry of the list is the root');
   TvObject.DestroyObject(dlg);
-
-  FakeDir := '/ab/';
-  dlg := TPeekDialog.Create(cdNormal, 1);
-  Check(dlg.InputOf.Data = '/ab', 'a path of four characters loses its separator');
-  TvObject.DestroyObject(dlg);
+  SetCurrentDir(savedDir);
 end;
 
 procedure TestRevert;
 var
   dlg: TPeekDialog;
   ev: TEvent;
+  savedDir, here: string;
+  seps: Integer;
 begin
-  FakeDir := '/nosuchroot/alpha/';
+  savedDir := GetCurrentDir;
+  Check(SetCurrentDir(TempRoot + 'alpha'), 'the directory alpha of the tests exists');
+  here := GetCurrentDir;
+  seps := CountSeps(here + '/');
   dlg := TPeekDialog.Create(cdNoLoadDir, 1);
   dlg.InputOf.Data := 'typed text';
   ev := CmdEv(cmRevert);
   dlg.HandleEvent(ev);
-  Check(dlg.InputOf.Data = '/nosuchroot/alpha', 'the revert puts the current directory into the line');
+  Check(dlg.InputOf.Data = here, 'the revert puts the current directory into the line');
   Check(ev.What = evNothing, 'the revert clears the event');
-  Check(dlg.ListOf.List.GetCount = 3, 'the revert loads the list');
+  Check(dlg.ListOf.List.GetCount = seps + 1, 'the revert loads the list: the path and the subdirectory beta');
   Check(dlg.Current = TView(dlg.ListOf), 'the revert selects the list');
-  Check(dlg.ListOf.Focused = 2, 'the revert focuses the last directory');
+  Check(dlg.ListOf.Focused = seps - 1, 'the revert focuses the last directory of the path');
+  Check(EntryDir(dlg.ListOf, seps) = here + '/beta', 'the subdirectory of the current directory is the last entry');
 
   dlg.InputOf.Data := 'typed text';
   ev := CmdEv(5000);
@@ -601,6 +644,7 @@ begin
   dlg.HandleEvent(ev);
   Check((ev.What = evBroadcast) and (dlg.InputOf.Data = 'typed text'), 'a broadcast of the same number is left alone');
   TvObject.DestroyObject(dlg);
+  SetCurrentDir(savedDir);
 end;
 
 procedure TestChangeDir;
@@ -609,8 +653,8 @@ var
   ev: TEvent;
   dirs: TDirCollection;
 begin
-  FakeDir := DeepDir;
-  dlg := TPeekDialog.Create(cdNormal, 1);
+  dlg := TPeekDialog.Create(cdNoLoadDir, 1);
+  dlg.ListOf.NewDirectory(DeepDir);
 
   dlg.ListOf.FocusItem(2);
   ev := CmdEv(cmChangeDir);
@@ -663,6 +707,22 @@ begin
   ev := CmdEv(cmChangeDir);
   dlg.HandleEvent(ev);
   Check((ev.What = evNothing) and (dlg.InputOf.Data = 'C:/'), 'a disk gets a separator after it');
+
+  dirs := TDirCollection.Create(2, 2);
+  dirs.Insert(TDirEntry.Create('shown', '/a'));
+  dlg.ListOf.NewList(dirs);
+  dlg.ListOf.FocusItem(0);
+  ev := CmdEv(cmChangeDir);
+  dlg.HandleEvent(ev);
+  Check(dlg.InputOf.Data = '/a/', 'a path of three characters keeps its separator');
+
+  dirs := TDirCollection.Create(2, 2);
+  dirs.Insert(TDirEntry.Create('shown', '/ab'));
+  dlg.ListOf.NewList(dirs);
+  dlg.ListOf.FocusItem(0);
+  ev := CmdEv(cmChangeDir);
+  dlg.HandleEvent(ev);
+  Check(dlg.InputOf.Data = '/ab', 'a path of four characters loses its separator');
   TvObject.DestroyObject(dlg);
 
   dlg := TPeekDialog.Create(cdNoLoadDir, 1);
@@ -847,8 +907,7 @@ begin
   ScreenWriteHook := @OnScreenWrite;
 
   TestConstants;
-
-  GetCurDirHook := @FakeCurDir;
+  MakeTree;
 
   DrainPosted;
   EventTimeoutMs := 20;
@@ -866,7 +925,7 @@ begin
 
   TvObject.DestroyObject(App);
   TAppInit.Shutdown;
-  GetCurDirHook := nil;
+  RemoveTree;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TEventQueue.Backend := SavedEvents;

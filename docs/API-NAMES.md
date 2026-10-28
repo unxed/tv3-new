@@ -443,8 +443,6 @@ The names below have no counterpart in the C++ and are listed one per line, as "
 
 added: PSearchRec
 added: MaxNameLength
-added: TSortedNewListProc
-added: SortedListBoxNewListHook
 added: TMakeDefaultProc
 added: ChDirButtonDefaultHook
 added: GetDisk
@@ -460,6 +458,12 @@ added: NoFileRecord
 added: CurrentDisk
 added: IndentStep
 added: DefaultParentTime
+added: CharOrZero
+added: IsAlphaCode
+added: HasAnyOf
+added: SplitFileName
+added: IllegalNameChars
+added: SearchTextLength
 
 PSearchRec is the pointer type that stands for TSearchRec *. The entries of a directory are records that the
 collections keep as pointers; the names of the entries are at most MaxNameLength characters, because the size
@@ -470,10 +474,12 @@ of TvObjs, because a member that takes a different type of pointer cannot overri
 sorted collection of files and the collection of directories are not related by a base, so the sorted list box turns
 the list of its base TListBox into a TSortedCollection by a typecast.
 
-The source file of TSortedListBox is not among the translated sources. SortedListBoxNewListHook stands for its
-newList, with the type TSortedNewListProc, and while it is nil the list is not given to the list box. Its handleEvent
-is not translated, its virtual getKey is abstract, and its member searchPos is left out. ChDirButtonDefaultHook, with
-the type TMakeDefaultProc, stands for the call chDirButton->makeDefault of the dialog TChDirDialog that owns a
+TSortedListBox is translated from stddlg.cpp: its member searchPos is the private field SearchPos, its virtual getKey is
+GetKey, which gives a pointer to the characters of its argument, and the static function equal is Equal. The text
+that handleEvent keeps in the buffer curString is a string that holds the characters up to the terminating zero.
+CharOrZero is the reading of a character of a string, with the zero character after its end, IsAlphaCode is isalpha
+for the ASCII letters, and SearchTextLength is the size 255 that handleEvent gives to getText. ChDirButtonDefaultHook,
+with the type TMakeDefaultProc, stands for the call chDirButton->makeDefault of the dialog TChDirDialog that owns a
 TDirListBox, and it does nothing while it is nil. The text tooManyFiles is the class variable TooManyFiles of
 TFileList, which holds the text of tvtext2.cpp when the unit starts, and the warning is shown with MessageBox of TvMsgbox when the allocation
 of an entry fails (EOutOfMemory is caught, as the C++ tests a null pointer).
@@ -487,23 +493,21 @@ strrchr for the separator, BeginsWithDot is the test of the first character of
 a name, FindCode is strchr of a character in a block, NewSearchRecord is the operator new of DirSearchRec and
 CopyFoundEntry is its member readFf_blk. SearchKey is the static record of getKey, NoFileRecord is the static record
 noFile of readDirectory, and CurrentDisk, IndentStep and DefaultParentTime are the values 'C', 2 and 0x210000 that the
-C++ writes in its code. The routines validFileName, getCurDir, fexpand, squeeze and getHomeDir are not in this unit.
+C++ writes in its code. The routines validFileName and getCurDir are ValidFileName and GetCurDir. SplitFileName is the
+part of fnsplit that validFileName uses, without a drive, IllegalNameChars is the static illegalChars of the branch
+for a flat memory model, and HasAnyOf is strpbrk as a test. GetCurDir takes the disk as an integer, with the default
+-1, and gives the directory without the characters of a drive, written with PathSep before it and, when it is not the
+root, after it; a disk that is not the current one gives the root. The routines fexpand, squeeze and getHomeDir are
+not in this unit.
 
 ## Added by the translation of TvFileDlg
 
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
 
 added: MaxPath
-added: TFileInputLineEventProc
-added: TFileInfoPaneDrawProc
-added: TFileInfoPaneEventProc
-added: TCurDirFunc
-added: TValidFileNameFunc
-added: FileInputLineEventHook
-added: FileInfoPaneDrawHook
-added: FileInfoPaneEventHook
-added: GetCurDirHook
-added: ValidFileNameHook
+added: InfoPanePalette
+added: LowAttrOf
+added: TwoDigits
 added: TFileInfoPane.FileBlock
 added: TFileDialog.AddButton
 added: TFileDialog.FitToScreen
@@ -514,23 +518,20 @@ added: SplitPath
 added: MergePath
 
 MaxPath stands for MAXPATH, which a header outside the translated sources defines; it is the size that strnzcpy is
-given for the wild card and for the text of the input line. GetCurDirHook, with the type TCurDirFunc, stands for
-getCurDir and gives the current directory; while it is nil the directory of a file dialog becomes the empty text.
-ValidFileNameHook, with the type TValidFileNameFunc, stands for validFileName; while it is nil no name is a valid file
-name, so Valid of a dialog shows the message of invalidFileText. Both functions are defined in files that are not
-among the translated sources. fexpand is PathExpandFrom of TvPath, and fnsplit and fnmerge are
+given for the wild card and for the text of the input line. getCurDir and validFileName are GetCurDir and
+ValidFileName of TvFiles. fexpand is PathExpandFrom and PathExpand of TvPath, and fnsplit and fnmerge are
 SplitPath and MergePath, made with PathDrive and PathSplit of TvPath: the drive is the drive of the path, the
 directory is what PathSplit gives after the drive, and the merge puts the four parts one after the other. The
 function trim of tfildlg.cpp is TrimName, because Trim belongs to SysUtils; it is the branch for a flat memory model,
 which copies the text up to its first zero character and does not cut white space, because tv.h defines __FLAT__.
 
-The source file of TFileInputLine and of TFileInfoPane is not among the translated sources, so only what stddlg.h
-declares is translated. The constructor of TFileInputLine calls the one of TInputLine. FileInputLineEventHook, with the
-type TFileInputLineEventProc, stands for the handleEvent of TFileInputLine, and FileInfoPaneDrawHook and
-FileInfoPaneEventHook, with the types TFileInfoPaneDrawProc and TFileInfoPaneEventProc, stand for the draw and the
-handleEvent of TFileInfoPane. The hooks do nothing while they are nil; the two event hooks are called after the
-handleEvent of the base class, and the draw hook is the whole of Draw. The member file_block of TFileInfoPane is the
-public field FileBlock, so that a hook can read it. The palette of TFileInfoPane is left out with that file.
+TFileInputLine and TFileInfoPane are translated from stddlg.cpp. The member file_block of TFileInfoPane is the public
+field FileBlock. The static palette of getPalette is the variable InfoPanePalette, made from cpInfoPane when the unit
+starts and released when it ends, LowAttrOf gives the low attribute of the pair that getColor returns, and TwoDigits is
+the text of a number with at least two digits that draw builds with itoa and a leading '0'. The draw reads the time of
+the entry as the packed time of DOS and writes the hour that it shows back into it, as the C++ does through the
+structure ftime. The text that handleEvent of TFileInputLine puts into the line is cut to MaxLen, and the separator
+between a directory and the wild card is PathSep.
 
 The texts filesText, openText, okText, replaceText, clearText, cancelText, helpText, invalidDriveText and
 invalidFileText of TFileDialog are the public class variables FilesText, OpenText, OkText, ReplaceText, ClearText,

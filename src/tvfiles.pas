@@ -1,10 +1,10 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (the commands of the file dialogs, TSearchRec, TFileCollection,
-  TSortedListBox, TFileList, TDirEntry, TDirCollection, TDirListBox), source/tvision/tfilecol.cpp,
-  source/tvision/tfillist.cpp, source/tvision/tdircoll.cpp, source/tvision/tdirlist.cpp, source/tvision/tvtext1.cpp
-  (the tables of TDirListBox), include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h,
-  include/tvision/views.h, include/tvision/util.h, source/tvision/misc.cpp (message), source/tvision/tvtext2.cpp
-  (tooManyFiles)
+  TSortedListBox, TFileList, TDirEntry, TDirCollection, TDirListBox), source/tvision/stddlg.cpp (TSortedListBox),
+  source/tvision/tfilecol.cpp, source/tvision/tfillist.cpp, source/tvision/tdircoll.cpp, source/tvision/tdirlist.cpp,
+  source/platform/dir.cpp (fnsplit, getdisk, getcurdir), source/tvision/tvtext1.cpp (the tables of TDirListBox),
+  include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h, include/tvision/views.h,
+  include/tvision/util.h, source/tvision/misc.cpp (message), source/tvision/tvtext2.cpp (tooManyFiles)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -14,31 +14,40 @@
   message() sends a message to a view; it is Message of TvViews.
 
   Parts of the C++ that have no unit yet, or no source among the files above:
-    - TSortedListBox: its source file is not among the inputs. The class is declared as the header gives it, with
-      the member that the header defines (List) and the constructor, which only calls the one of TListBox. Its
-      NewList is SortedListBoxNewListHook and does nothing while that is nil; its handleEvent is not translated, so
-      the list box keeps the handling of TListBox; its virtual getKey is abstract here. The protected member
-      ShiftState stays 0 until a descendant sets it; the member searchPos is left out, because only handleEvent
-      uses it.
+    - TSortedListBox keeps the interface of its header. The member searchPos is the private field SearchPos, and
+      the static function equal of stddlg.cpp is Equal. The text that the C++ keeps in the buffer curString is a
+      string that holds the characters up to the terminating zero, so a write of the terminating zero cuts the
+      string and a write beyond its end changes nothing. The comparison of equal is made on the ASCII letters, as
+      the one of the C locale is, and isalpha tests the ASCII letters. Where the C++ uses the list of a list box
+      that has no list, which it cannot do, handleEvent restores searchPos and leaves the event as it is. The virtual
+      getKey gives a pointer to the characters of its argument, as the C++ gives the pointer that it is given; the
+      pointer is valid while the argument is.
     - TChDirDialog and its member chDirButton: the setState of TDirListBox reaches them through
       ChDirButtonDefaultHook, which does nothing while it is nil.
     - The text tooManyFiles is the class variable TooManyFiles of TFileList, which holds the text of the C++ when
       the unit starts.
-    - The functions of the compatibility headers dir.h and dos.h (findfirst, findnext, getdisk, fnsplit, fnmerge,
-      fexpand) are made with the routines of SysUtils and of TvPath: a search is FindFirst and FindNext of SysUtils
+    - The functions of the compatibility headers dir.h and dos.h (findfirst, findnext, getdisk, fnmerge, fexpand)
+      are made with the routines of SysUtils and of TvPath: a search is FindFirst and FindNext of SysUtils
       with the mask faReadOnly, faArchive, faHidden and faSymLink for the files and faDirectory and faSymLink for the
       directories, because the library of the RTL leaves out the hidden entries and the links unless the mask asks
-      for them. The disk that getdisk gives is the disk C, which is the only disk that exists.
+      for them. The disk that getdisk gives is the disk C, which is the only disk that exists. The routines fnsplit
+      of dir.cpp and getcurdir are inside validFileName (SplitFileName) and getCurDir.
+    - MAXPATH, MAXDIR, MAXFILE and MAXEXT are defined by a header that is not among the inputs, so validFileName
+      and getCurDir do not cut their texts to those sizes. The default of the parameter drive of getCurDir is
+      declared in a header that is not among the inputs; here it is -1, a value that is no disk.
 
   Only the target without drives is translated: the entry Drives that newDirectory adds on other targets is left out,
   and the separator of the paths that TDirListBox reads is PathSep of TvPath. The texts of the drives that showDrives
   makes keep the backslash of the C++. The names of the files are at most MaxNameLength characters, because the size
-  MAXFILE + MAXEXT - 1 is given by a header that is not among the inputs.
+  MAXFILE + MAXEXT - 1 is given by a header that is not among the inputs. For the same target getCurDir gives the
+  directory without the characters of a drive, with PathSep before it and after it: the directory of getcwd is
+  written as the library writes paths, and a request for a disk other than the current one gives the root only,
+  because getcurdir fails for it. validFileName and the split of a path that it makes do not take a drive.
 
   The collections of TvObjs that a Pascal class holds as TCollection and as TSortedCollection have no common
   descendant, so the sorted list box turns the list of TListBox into a TSortedCollection by a typecast; both are the
-  same kind of object of TNSCollection. The routines validFileName and getCurDir of tdircoll.cpp, and fexpand, squeeze
-  and getHomeDir of tfillist.cpp, are not translated here: TvPath has the path functions of the library. }
+  same kind of object of TNSCollection. The routines fexpand, squeeze and getHomeDir of tfillist.cpp are not
+  translated here: TvPath has the path functions of the library. }
 unit TvFiles;
 
 {$mode objfpc}
@@ -48,7 +57,7 @@ unit TvFiles;
 interface
 
 uses
-  TvGeom, TvObjs, TvViews, TvWindow, TvList;
+  TvGeom, TvEvents, TvObjs, TvViews, TvWindow, TvList;
 
 const
   { The commands of the file dialogs. }
@@ -92,18 +101,16 @@ type
     function LastThat(Test: ccTestFunc; Arg: Pointer): PSearchRec; reintroduce;
   end;
 
-  TSortedListBox = class;
-
-  { Does what SortedListBoxNewListHook stands for: puts a list into Box. }
-  TSortedNewListProc = procedure(Box: TSortedListBox; NewItems: TSortedCollection);
-
-  { A list box whose list is a sorted collection. }
+  { A list box whose list is a sorted collection. Typed characters search the list for an item that begins with them. }
   TSortedListBox = class(TListBox)
   protected
     ShiftState: Byte;
-    function GetKey(const S: string): Pointer; virtual; abstract;
+    function GetKey(const S: string): Pointer; virtual;
+  private
+    SearchPos: SmallInt;
   public
     constructor Create(const Bounds: TRect; NumberOfColumns: Word; VerticalBar: TScrollBar); reintroduce;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure NewList(NewItems: TSortedCollection); reintroduce;
     function List: TSortedCollection; reintroduce;
   end;
@@ -183,8 +190,6 @@ type
   end;
 
 var
-  { Stands for the newList of TSortedListBox; nil does nothing. }
-  SortedListBoxNewListHook: TSortedNewListProc;
   { Stands for chDirButton->makeDefault of the TChDirDialog that owns a TDirListBox; nil does nothing. }
   ChDirButtonDefaultHook: TMakeDefaultProc;
 
@@ -203,10 +208,18 @@ function PathValid(const Path: string): Boolean;
 { Tells whether Name has a wild card character, ? or *. }
 function IsWild(const Name: string): Boolean;
 
+{ Tells whether FileName can be the name of a file: the directory of it, when it has one, exists, and the name and
+  the extension have none of the characters < > | " and \. }
+function ValidFileName(const FileName: string): Boolean;
+
+{ The current directory of the disk Drive (0 for A; a value that is no disk stands for the current disk), written
+  with PathSep before it and, when it is not the root, after it. }
+function GetCurDir(Drive: Integer = -1): string;
+
 implementation
 
 uses
-  SysUtils, TvEvents, TvKeys, TvUtil, TvPath, TvMsgbox;
+  SysUtils, TvKeys, TvUtil, TvPath, TvMsgbox;
 
 const
   { The number of cells that a level of directories is indented by. }
@@ -215,12 +228,18 @@ const
   CurrentDisk = 2;
   { The time of a directory '..' that cannot be read: the date 1 January 1980 in the DOS format, and no time. }
   DefaultParentTime = $210000;
+  { The characters that a name or an extension of a file must not have. }
+  IllegalNameChars = '<>|"\';
+  { The most characters of the text of an item that the search of TSortedListBox reads. }
+  SearchTextLength = 255;
 
 var
   { The key that GetKey of TFileList gives. }
   SearchKey: TSearchRec;
   { The entry that is sent when a directory has no file. }
   NoFileRecord: TSearchRec;
+  { The characters, with a terminating zero, that GetKey of TSortedListBox gives. }
+  KeyText: array[0..MaxNameLength + 1] of AnsiChar;
 
 { Orders two names byte by byte, as strcmp does: a name that begins another one is the smaller. }
 function CompareNames(const FirstName, SecondName: ShortString): Integer;
@@ -301,6 +320,101 @@ begin
     Inc(Text);
   end;
   Result := nil;
+end;
+
+{ The character of Text at the place Position, or the zero character after its end. }
+function CharOrZero(const Text: string; Position: Integer): Char;
+begin
+  if (Position >= 1) and (Position <= Length(Text)) then
+    Result := Text[Position]
+  else
+    Result := #0;
+end;
+
+{ Tells whether the first Count characters of First and Second are the same, with no difference between the
+  upper and the lower case letters of ASCII; a zero character ends the comparison. }
+function Equal(const First, Second: string; Count: Word): Boolean;
+var
+  position: Integer;
+  firstChar, secondChar: Char;
+begin
+  Result := True;
+  for position := 1 to Count do
+  begin
+    firstChar := CharOrZero(First, position);
+    secondChar := CharOrZero(Second, position);
+    if UpCase(firstChar) <> UpCase(secondChar) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    if firstChar = #0 then
+      Exit;
+  end;
+end;
+
+{ Tells whether Code is the code of a letter of ASCII. }
+function IsAlphaCode(Code: Byte): Boolean;
+begin
+  Result := Chr(Code) in ['A'..'Z', 'a'..'z'];
+end;
+
+{ Tells whether a character of Text is one of Chars. }
+function HasAnyOf(const Text, Chars: string): Boolean;
+var
+  position: Integer;
+begin
+  Result := False;
+  position := 1;
+  while (not Result) and (position <= Length(Text)) do
+  begin
+    Result := Pos(Text[position], Chars) > 0;
+    Inc(position);
+  end;
+end;
+
+{ Cuts Path into the directory with its last separator (a backslash or a slash), the name and the extension with its
+  dot. A path that ends with '.' or '..' after its last separator is a directory only. }
+procedure SplitFileName(const Path: string; out DirPart, NamePart, ExtPart: string);
+var
+  pathLength, scan, lastSeparator, lastDot, firstDot: Integer;
+  isWholeDirectory: Boolean;
+begin
+  DirPart := '';
+  NamePart := '';
+  ExtPart := '';
+  if Path = '' then
+    Exit;
+  pathLength := Length(Path);
+  lastSeparator := 0;
+  lastDot := 0;
+  firstDot := 0;
+  for scan := pathLength downto 1 do
+    if lastSeparator = 0 then
+    begin
+      if Path[scan] = '.' then
+      begin
+        if lastDot = 0 then
+          lastDot := scan;
+        firstDot := scan;
+      end
+      else if (Path[scan] = '\') or (Path[scan] = '/') then
+        lastSeparator := scan;
+    end;
+  isWholeDirectory := (lastDot = pathLength) and (lastDot - firstDot < 2) and (firstDot = lastSeparator + 1);
+  if isWholeDirectory then
+  begin
+    DirPart := Path;
+    Exit;
+  end;
+  DirPart := Copy(Path, 1, lastSeparator);
+  if lastDot > 0 then
+  begin
+    NamePart := Copy(Path, lastSeparator + 1, lastDot - lastSeparator - 1);
+    ExtPart := Copy(Path, lastDot, pathLength);
+  end
+  else
+    NamePart := Copy(Path, lastSeparator + 1, pathLength);
 end;
 
 { A new entry, or nil when there is no memory for it. }
@@ -385,6 +499,39 @@ begin
   Result := False;
 end;
 
+function ValidFileName(const FileName: string): Boolean;
+var
+  directoryPart, namePart, extensionPart, afterDot: string;
+  hasIllegal: Boolean;
+begin
+  Result := False;
+  SplitFileName(FileName, directoryPart, namePart, extensionPart);
+  if (directoryPart <> '') and not PathValid(directoryPart) then
+    Exit;
+  afterDot := Copy(extensionPart, 2, Length(extensionPart));
+  hasIllegal := HasAnyOf(namePart, IllegalNameChars) or HasAnyOf(afterDot, IllegalNameChars) or
+    (Pos('.', afterDot) > 0);
+  Result := not hasIllegal;
+end;
+
+function GetCurDir(Drive: Integer): string;
+var
+  diskNumber: Integer;
+  workingDirectory: string;
+begin
+  if (Drive >= 0) and (Drive <= Ord('Z') - Ord('A')) then
+    diskNumber := Drive
+  else
+    diskNumber := GetDisk;
+  Result := PathSep;
+  if diskNumber <> GetDisk then
+    Exit;
+  workingDirectory := GetCurrentDir;
+  Result := PathSep + Copy(workingDirectory, 2, Length(workingDirectory));
+  if Length(Result) > 1 then
+    Result := Result + PathSep;
+end;
+
 { TFileCollection }
 
 function TFileCollection.Compare(Key1, Key2: Pointer): Integer;
@@ -452,13 +599,115 @@ end;
 constructor TSortedListBox.Create(const Bounds: TRect; NumberOfColumns: Word; VerticalBar: TScrollBar);
 begin
   inherited Create(Bounds, NumberOfColumns, VerticalBar);
+  ShiftState := 0;
+  SearchPos := -1;
+  ShowCursor;
+  SetCursor(1, 0);
+end;
+
+procedure TSortedListBox.HandleEvent(var Event: TEvent);
+var
+  curText, newText: string;
+  keyOfText: Pointer;
+  value: Integer;
+  oldPos, oldValue: SmallInt;
+  charCode: Byte;
+  dotPlace, cursorStep: Integer;
+  loseSearch, matched, moved: Boolean;
+begin
+  oldValue := Focused;
+  inherited HandleEvent(Event);
+  loseSearch := oldValue <> Focused;
+  if Event.What = evBroadcast then
+    loseSearch := loseSearch or (Event.Message.Command = cmReleasedFocus);
+  if loseSearch then
+    SearchPos := -1;
+  if Event.What <> evKeyDown then
+    Exit;
+  charCode := Event.KeyDown.CharScan.CharCode;
+  if charCode = 0 then
+    Exit;
+
+  value := Focused;
+  if value < Range then
+    curText := GetText(SmallInt(value), SearchTextLength)
+  else
+    curText := '';
+  oldPos := SearchPos;
+  if Event.KeyDown.KeyCode = kbBack then
+  begin
+    if SearchPos = -1 then
+      Exit;
+    Dec(SearchPos);
+    if SearchPos = -1 then
+      ShiftState := Byte(Event.KeyDown.ControlKeyState and $FF);
+    if Length(curText) > SearchPos + 1 then
+      SetLength(curText, SearchPos + 1);
+  end
+  else if charCode = Ord('.') then
+  begin
+    dotPlace := Pos('.', curText);
+    if dotPlace = 0 then
+      SearchPos := -1
+    else
+      SearchPos := SmallInt(dotPlace - 1);
+  end
+  else
+  begin
+    Inc(SearchPos);
+    if SearchPos = 0 then
+      ShiftState := Byte(Event.KeyDown.ControlKeyState and $FF);
+    if SearchPos < Length(curText) then
+    begin
+      curText[SearchPos + 1] := Chr(charCode);
+      SetLength(curText, SearchPos + 1);
+    end
+    else if SearchPos = Length(curText) then
+      curText := curText + Chr(charCode);
+  end;
+
+  if List = nil then
+  begin
+    SearchPos := oldPos;
+    Exit;
+  end;
+  keyOfText := GetKey(curText);
+  List.Search(keyOfText, value);
+  matched := False;
+  if value < Range then
+  begin
+    newText := GetText(SmallInt(value), SearchTextLength);
+    matched := Equal(curText, newText, Word(SearchPos + 1));
+  end;
+  if matched then
+  begin
+    moved := value <> oldValue;
+    cursorStep := SearchPos - oldPos;
+    if moved then
+    begin
+      FocusItem(SmallInt(value));
+      cursorStep := SearchPos + 1;
+    end;
+    SetCursor(Cursor.X + cursorStep, Cursor.Y);
+  end
+  else
+    SearchPos := oldPos;
+  if (SearchPos <> oldPos) or IsAlphaCode(charCode) then
+    ClearEvent(Event);
+end;
+
+function TSortedListBox.GetKey(const S: string): Pointer;
+begin
+  FillChar(KeyText, SizeOf(KeyText), 0);
+  if Length(S) > 0 then
+    Move(S[1], KeyText[0], Length(S));
+  Result := @KeyText[0];
 end;
 
 procedure TSortedListBox.NewList(NewItems: TSortedCollection);
 begin
-  if not Assigned(SortedListBoxNewListHook) then
-    Exit;
-  SortedListBoxNewListHook(Self, NewItems);
+  inherited NewList(TCollection(NewItems));
+  SearchPos := -1;
 end;
 
 function TSortedListBox.List: TSortedCollection;

@@ -1,7 +1,9 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (TFileInputLine, TFileInfoPane, TFileDialog and the option flags fd...),
-  source/tvision/tfildlg.cpp, include/tvision/tv.h, include/tvision/views.h, include/tvision/ttypes.h,
-  include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp (strnzcpy), source/tvision/tvtext2.cpp
+  source/tvision/stddlg.cpp (TFileInputLine, TFileInfoPane), source/tvision/tfildlg.cpp, source/tvision/tdircoll.cpp
+  (the calls of validFileName and getCurDir), source/tvision/tfillist.cpp (the call of fexpand),
+  include/tvision/tv.h, include/tvision/views.h, include/tvision/ttypes.h, include/tvision/config.h,
+  include/tvision/util.h, source/tvision/misc.cpp (strnzcpy), source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -9,23 +11,26 @@
   unit.
 
   Parts of the C++ that have no unit yet, or no source among the files above:
-    - TFileInputLine and TFileInfoPane: the file that implements them is not among the inputs, so only what the
-      header declares is translated. The constructor of TFileInputLine only calls the one of TInputLine. The
-      handleEvent of TFileInputLine is FileInputLineEventHook, and the draw and the handleEvent of TFileInfoPane are
-      FileInfoPaneDrawHook and FileInfoPaneEventHook. The hooks do nothing while they are nil; the event hooks run
-      after the member of the base class. The constructor of TFileInfoPane only calls the one of TView, so its
-      event mask is the one of TView, a hook that handles broadcasts has to widen it. The palette of TFileInfoPane
-      belongs to that file and is left out; the palette is the one of TView.
     - The texts of TFileDialog (filesText, openText, okText, replaceText, clearText, cancelText, helpText,
       invalidDriveText and invalidFileText) are the class variables FilesText to InvalidFileText, and the texts pmText,
       amText and months of TFileInfoPane are the class variables PmText, AmText and Months. They hold the texts of
       the C++ when the unit starts.
-    - The constant MAXPATH, the functions getCurDir and validFileName and the functions of the compatibility
-      headers have no source here. MaxPath stands for MAXPATH. GetCurDirHook stands for getCurDir and
-      ValidFileNameHook for validFileName. While GetCurDirHook is nil the directory of a file dialog becomes the
-      empty text; while ValidFileNameHook is nil no name is a valid file name. fexpand is PathExpandFrom of TvPath,
-      and fnsplit and fnmerge are made with PathDrive and PathSplit of TvPath and a joining of the parts.
+    - The constant MAXPATH and the functions of the compatibility headers have no source here. MaxPath stands for
+      MAXPATH. getCurDir and validFileName are GetCurDir and ValidFileName of TvFiles. fexpand is PathExpand and
+      PathExpandFrom of TvPath, and fnsplit and fnmerge are made with PathDrive and PathSplit of TvPath and a joining
+      of the parts.
     - The branches of trim that the C++ compiles when __FLAT__ is not defined are left out, because tv.h defines it.
+    - The draw of TFileInfoPane reads the time of the entry as the packed time of DOS, which the structure ftime of
+      the header dir.h (not among the inputs) lays over it: the bits 0 to 4 are the seconds divided by two, 5 to 10
+      the minutes, 11 to 15 the hours, 16 to 20 the day, 21 to 24 the month and 25 to 31 the year after 1980. As the
+      C++ does, it writes the hour that it shows (the hour modulo 12, or 12) back into the time of the entry. A month
+      that is not between 1 and 12 shows no name, where the C++ reads beyond the table months. The texts that ltoa and
+      itoa make are made with Str.
+    - The C++ casts the owner of TFileInputLine and of TFileInfoPane to TFileDialog without a test; here an owner that
+      is not a TFileDialog gives the empty text for the wild card and for the directory.
+    - The text that handleEvent of TFileInputLine puts in the input line is cut to the limit MaxLen of the line, and
+      the separator that it writes between a directory and the wild card is PathSep, as Valid writes it; the C++
+      writes a backslash and does not cut.
 
   strnzcpy is Strnzcpy of TvUtil, and it is called with MaxPath.
 
@@ -55,21 +60,7 @@ const
   MaxPath = 260;
 
 type
-  TFileInputLine = class;
-  TFileInfoPane = class;
-
-  { Does what the handleEvent of TFileInputLine does beyond the one of TInputLine. }
-  TFileInputLineEventProc = procedure(Line: TFileInputLine; var Event: TEvent);
-  { Draws a TFileInfoPane. }
-  TFileInfoPaneDrawProc = procedure(Pane: TFileInfoPane);
-  { Does what the handleEvent of TFileInfoPane does beyond the one of TView. }
-  TFileInfoPaneEventProc = procedure(Pane: TFileInfoPane; var Event: TEvent);
-  { Gives the current directory, as getCurDir does. }
-  TCurDirFunc = function: string;
-  { Tells whether Name is a valid name for a file, as validFileName does. }
-  TValidFileNameFunc = function(const Name: string): Boolean;
-
-  { The input line of a file dialog. }
+  { The input line of a file dialog. It shows the name of the file that the list focuses, while it is not selected. }
   TFileInputLine = class(TInputLine)
   public
     constructor Create(const Bounds: TRect; MaxLength: SmallInt); reintroduce;
@@ -87,6 +78,7 @@ type
     class var Months: array[0..12] of string;
     constructor Create(const Bounds: TRect); reintroduce;
     procedure Draw; override;
+    function GetPalette: TPalette; override;
     procedure HandleEvent(var Event: TEvent); override;
   end;
 
@@ -125,18 +117,40 @@ type
     procedure SizeLimits(var Smallest, Largest: TPoint); override;
   end;
 
-var
-  FileInputLineEventHook: TFileInputLineEventProc;
-  FileInfoPaneDrawHook: TFileInfoPaneDrawProc;
-  FileInfoPaneEventHook: TFileInfoPaneEventProc;
-  GetCurDirHook: TCurDirFunc;
-  ValidFileNameHook: TValidFileNameFunc;
-
 implementation
 
-
 uses
-  TvWindow, TvHist, TvApp, TvMsgBox, TvPath, TvUtil;
+  TvColors, TvDrawBuf, TvWindow, TvHist, TvApp, TvMsgBox, TvPath, TvUtil;
+
+const
+  { The palette of the info pane: the entry of the palette of its owner that its one entry stands for. }
+  cpInfoPane = #$1E;
+
+  { The columns of the info pane, from its right side: the size, the month, the day, the comma, the year, the hour,
+    the colon, the minutes and the text of the time of the day. }
+  SizeColumn = 38;
+  MonthColumn = 22;
+  DayColumn = 18;
+  CommaColumn = 16;
+  YearColumn = 15;
+  HourColumn = 9;
+  ColonColumn = 7;
+  MinuteColumn = 6;
+  DayPartColumn = 4;
+  { The first year that the time of DOS counts. }
+  FirstDosYear = 1980;
+  { The number of hours of the clock of the day, and the number of the last month. }
+  HoursOnClock = 12;
+  LastMonth = 12;
+  { The bit of the packed time where each part starts. }
+  HourShift = 11;
+  MinuteShift = 5;
+  DayShift = 16;
+  MonthShift = 21;
+  YearShift = 25;
+
+var
+  InfoPanePalette: TPalette = nil;
 
 const
   { The place of the input line, of its label and of the other views of the dialog. }
@@ -194,14 +208,33 @@ end;
 constructor TFileInputLine.Create(const Bounds: TRect; MaxLength: SmallInt);
 begin
   inherited Create(Bounds, MaxLength);
+  EventMask := EventMask or evBroadcast;
 end;
 
 procedure TFileInputLine.HandleEvent(var Event: TEvent);
+var
+  entry: PSearchRec;
+  shownText, wildCardText: string;
 begin
   inherited HandleEvent(Event);
-  if not Assigned(FileInputLineEventHook) then
+  if Event.What <> evBroadcast then
     Exit;
-  FileInputLineEventHook(Self, Event);
+  if Event.Message.Command <> cmFileFocused then
+    Exit;
+  if (State and sfSelected) <> 0 then
+    Exit;
+  entry := PSearchRec(Event.Message.InfoPtr);
+  shownText := TrimName(entry^.Name);
+  wildCardText := '';
+  if (entry^.Attr and FA_DIREC) <> 0 then
+  begin
+    if Owner is TFileDialog then
+      wildCardText := TFileDialog(Owner).WildCard;
+    shownText := Concat(shownText, PathSep, wildCardText);
+  end;
+  Data := Copy(shownText, 1, MaxLen);
+  SelectAll(False);
+  DrawView;
 end;
 
 { TFileInfoPane }
@@ -209,21 +242,131 @@ end;
 constructor TFileInfoPane.Create(const Bounds: TRect);
 begin
   inherited Create(Bounds);
+  EventMask := EventMask or evBroadcast;
+end;
+
+{ The low attribute of the entry Entry of the palette of Viewer. }
+function LowAttrOf(Viewer: TView; Entry: Word): TColorAttr;
+var
+  pair: TAttrPair;
+begin
+  pair := Viewer.GetColor(Entry);
+  Result := pair.Attrs[0];
+end;
+
+{ The text of Value with at least two digits, the first of them a zero when Value is below ten. }
+function TwoDigits(Value: Integer): string;
+var
+  digits: string;
+begin
+  Str(Value, digits);
+  if Value >= 10 then
+    Result := digits
+  else
+    Result := '0' + digits;
+end;
+
+{ Writes the size and the time of Entry into Buffer, at columns counted from the right side of a row of Width cells.
+  The time is the packed time of DOS. The hour that is shown is written back into the time of Entry. }
+procedure ShowEntryColumns(Buffer: TDrawBuffer; Width: Integer; Color: TColorAttr; var Entry: TvFiles.TSearchRec);
+var
+  parts: Cardinal;
+  clock, month: Integer;
+  sizeText, yearText: string;
+  afternoon: Boolean;
+
+  procedure Put(FromRight: Integer; const Text: string);
+  begin
+    Buffer.MoveStr(Word(Width - FromRight), Text, Color);
+  end;
+
+begin
+  parts := Cardinal(Entry.Time);
+  clock := (parts shr HourShift) and $1F;
+  afternoon := clock >= HoursOnClock;
+  clock := clock mod HoursOnClock;
+  if clock = 0 then
+    clock := HoursOnClock;
+  Entry.Time := LongInt((parts and not Cardinal($1F shl HourShift)) or (Cardinal(clock) shl HourShift));
+
+  Str(Entry.Size, sizeText);
+  Put(SizeColumn, sizeText);
+  month := (parts shr MonthShift) and $F;
+  if month <= LastMonth then
+    Put(MonthColumn, TFileInfoPane.Months[month]);
+  Put(DayColumn, TwoDigits((parts shr DayShift) and $1F));
+  Buffer.PutChar(Word(Width - CommaColumn), Ord(','));
+  Str(Integer((parts shr YearShift) and $7F) + FirstDosYear, yearText);
+  Put(YearColumn, yearText);
+  Put(HourColumn, TwoDigits(clock));
+  Buffer.PutChar(Word(Width - ColonColumn), Ord(':'));
+  Put(MinuteColumn, TwoDigits((parts shr MinuteShift) and $3F));
+  if afternoon then
+    Put(DayPartColumn, TFileInfoPane.PmText)
+  else
+    Put(DayPartColumn, TFileInfoPane.AmText);
 end;
 
 procedure TFileInfoPane.Draw;
+var
+  lineBuffer: TDrawBuffer;
+  color: TColorAttr;
+  path, directoryText, wildCardText: string;
+  row, restRows: Integer;
 begin
-  if not Assigned(FileInfoPaneDrawHook) then
-    Exit;
-  FileInfoPaneDrawHook(Self);
+  directoryText := '';
+  wildCardText := '';
+  if Owner is TFileDialog then
+  begin
+    directoryText := TFileDialog(Owner).Directory;
+    wildCardText := TFileDialog(Owner).WildCard;
+  end;
+  Strnzcpy(path, directoryText, MaxPath);
+  Strnzcat(path, wildCardText, MaxPath);
+  path := PathExpand(path);
+  if Length(path) > MaxPath - 1 then
+    SetLength(path, MaxPath - 1);
+
+  color := LowAttrOf(Self, 1);
+  lineBuffer := TDrawBuffer.Create;
+  try
+    restRows := 1;
+    for row := 0 to 2 do
+    begin
+      lineBuffer.MoveChar(0, ' ', color, Size.X);
+      case row of
+        0:
+          lineBuffer.MoveStr(1, path, color);
+        1:
+          begin
+            lineBuffer.MoveStr(1, FileBlock.Name, color);
+            if FileBlock.Name <> '' then
+              ShowEntryColumns(lineBuffer, Size.X, color, FileBlock);
+          end;
+      else
+        restRows := Size.Y - 2;
+      end;
+      WriteLine(0, row, Size.X, restRows, lineBuffer);
+    end;
+  finally
+    lineBuffer.Free;
+  end;
+end;
+
+function TFileInfoPane.GetPalette: TPalette;
+begin
+  Result := InfoPanePalette;
 end;
 
 procedure TFileInfoPane.HandleEvent(var Event: TEvent);
 begin
   inherited HandleEvent(Event);
-  if not Assigned(FileInfoPaneEventHook) then
+  if Event.What <> evBroadcast then
     Exit;
-  FileInfoPaneEventHook(Self, Event);
+  if Event.Message.Command <> cmFileFocused then
+    Exit;
+  FileBlock := PSearchRec(Event.Message.InfoPtr)^;
+  DrawView;
 end;
 
 { TFileDialog }
@@ -413,14 +556,8 @@ begin
 end;
 
 procedure TFileDialog.ReadDirectory;
-var
-  currentDirectory: string;
 begin
-  if Assigned(GetCurDirHook) then
-    currentDirectory := GetCurDirHook()
-  else
-    currentDirectory := '';
-  Directory := currentDirectory;
+  Directory := GetCurDir;
   FileList.ReadDirectory(WildCard);
 end;
 
@@ -465,7 +602,6 @@ end;
 function TFileDialog.Valid(Command: Word): Boolean;
 var
   fullName, driveText, directoryText, baseName, extensionText, directoryPath: string;
-  isNameValid: Boolean;
 begin
   Result := False;
   if Command = cmValid then
@@ -510,8 +646,7 @@ begin
     Exit;
   end;
 
-  isNameValid := Assigned(ValidFileNameHook) and ValidFileNameHook(fullName);
-  if isNameValid then
+  if ValidFileName(fullName) then
   begin
     Result := True;
     Exit;
@@ -520,6 +655,7 @@ begin
 end;
 
 initialization
+  InfoPanePalette := TPalette.Create(cpInfoPane, Length(cpInfoPane));
   TFileDialog.FilesText := '~F~iles';
   TFileDialog.OpenText := '~O~pen';
   TFileDialog.OkText := 'O~K~';
@@ -544,4 +680,9 @@ initialization
   TFileInfoPane.Months[10] := 'Oct';
   TFileInfoPane.Months[11] := 'Nov';
   TFileInfoPane.Months[12] := 'Dec';
+
+finalization
+  InfoPanePalette.Free;
+  InfoPanePalette := nil;
+
 end.
