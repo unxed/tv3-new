@@ -2,7 +2,7 @@
   C++ sources: include/tvision/views.h (TListViewer), include/tvision/dialogs.h (TListBox, TListBoxRec),
   include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h, include/tvision/util.h,
   source/tvision/tlstview.cpp, source/tvision/tlistbox.cpp, source/tvision/tvtext1.cpp (specialChars),
-  source/tvision/misc.cpp
+  source/tvision/misc.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   The display is a screen of 40 by 20 cells in memory; the root of the views is a group that writes into it and
@@ -521,7 +521,6 @@ begin
   FreeRoot(Root);
 
   ListScene(Root, HB, VB, L, 0);
-  TListViewer.EmptyText := '<empty>';
   ClearScreen;
   L.DrawView;
   Check(RowText(0, 0, 10) = ' <empty>  ', 'an empty list shows the empty text in the first row');
@@ -556,7 +555,6 @@ begin
   Check((RowText(0, 0, 6) = ' n4   ') and (RowText(0, 7, 5) = ' n8  '), 'the page of two columns starts at the top item');
   Check(L.Cursor = Pt(8, 1), 'the cursor follows the page of two columns');
   FreeRoot(Root);
-  TListViewer.EmptyText := '';
 end;
 
 procedure TestKeys;
@@ -979,7 +977,7 @@ begin
   Check(Length(cpListViewer) = 5, 'the palette string of a list viewer has five entries');
   Check((Ord(cpListViewer[1]) = $1A) and (Ord(cpListViewer[2]) = $1A) and (Ord(cpListViewer[3]) = $1B) and
     (Ord(cpListViewer[4]) = $1C) and (Ord(cpListViewer[5]) = $1D), 'the values of the palette of a list viewer');
-  Check(TListViewer.EmptyText = '', 'the empty text starts empty');
+  Check(TListViewer.EmptyText = '<empty>', 'the empty text is the text of the C++');
   Check(not TView.ShowMarkers, 'the markers start off');
 
   Fake := TFakeDisplay.Create;

@@ -1,11 +1,11 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/validate.h, include/tvision/ttypes.h, include/tvision/tv.h,
-  source/tvision/tvalidat.cpp
+  source/tvision/tvalidat.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
-  The expected values are worked out by hand from the C++ routines. The texts that the C++ defines in other files
-  (the error messages and the valid characters of the range validator) are set here by the program. The hook of the
-  error box records what the validators ask it to show. }
+  The expected values are worked out by hand from the C++ routines. The texts of the unit (the error messages and the
+  valid characters of the range validator) are checked as the unit sets them. The hook of the error box records what
+  the validators ask it to show. }
 program t_valid;
 
 {$mode objfpc}
@@ -106,6 +106,16 @@ begin
   end;
 end;
 
+procedure TestTexts;
+begin
+  Check(TPXPictureValidator.ErrorMsg = 'Error in picture format.'#10' %s', 'Picture error text');
+  Check(TFilterValidator.ErrorMsg = 'Invalid character in input', 'Filter error text');
+  Check(TRangeValidator.RangeErrorMsg = 'Value not in the range %d to %d', 'Range error text');
+  Check(TStringLookupValidator.ErrorMsg = 'Input is not in list of valid strings', 'Lookup error text');
+  Check(TRangeValidator.ValidUnsignedChars = '+0123456789', 'Unsigned characters');
+  Check(TRangeValidator.ValidSignedChars = '+-0123456789', 'Signed characters');
+end;
+
 procedure TestFreeFunctions;
 begin
   Check(IsNumber('0') and IsNumber('9') and IsNumber('5'), 'IsNumber digits');
@@ -171,7 +181,6 @@ var
   Filter: TFilterValidator;
   Text: string;
 begin
-  TFilterValidator.ErrorMsg := 'Invalid character';
   Filter := TFilterValidator.Create('0123456789');
   try
     Text := '12a';
@@ -192,7 +201,7 @@ begin
     Check(BoxCalls = 0, 'Error does nothing while the hook is nil');
     ErrorBoxHook := @RecordBox;
     Filter.Error;
-    Check((BoxCalls = 1) and (BoxFormat = 'Invalid character') and (BoxArgCount = 0),
+    Check((BoxCalls = 1) and (BoxFormat = 'Invalid character in input') and (BoxArgCount = 0),
       'Filter.Error shows the message without arguments');
     Check(not Filter.Validate('x'), 'Filter.Validate refuses');
     Check(BoxCalls = 2, 'Filter.Validate shows the error');
@@ -218,12 +227,9 @@ var
   Text: string;
   Number: clong;
 begin
-  TRangeValidator.ValidUnsignedChars := '0123456789';
-  TRangeValidator.ValidSignedChars := '-0123456789';
-  TRangeValidator.RangeErrorMsg := 'Value not in range %ld to %ld';
-
   Range := TRangeValidator.Create(1, 100);
   try
+    Check(Range.IsValid('+50'), 'Range accepts a plus sign');
     Check(Range.Status = vsOk, 'Range status');
     Check(Range.Options = 0, 'Range options');
     Check(Range.IsValid('50'), 'Range accepts 50');
@@ -273,7 +279,7 @@ begin
     BoxCalls := 0;
     ErrorBoxHook := @RecordBox;
     Range.Error;
-    Check((BoxCalls = 1) and (BoxFormat = 'Value not in range %ld to %ld') and (BoxArgCount = 2),
+    Check((BoxCalls = 1) and (BoxFormat = 'Value not in the range %d to %d') and (BoxArgCount = 2),
       'Range.Error shows the message with two arguments');
     Check((BoxFirst = -1) and (BoxSecond = 5), 'Range.Error passes the limits');
     Check(not Range.Validate('9'), 'Range.Validate refuses');
@@ -333,7 +339,6 @@ procedure TestStringLookup;
 var
   Validator: TStringLookupValidator;
 begin
-  TStringLookupValidator.ErrorMsg := 'Input is not in list of valid strings';
   FreedStrings := 0;
   Validator := TStringLookupValidator.Create(NewFruit);
   try
@@ -507,10 +512,9 @@ begin
     Check(not Validator.IsValid(''), 'IsValid refuses the empty text');
     Check(Validator.Validate('12/34'), 'Validate accepts a complete text');
     BoxCalls := 0;
-    TPXPictureValidator.ErrorMsg := 'Input does not conform to picture: %s';
     ErrorBoxHook := @RecordBox;
     Check(not Validator.Validate('12/'), 'Validate refuses an incomplete text');
-    Check((BoxCalls = 1) and (BoxFormat = 'Input does not conform to picture: %s') and (BoxArgCount = 1),
+    Check((BoxCalls = 1) and (BoxFormat = 'Error in picture format.'#10' %s') and (BoxArgCount = 1),
       'Error shows the message with the picture');
     Check(BoxText = '##/##', 'The argument of the message is the picture');
     ErrorBoxHook := nil;
@@ -588,6 +592,7 @@ begin
 end;
 
 begin
+  TestTexts;
   TestFreeFunctions;
   TestBaseValidator;
   TestFilter;

@@ -1,6 +1,6 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/validate.h, include/tvision/ttypes.h, include/tvision/tv.h,
-  source/tvision/tvalidat.cpp
+  source/tvision/tvalidat.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   The validators work on texts only; they are used by the thread of the user interface, and no routine of this unit
@@ -14,10 +14,10 @@
     - TStringCollection is not defined by a unit or by an input. TStringLookupValidator holds and takes a
       TNSCollection of TvObjs whose items are blocks of characters with a terminating zero; that is the part of
       TStringCollection that the validator uses.
-    - The texts errorMsg of the classes, and validUnsignedChars and validSignedChars of TRangeValidator, are defined
-      in files that are not among the sources of the unit. They are the class variables ErrorMsg, RangeErrorMsg,
-      ValidUnsignedChars and ValidSignedChars, which start as empty texts and which the program sets. The texts are
-      formats of the printf kind, as the hook receives them.
+    - The texts errorMsg of the classes, and validUnsignedChars and validSignedChars of TRangeValidator, are the
+      class variables ErrorMsg, RangeErrorMsg, ValidUnsignedChars and ValidSignedChars, which hold the texts of the
+      C++ when the unit starts. The texts are formats of the Format function, as the hook receives them: the
+      specifier %ld of the range message is %d.
 
   A text that the C++ passes as a char pointer is a Pascal string: a parameter that the routine may change (the
   argument s of isValidInput and picture) is a var parameter, and the text ends where the string ends. The member
@@ -900,4 +900,11 @@ begin
   Strings := AStrings;
 end;
 
+initialization
+  TPXPictureValidator.ErrorMsg := 'Error in picture format.' + #10 + ' %s';
+  TFilterValidator.ErrorMsg := 'Invalid character in input';
+  TRangeValidator.RangeErrorMsg := 'Value not in the range %d to %d';
+  TStringLookupValidator.ErrorMsg := 'Input is not in list of valid strings';
+  TRangeValidator.ValidUnsignedChars := '+0123456789';
+  TRangeValidator.ValidSignedChars := '+-0123456789';
 end.

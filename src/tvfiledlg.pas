@@ -1,7 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (TFileInputLine, TFileInfoPane, TFileDialog and the option flags fd...),
   source/tvision/tfildlg.cpp, include/tvision/tv.h, include/tvision/views.h, include/tvision/ttypes.h,
-  include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp (strnzcpy)
+  include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp (strnzcpy), source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -14,11 +14,12 @@
       handleEvent of TFileInputLine is FileInputLineEventHook, and the draw and the handleEvent of TFileInfoPane are
       FileInfoPaneDrawHook and FileInfoPaneEventHook. The hooks do nothing while they are nil; the event hooks run
       after the member of the base class. The constructor of TFileInfoPane only calls the one of TView, so its
-      event mask is the one of TView, a hook that handles broadcasts has to widen it. The tables months, pmText and
-      amText and the palette of TFileInfoPane belong to that file and are left out; the palette is the one of TView.
+      event mask is the one of TView, a hook that handles broadcasts has to widen it. The palette of TFileInfoPane
+      belongs to that file and is left out; the palette is the one of TView.
     - The texts of TFileDialog (filesText, openText, okText, replaceText, clearText, cancelText, helpText,
-      invalidDriveText and invalidFileText) are defined in a file that is not among the inputs, so they are the
-      class variables FilesText to InvalidFileText, empty until the program sets them.
+      invalidDriveText and invalidFileText) are the class variables FilesText to InvalidFileText, and the texts pmText,
+      amText and months of TFileInfoPane are the class variables PmText, AmText and Months. They hold the texts of
+      the C++ when the unit starts.
     - The constant MAXPATH, the functions getCurDir and validFileName and the functions of the compatibility
       headers have no source here. MaxPath stands for MAXPATH. GetCurDirHook stands for getCurDir and
       ValidFileNameHook for validFileName. While GetCurDirHook is nil the directory of a file dialog becomes the
@@ -80,6 +81,10 @@ type
   public
     { The entry that the pane shows. }
     FileBlock: TSearchRec;
+    { The texts of the time of the day (pm and am) and the names of the months, from 1 to 12; the entry 0 is empty. }
+    class var PmText: string;
+    class var AmText: string;
+    class var Months: array[0..12] of string;
     constructor Create(const Bounds: TRect); reintroduce;
     procedure Draw; override;
     procedure HandleEvent(var Event: TEvent); override;
@@ -128,6 +133,7 @@ var
   ValidFileNameHook: TValidFileNameFunc;
 
 implementation
+
 
 uses
   TvWindow, TvHist, TvApp, TvMsgBox, TvPath, TvUtil;
@@ -513,4 +519,29 @@ begin
   MessageBox(mfError or mfOKButton, '%s: ''%s''', [InvalidFileText, fullName]);
 end;
 
+initialization
+  TFileDialog.FilesText := '~F~iles';
+  TFileDialog.OpenText := '~O~pen';
+  TFileDialog.OkText := 'O~K~';
+  TFileDialog.ReplaceText := '~R~eplace';
+  TFileDialog.ClearText := '~C~lear';
+  TFileDialog.CancelText := 'Cancel';
+  TFileDialog.HelpText := '~H~elp';
+  TFileDialog.InvalidDriveText := 'Invalid drive or directory';
+  TFileDialog.InvalidFileText := 'Invalid file name';
+  TFileInfoPane.PmText := 'p';
+  TFileInfoPane.AmText := 'a';
+  TFileInfoPane.Months[0] := '';
+  TFileInfoPane.Months[1] := 'Jan';
+  TFileInfoPane.Months[2] := 'Feb';
+  TFileInfoPane.Months[3] := 'Mar';
+  TFileInfoPane.Months[4] := 'Apr';
+  TFileInfoPane.Months[5] := 'May';
+  TFileInfoPane.Months[6] := 'Jun';
+  TFileInfoPane.Months[7] := 'Jul';
+  TFileInfoPane.Months[8] := 'Aug';
+  TFileInfoPane.Months[9] := 'Sep';
+  TFileInfoPane.Months[10] := 'Oct';
+  TFileInfoPane.Months[11] := 'Nov';
+  TFileInfoPane.Months[12] := 'Dec';
 end.

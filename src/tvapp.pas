@@ -1,7 +1,8 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/app.h, include/tvision/views.h, source/tvision/tprogram.cpp,
   source/tvision/tapplica.cpp, source/tvision/tbkgrnd.cpp, source/tvision/tdesktop.cpp, source/tvision/syserr.cpp,
-  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp (message)
+  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp (message),
+  source/tvision/tvtext2.cpp (exitText, defaultBkgrnd)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only. The thread-safe surface of the program is the
@@ -29,9 +30,8 @@
   The construction of THardwareInfo and of TMouse in TAppInit has no counterpart: the program sets the backends
   of TvScreen and TvSys instead.
 
-  The text of TProgram::exitText and the character TDeskTop::defaultBkgrnd are defined in files that are not
-  among the sources of this unit. They are the variables ExitText and DefaultBkgrnd, which the program sets before
-  it creates the application; they start empty and as the character 0.
+  The text of TProgram::exitText and the character TDeskTop::defaultBkgrnd are the class variables ExitText and
+  DefaultBkgrnd, which hold the values of the C++ when the unit starts.
 
   A Pascal class has one parent, so a class that the C++ inherits virtually beside TGroup is the class between
   TGroup and the class that uses it: TDeskInit between TGroup and TDeskTop, and TProgInit between TGroup and
@@ -1176,6 +1176,8 @@ initialization
   TProgram.AppPalette := apColor;
   EventTimeoutMs := 20;
   ApplicationHook := @ApplicationRoot;
+  TProgram.ExitText := '~Alt-X~ Exit';
+  TDeskTop.DefaultBkgrnd := #$B0;
 
 finalization
   TAppInit.Shutdown;
