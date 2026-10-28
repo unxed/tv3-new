@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 27 | 27 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 28 | 28 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvactions.pas` | specification | specification:tvactions | 2 | 2 | 0 |
@@ -35,6 +35,7 @@
 | `src/tvformat.pas` | specification | specification:tvformat | 2 | 2 | 0 |
 | `src/tvgadgets.pas` | specification | specification:tvgadgets | 2 | 2 | 0 |
 | `src/tvgeom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 2 | 2 | 0 |
+| `src/tvhelp.pas` | translation | magiblot/tvision:include/tvision/help.h:1-93; magiblot/tvision:include/tvision/helpbase.h:1-198; magiblot/tvision:source/tvision/help.cpp:1-290; magiblot/tvision:source/tvision/helpbase.cpp:1-674; magiblot/tvision:source/tvision/tvtext2.cpp:1-227 | 1 | 1 | 0 |
 | `src/tvhist.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/thistory.cpp:1-161; magiblot/tvision:source/tvision/thstview.cpp:1-97; magiblot/tvision:source/tvision/thistwin.cpp:1-68; magiblot/tvision:source/tvision/histlist.cpp:1-202; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121 | 3 | 3 | 0 |
 | `src/tvini.pas` | specification | specification:tvini | 2 | 2 | 0 |
 | `src/tvinput.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:include/tvision/validate.h:1-303; magiblot/tvision:source/tvision/tinputli.cpp:1-613; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 2 | 2 | 0 |
@@ -87,6 +88,7 @@
 | `tests/t_format.pas` | specification | specification:tvformat | 1 | 1 | 0 |
 | `tests/t_gadgets.pas` | specification | specification:tvgadgets | 1 | 1 | 0 |
 | `tests/t_geom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 1 | 1 | 0 |
+| `tests/t_help.pas` | translation | magiblot/tvision:include/tvision/help.h:1-93; magiblot/tvision:include/tvision/helpbase.h:1-198; magiblot/tvision:source/tvision/help.cpp:1-290; magiblot/tvision:source/tvision/helpbase.cpp:1-674; magiblot/tvision:source/tvision/tvtext2.cpp:1-227 | 1 | 1 | 0 |
 | `tests/t_hist.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/thistory.cpp:1-161; magiblot/tvision:source/tvision/thstview.cpp:1-97; magiblot/tvision:source/tvision/thistwin.cpp:1-68; magiblot/tvision:source/tvision/histlist.cpp:1-202; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121 | 2 | 2 | 0 |
 | `tests/t_ini.pas` | specification | specification:tvini | 1 | 1 | 0 |
 | `tests/t_input.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:include/tvision/validate.h:1-303; magiblot/tvision:source/tvision/tinputli.cpp:1-613; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
