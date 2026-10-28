@@ -282,37 +282,102 @@ List, and the protected member items is Items. The record TListBoxRec keeps its 
 Selection. The destructor of TListBox does not free its list, as the destructor of the C++ is empty; the list is
 freed by NewList when another list is given, by SetData and by the owner of the list.
 
-## Added by the translation of TvMsgBox
+## Added by the translation of TvValid
 
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
 
-added: InputLineHook
-added: TCreateInputLineFunc
-added: ClassCaption
-added: ButtonCaption
-added: WantsButton
-added: CenteredBoxRect
+added: TErrorBoxProc
+added: ErrorBoxHook
+added: PLongValue
+added: TRangeValidator.RangeErrorMsg
+added: TPXPictureValidator.RunPicture
+added: TPXPictureValidator.PicAt
+added: AllCharsIn
+added: ScanDecimal
 
-TCreateInputLineFunc is the procedural type of the hook that stands for a part of the C++ that no unit has yet and no
-input defines. InputLineHook stands for the constructor of TInputLine that takes a rectangle and a limit, which
-inputBoxRect calls to make the input line of its dialog. While the hook is nil the dialog has no input line: the
-label has no link and the data of the dialog is kept by no view, so the buffer is not changed. A view that the hook
-makes is inserted first, as the C++ inserts the input line first, and the label is linked to it.
+TErrorBoxProc is the procedural type of the hook that stands for a part of the C++ that no unit has yet and no input
+defines. ErrorBoxHook stands for the call messageBox(mfError | mfOKButton, ...) that Error of TPXPictureValidator,
+TFilterValidator, TRangeValidator and TStringLookupValidator makes; it takes the message text and the arguments of the
+call (the picture, or the two limits of the range) and does nothing while it is nil. The constants mfError and
+mfOKButton are not passed, because every call of the validators has the same two.
 
-The class MsgBoxText keeps its name, and its static members yesText, noText, okText, cancelText, warningText,
-errorText, informationText and confirmText are the class variables YesText, NoText, OkText, CancelText, WarningText,
-ErrorText, InformationText and ConfirmText. They are defined in a file that is not among the sources of the unit, so
-the program sets them; they start as empty texts. The tables buttonName and Titles of msgbox.cpp, which hold the
-values of these members, are the functions ButtonCaption and ClassCaption inside the unit, and they read the class
-variables when a box is made. The table commands of msgbox.cpp is a constant of the unit that is not visible outside
-it. WantsButton tells whether the options ask for the button of a slot, as the test of the bits 0x0100 shifted by the
-slot does in messageBoxRect, and CenteredBoxRect is the static function makeRect, which both messageBox functions
-use. These four are inside the unit and are not visible outside it.
+The texts errorMsg of the classes and validUnsignedChars and validSignedChars of TRangeValidator are defined in files
+that are not among the sources of the unit, so they are the class variables ErrorMsg of TPXPictureValidator,
+TFilterValidator and TStringLookupValidator, and ValidUnsignedChars and ValidSignedChars of TRangeValidator, which
+start as empty texts and which the program sets. The errorMsg of TRangeValidator is RangeErrorMsg, because a class
+variable of a derived class does not take the name of one of its base class. TStringCollection is not defined by a unit
+or by an input, so TStringLookupValidator takes and holds a TNSCollection whose items are blocks of characters with a
+terminating zero, and its destructor and NewStringList destroy it with TvObject.DestroyObject, as destroy does.
 
-The constants mfWarning to mfOKCancel keep their names and are integers, as the constants of the C++ are int. The
-overloads of messageBox and messageBoxRect that take a format and further arguments take a format string and an
-array of const, and they format with VFormatStr of TvUtil. The overload of messageBox that takes the options first
-has them as a Cardinal, which is the unsigned of the C++. The text parameters that are a TStringView are strings,
-and the parameter s of inputBox and inputBoxRect, a char pointer that holds the text and receives it, is a PAnsiChar;
-the limit, an uchar, is a Byte. The functions of the C++ that are called with TProgram::application and
-TProgram::deskTop use TProgram.Application and TProgram.DeskTop, which must exist when they are called.
+A char pointer of the C++ is a string. The arguments s of isValidInput, transfer and picture, which the routines may
+change, are var parameters, and the argument of the constructors that take a TStringView is a const string. The member
+pic of TPXPictureValidator is a string that is never nil, and the members validChars and strings are a string and a
+collection. The members min and max of TRangeValidator are the fields Min and Max of type LongInt (int32_t). The type
+long of transfer and of the conversion %ld is clong of the unit ctypes; ScanDecimal is that conversion: white space, a
+sign and digits, with the nearest limit for a number beyond the range, and no result when there is no digit. When
+vtGetData finds no number, the buffer gets 0, where the C++ stores a value that was never set. The functions isNumber,
+isLetter, isSpecial, numChar, isComplete and isIncomplete are IsNumber, IsLetter, IsSpecial, NumChar, IsComplete and
+IsIncomplete and are visible outside the unit; the static function uppercase and the static function stringMatch are
+Uppercase and StringMatch inside the unit. The enumerations TVTransfer and TPicResult and the constants vsOk, vsSyntax,
+voFill, voTransfer and voReserved keep their names.
+
+The constructor of TPXPictureValidator calls picture, which is virtual; RunPicture holds the body of the function and
+the constructor calls it, so a class derived in Pascal does not take part in the check of the constructor, as in the
+C++ where a call in a constructor reaches the function of the class that is being made. Picture calls RunPicture.
+PicAt gives the character of the picture at a position, and the character with the code 0 after its end, as the
+reading of the terminating zero of the C++. AllCharsIn is the test strspn(s, chars) == strlen(s) of the filter
+validators.
+
+## Added by the translation of TvInput
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TInputLine.HandleMouseDown
+added: TInputLine.HandleKeyDown
+added: TInputLine.EnterKeyText
+added: TInputLine.HandleCommand
+added: TInputLine.EraseSpan
+added: TInputLine.ScrollWhileHeld
+added: TInputLine.DragSelection
+added: InputLinePalette
+added: Larger
+added: Smaller
+added: TextBeforeNul
+added: LowAttrOf
+added: CharLengthAt
+
+The members of TInputLine that handleEvent of the C++ holds in one body are split in four, one for each kind of
+event and one for the text of a key: HandleMouseDown is the case of evMouseDown, HandleKeyDown is the case of
+evKeyDown, and it tells whether the key is for the line (the `return` of the C++ that leaves handleEvent before the
+commands are updated is its answer False), EnterKeyText is the default branch of the switch of the key codes, and
+HandleCommand is the case of evCommand. All four are private. Three more private members hold repeated or long
+pieces: EraseSpan is the sequence of the keys Backspace, Ctrl-Backspace and Ctrl-Delete (select a span when nothing is
+selected, delete the selection, check the text), and ScrollWhileHeld and DragSelection are the two loops of
+HandleMouseDown. InputLinePalette is the palette that the static
+variable of getPalette holds, made from cpInputLine when the unit starts and released when it ends. Larger and Smaller
+are max and min, TextBeforeNul is the reading of a block of characters up to its terminating zero, LowAttrOf gives the
+low attribute of the pair that getColor returns, and CharLengthAt is TText::next of the text that starts at a
+position. These five are inside the unit and are not visible outside it.
+
+The functions hotKey and hotKeyStr are defined in the file of TInputLine, so they are the functions HotKey and
+HotKeyStr of the unit, visible outside it. When the unit starts it gives them to HotKeyHook of TvDialog and to
+HotKeyStrHook of TvMenus, which stand for them in those units; a program that does not use TvInput leaves the hooks
+as they are. The static functions prevWord and nextWord are PrevWord and NextWord inside the unit, and the constant
+CONTROL_Y, the table padKeys (a set of scan codes, PadKeys) and the palette cpInputLine keep their names.
+
+The text of a line is a string: the member data is the field Data, and oldData is OldData. The members maxLen,
+maxWidth, maxChars, curPos, firstPos, selStart and selEnd are public fields as in the C++, and validator, anchor,
+oldCurPos, oldFirstPos, oldSelStart and oldSelEnd are the protected fields Validator, Anchor, OldCurPos, OldFirstPos,
+OldSelStart and OldSelEnd. The private member functions of the class are protected, so that a class of another unit
+can read the state of a line; setCmdState keeps its name and takes a command, so it hides SetCmdState of TView, which
+takes a set of commands. The arrows rightArrow and leftArrow of tvtext1.cpp are the class variables RightArrow and
+LeftArrow, which start as the characters 16 and 17 and which a program may change. The limit modes ilMaxBytes,
+ilMaxWidth and ilMaxChars keep their names.
+
+Data never holds a zero character that ends it early: a text that comes from a validator, from SetData or from a key
+event ends at its first zero character, as a block of characters does. GetData copies DataSize bytes, the text, its
+terminating zero and then zeros, where the C++ copies the bytes that follow the zero in the block. SetData and
+CheckValid cut a text that is longer than MaxLen, where the C++ would write beyond its block. The size DataSize is a
+Word, as ushort is, so it wraps for a limit above 65534 bytes in the same way. The argument rec of GetData and SetData
+is a Pointer to a record of at least DataSize bytes. The text of a key event has at most four bytes, which is
+maxCharSize of config.h.
