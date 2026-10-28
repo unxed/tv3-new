@@ -1,0 +1,48 @@
+{
+  "path": "src/tvmouse.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/system.h",
+      "lines": "1-560"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tmouse.cpp",
+      "lines": "1-192"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/hardware.h",
+      "lines": "1-327"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/system.h",
+      "sha256": "2012b6d6efab5627525bb124c0695fda1a530b80a2157dc3e21d8f12ed8fc266"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tmouse.cpp",
+      "sha256": "1b663e0ddb250b2250fb020c7ddbe6cd230e4a8e6e8faef9337ffc1d5f0602ae"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/hardware.h",
+      "sha256": "62ce1286269c6b0dce76ac9deb9ba70d261f70c19f0e4851520d060da036dc41"
+    }
+  ],
+  "implementer": "implementer 55",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "a29146f23299c75a8cfd70ebbd74024b85da555d",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

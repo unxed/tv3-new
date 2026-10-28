@@ -1,6 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/system.h (TEventQueue), source/tvision/tevent.cpp,
-  include/tvision/internal/events.h, source/platform/events.cpp
+  include/tvision/internal/events.h, source/platform/events.cpp,
+  include/tvision/hardware.h (getButtonCount, cursorOn, cursorOff)
   See COPYRIGHT.magiblot.
 
   The unit is for Unix systems: the wake-up source is a pipe. The wake-up sources of Windows and DOS are not
@@ -137,6 +138,11 @@ type
     procedure MouseResume; virtual;
     procedure MouseSuspend; virtual;
     procedure MouseSetRange(MaxX, MaxY: Integer); virtual;
+    { THardwareInfo::getButtonCount: the number of buttons of the mouse; 0 in the base class. }
+    function GetButtonCount: Cardinal; virtual;
+    { THardwareInfo::cursorOn and cursorOff: the base class does nothing. }
+    procedure CursorOn; virtual;
+    procedure CursorOff; virtual;
     { The state of the mouse now. }
     procedure MouseGetState(var Mouse: TMouseEventType); virtual;
     procedure ClearPendingEvent; virtual;
@@ -616,6 +622,19 @@ begin
 end;
 
 procedure TEventBackend.MouseSetRange(MaxX, MaxY: Integer);
+begin
+end;
+
+function TEventBackend.GetButtonCount: Cardinal;
+begin
+  Result := 0;
+end;
+
+procedure TEventBackend.CursorOn;
+begin
+end;
+
+procedure TEventBackend.CursorOff;
 begin
 end;
 

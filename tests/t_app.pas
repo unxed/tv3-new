@@ -1,7 +1,8 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/app.h, include/tvision/views.h, source/tvision/tprogram.cpp,
   source/tvision/tapplica.cpp, source/tvision/tbkgrnd.cpp, source/tvision/tdesktop.cpp, source/tvision/syserr.cpp,
-  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/tvtext2.cpp
+  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/tvtext2.cpp,
+  include/tvision/system.h (TMouse), source/tvision/tmouse.cpp (TMouse::hide, TMouse::show)
   See COPYRIGHT.magiblot.
 
   The display is a screen of 60 by 20 cells in memory that can grow to 70 by 22; the input is a backend that takes
@@ -53,6 +54,8 @@ type
   public
     procedure MouseSuspend; override;
     procedure MouseSetRange(MaxX, MaxY: Integer); override;
+    procedure CursorOn; override;
+    procedure CursorOff; override;
   end;
 
   { A desktop that counts the calls of TileError and shows the order of tiling. }
@@ -229,6 +232,16 @@ begin
   Note('mouse-on');
 end;
 
+procedure TFakeEvents.CursorOn;
+begin
+  Note('mw');
+end;
+
+procedure TFakeEvents.CursorOff;
+begin
+  Note('mh');
+end;
+
 procedure OnCaret(X, Y: Integer);
 begin
 end;
@@ -245,11 +258,6 @@ begin
     Note('c0');
 end;
 
-procedure OnMouseHide;
-begin
-  Note('mh');
-end;
-
 procedure OnInitHistory;
 begin
   Note('hi');
@@ -258,11 +266,6 @@ end;
 procedure OnDoneHistory;
 begin
   Note('hd');
-end;
-
-procedure OnMouseShow;
-begin
-  Note('mw');
 end;
 
 function OnLowMemory: Boolean;
@@ -887,7 +890,7 @@ begin
   App := NewApp;
   Journal := '';
   App.SetScreenMode(TDisplay.smBW80);
-  Check(Journal = 'mh;mouse-on;mw;', 'SetScreenMode hides the mouse, sets the mode and shows the mouse');
+  Check(Journal = 'mh;mouse-on;mw;', 'SetScreenMode hides the mouse cursor, sets the mode and shows the mouse cursor');
   Check((TProgram.AppPalette = apBlackWhite) and (ShadowSize.X = 2) and (ShadowSize.Y = 1) and (not TView.ShowMarkers),
     'a black and white screen has the black and white palette and a shadow of 2 by 1');
   P := App.GetPalette;
@@ -1594,8 +1597,6 @@ begin
   TEventQueue.Backend := FakeEvents;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MouseHideHook := @OnMouseHide;
-  MouseShowHook := @OnMouseShow;
   TestTexts;
   { The checks of the drawing below read a plain character and a short exit text. }
   TDeskTop.DefaultBkgrnd := '.';
@@ -1626,8 +1627,6 @@ begin
   TestThreads;
   TestShutdown;
 
-  MouseHideHook := nil;
-  MouseShowHook := nil;
   SetCtrlBrkHandlerHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;

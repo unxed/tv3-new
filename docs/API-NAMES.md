@@ -21,6 +21,9 @@ added: TEventQueue.GetPostedEvent
 added: TEventQueue.HasPostedEvents
 added: TEventQueue.Backend
 added: TEventBackend
+added: TEventBackend.GetButtonCount
+added: TEventBackend.CursorOn
+added: TEventBackend.CursorOff
 added: TEventFifo
 added: TvObject
 added: TvObject.DestroyObject
@@ -151,8 +154,6 @@ added: TVoidProc
 added: TLowMemoryFunc
 added: TSetCtrlBrkHandlerProc
 added: LowMemoryHook
-added: MouseHideHook
-added: MouseShowHook
 added: InitHistoryHook
 added: DoneHistoryHook
 added: SetCtrlBrkHandlerHook
@@ -190,8 +191,7 @@ added: AppPalettes
 
 TVoidProc, TLowMemoryFunc and TSetCtrlBrkHandlerProc are the procedural types of the hooks that stand for parts of the
 C++ that no unit has yet and no input defines. LowMemoryHook stands for the function lowMemory, which validView asks
-whether the memory is low; MouseHideHook and MouseShowHook stand for TMouse::hide and TMouse::show, which
-setScreenMode calls; InitHistoryHook and DoneHistoryHook stand for initHistory and doneHistory, which the constructor
+whether the memory is low; InitHistoryHook and DoneHistoryHook stand for initHistory and doneHistory, which the constructor
 and the destructor of TApplication call; SetCtrlBrkHandlerHook stands for THardwareInfo::setCtrlBrkHandler, which
 TSystemError.Resume and TSystemError.Suspend call with True and False. While a hook is nil it does nothing, and while
 LowMemoryHook is nil the memory is never low. TvApp gives TProgram.Application to the ApplicationHook of TvMenus when
@@ -548,6 +548,20 @@ which gives the button the grow mode gfGrowLoX or gfGrowHiX and moves the rectan
 HandleEvent is split by the kind of event: FinishWithFileCommand is the case of evCommand that ends the dialog at
 cmFileOpen, cmFileReplace and cmFileClear, and TurnDoubleClickIntoOK is the case of evBroadcast that turns
 cmFileDoubleClicked into a cmOK command that is put back. Both are private.
+
+## Added by the translation of TvMouse
+
+The members GetButtonCount, CursorOn and CursorOff of TEventBackend in TvSys are the functions getButtonCount, cursorOn
+and cursorOff of THardwareInfo, which the mouse calls; the backend of the event queue stands for THardwareInfo, as the
+backend of TvScreen does for the screen. In the base class GetButtonCount gives 0 and CursorOn and CursorOff do nothing.
+The type of GetButtonCount is Cardinal (DWORD).
+
+THWMouse and TMouse keep their names. The members of THWMouse that are protected in the C++ are protected, the static
+members are class procedures and class functions, and the static member buttonCount is the protected class variable
+ButtonCount, a Byte (uchar); the static noMouse is the private class variable NoMouse. The constructor of THWMouse is
+protected and the destructor is public. Only the branch of the files for the flat memory model is translated, so
+handlerInstalled and registerHandler do not exist, SetRange does nothing and GetEvent clears the buttons, the wheel,
+the position and the flags and leaves ControlKeyState as it is.
 
 ## The functions of misc.cpp
 
