@@ -127,6 +127,8 @@ provenance check: pending version src/tvgadgets.pas 66c4e7cf40f5f5a671e1298adccb
 provenance check: pending version src/tvgadgets.pas 0d933ec4b370eb7822201679343bb4c972e8fa46
 provenance check: pending version src/tvgeom.pas d4716d8b2b2055d774e551c6f50826f6a683c107
 provenance check: pending version src/tvgeom.pas f96b3d45377fc6002853ab81cc2e2aee60aa222b
+provenance check: pending version src/tvglyphs.pas d75f702c020526175b5592b3db303d99caee4791
+provenance check: pending version src/tvglyphs.pas c278d7fa0ec2c949b6b3e4c045d8d8765ed63b42
 provenance check: pending version src/tvhelp.pas c1642e20884120e8fd7eedc699b76bd3b189aa8c
 provenance check: pending version src/tvhist.pas 99295929b2b5c67cbf4bac037e28523a8f2b7761
 provenance check: pending version src/tvhist.pas 5ff65b61d1f37c441db0ce64b3d6133e30eb437b
@@ -251,6 +253,7 @@ provenance check: pending version tests/t_files.pas 9ad8d536b2119f72cb7fad83e7dc
 provenance check: pending version tests/t_format.pas 7f4e7c2987639003b13efe21c052df70a18a9b06
 provenance check: pending version tests/t_gadgets.pas 0e92c177e2813f3153c2f6adbcf21cc7b03f847e
 provenance check: pending version tests/t_geom.pas 0963e364eb639398f1482e79f60fdd0bf1b5ff0f
+provenance check: pending version tests/t_glyphs.pas 6dc4bdc66861b073c478784edbc73c728a5f79ef
 provenance check: pending version tests/t_help.pas 3d2fc6b6bab05dafc49e5b23e5f47c32ae42bfe5
 provenance check: pending version tests/t_hist.pas a63d961118c1385684cac7178a58d8de466ff70c
 provenance check: pending version tests/t_hist.pas afa68c21729a01af7d269998c7a708343d299870
