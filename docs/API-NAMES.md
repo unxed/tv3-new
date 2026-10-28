@@ -1437,3 +1437,49 @@ parameter; TStateRunner adapts it to the procedure of the lock of TvVtCore, whic
 The result of func is not returned. The class TerminalState is an object, so the controller keeps the one that
 the lock holds in FState and frees it. A shut down controller that has a user thread in LockState is not protected,
 as in the C++. The reader loop buffer has ReadBufSize characters. A write that would run on an empty span is not made.
+
+## Added by the translation of TvVtView
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TerminalView.ReadMouseState
+added: TerminalView.DrawWithState
+added: TerminalView.SeenOffset
+added: TerminalView.ClientUsesMouse
+added: PTerminalUpdatedMsg
+added: BlankTerminalEvent
+
+The classes TerminalView, BasicTerminalWindow and BasicTerminalFrame keep their names; the namespace tvterm is not a
+prefix. The private data members are the fields Consts, ScrollBar, OwnerBufferChanged, Selection, PrevSelection and
+InSelectionMode of TerminalView and Consts, FocusedCmds, View, TitleCapacity and TermTitle of BasicTerminalWindow; the
+public member termCtrl is TermCtrl. The end of a selection is its member RangeEnd, as in TvVtCore. The members of
+TView that the classes override are ChangeBounds, SetState, HandleEvent, Draw, ShutDown and Execute, and getTitle is
+GetTitle with the parameter RoomLeft; the unnamed parameter of getTitle is not used. The static functions viewBounds
+and viewSize are ViewBounds and ViewSize, and initFrame is InitFrame, which hides InitFrame of TWindow.
+
+The constructors take the same arguments as the C++ ones. A reference to the constants (const TVTermConstants &) is a
+const parameter whose value the view and the window copy into Consts, so the constants need not outlive them. The
+default argument of startSelection is the second overload StartSelection without a parameter; it starts at the anchor
+{0, 0}, which the value initialisation {} gives. The assignment selection = {} is a record filled with zeros. The
+constructor of BasicTerminalWindow passes the title '' and wnNoNumber to TWindow, and the frame is made by the
+function InitFrame through the constructor of TWindow that takes a function. BasicTerminalFrame has a constructor
+that passes its bounds on. BasicTerminalWindow has the destructor Destroy, which frees TermTitle, because a GrowArray
+is a class here and is not freed with the object. The destructor of TerminalView shuts the controller down.
+
+The template lockState of the controller takes a TStateProc, so the lambdas of draw and handleMouse are the methods
+DrawWithState and ReadMouseState. The lambda of handleMouse that reads absPos and clientIsUsingMouse leaves the
+offset of the scrollback and the flag of the mouse in the private fields SeenOffset and ClientUsesMouse, from which
+HandleMouse takes them. The pointer to a TerminalUpdatedMsg in the information pointer of the command
+cmTerminalUpdated is PTerminalUpdatedMsg, which is inside the unit. BlankTerminalEvent gives a TerminalEvent of a
+kind with all other bytes zero, as a TerminalEvent that is declared and filled by members. The functions rangeToCopy
+and drawSelection are RangeToCopy and DrawSelection inside the unit; DrawSelection takes the cells as an open array,
+and RangeToCopy takes the damage of a row through the pointer that DamageAtRow gives. The call lineBuffer = new
+TScreenCell[n] is a dynamic array whose cells are zero.
+
+The title of the state moves to the window as std::move does: UpdateTitle copies the bytes of State.Title into TermTitle
+and empties State.Title. The block of characters of the title of TWindow is allocated by GetMem and freed by
+FreeMem, as TWindow frees it, so ResizeTitle replaces it with a block of the capacity. The text of the frame
+(snprintf of " %dx%d ") is built with IntToStr, and the color uchar color = mapColor(5) is the BIOS value of the
+attribute (the conversion of a TColorAttr to a Byte), which is given back to the buffer as a TColorAttr. A range of
+a row that reaches outside the columns of the view is cut to those columns by UpdateDisplay, where the C++ copies
+the cells that the range names.
