@@ -1,0 +1,47 @@
+{
+  "path": "src/tvdosnames.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvdosnames"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvdosnames",
+      "sha256": "77a95e828ac1e9db1098ff1c3f5f60f58cdba69f70fba8b02c887450fb57c261"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "36b8589aa7136bef2842bab58dc5abd556e8982e5e1923e49ed2e60ea4861bf6"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvcodepages.pas",
+      "sha256": "f76811c3c5a2ee9bd23e082e5e3f31a51213973faa6a163cff034f6b76dedde7"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    }
+  ],
+  "implementer": "implementer 78",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "aed60702677cfdaece0efa822c2f86d1d63acda8",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "f8396055b9dd97fd1a12d39f0fd08f40b1b4ee64",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
