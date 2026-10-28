@@ -30,6 +30,7 @@
 | `src/tvformat.pas` | specification | specification:tvformat | 2 | 2 | 0 |
 | `src/tvgadgets.pas` | specification | specification:tvgadgets | 2 | 2 | 0 |
 | `src/tvgeom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 2 | 2 | 0 |
+| `src/tvhist.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/thistory.cpp:1-161; magiblot/tvision:source/tvision/thstview.cpp:1-97; magiblot/tvision:source/tvision/thistwin.cpp:1-68; magiblot/tvision:source/tvision/histlist.cpp:1-202; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 1 | 1 | 0 |
 | `src/tvini.pas` | specification | specification:tvini | 2 | 2 | 0 |
 | `src/tvinput.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:include/tvision/validate.h:1-303; magiblot/tvision:source/tvision/tinputli.cpp:1-613; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 2 | 2 | 0 |
 | `src/tvkeyname.pas` | specification | specification:tvkeyname | 2 | 2 | 0 |
