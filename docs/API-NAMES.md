@@ -382,65 +382,181 @@ Word, as ushort is, so it wraps for a limit above 65534 bytes in the same way. T
 is a Pointer to a record of at least DataSize bytes. The text of a key event has at most four bytes, which is
 maxCharSize of config.h.
 
-## Added by the translation of TvColorSel
+## Added by the translation of TvHist
 
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
 
-added: TColorSel
-added: PColorIndex
-added: TColorSelector.TrackMouse
-added: TColorSelector.StepByKey
-added: TColorDialog.ApplyData
-added: GridColumns
-added: AttrOfBios
-added: BiosOfAttr
-added: TextOfBlock
-added: NameText
-added: PayloadOf
-added: Notify
-added: GroupAtPosition
-added: ItemAtPosition
-added: CountItems
-added: CountGroups
-added: ButtonValue
-added: IsColorSetEvent
-added: MonoColorChars
-added: TableIndex
+added: TStrNZCopyFunc
+added: StrNZCopyHook
+added: TCreateListViewerFunc
+added: THistory.OpenHistoryList
+added: THistory.TakeChoice
+added: Rc4
+added: RecordId
+added: RecordLength
+added: RecordChars
+added: RecordText
+added: OffsetAfter
+added: StoreRecord
+added: TextOfChars
+added: NoRecord
+added: MaxStoredText
+added: RecordOverhead
+added: TextOffsetInRecord
+added: BlockSlack
+added: ArrowOfHistory
+added: HistoryBlock
+added: BlockBytes
+added: HistoryPalette
+added: HistoryViewerPalette
+added: HistoryWindowPalette
 
-ButtonValue gives the attribute value of a button of the mono selector, which is the element of monoColors. MonoColorChars
-holds the five values of monoColors as characters, and the unit copies them into the variable MonoColors when it starts,
-using the loop variable TableIndex. IsColorSetEvent tells whether an event is the broadcast cmColorSet, which the
-selectors test in handleEvent. These four are inside the unit and are not visible outside it.
+TStrNZCopyFunc is the procedural type of the hook that stands for a part of the C++ that no unit has yet and no input
+defines. StrNZCopyHook stands for the function strnzcpy, which THistory calls to put the chosen text into the line
+with the limit maxLen + 1; it takes the text and that limit and gives the text that the buffer holds, and while it is
+nil the line keeps its text (the line is still selected and drawn). The function strwidth is the width of TText of
+TvUtf8, and ctrlToArrow is the function of TvKeys.
 
-TColorSel is the enumeration ColorSel that is nested in TColorSelector, with the values csBackground and csForeground,
-and PColorIndex is the pointer to a TColorIndex, which getIndexes and setIndexes take by reference as a var parameter.
-TColorIndex is a record with the fields GroupIndex, ColorSize and ColorIndex; a block of it holds only ColorSize bytes
-of ColorIndex, as the C++ allocates it. The block that the dialog keeps between two calls is the variable
-ColorIndexes of the unit, which is not visible outside it and which the unit releases when it ends. The table
-monoColors is MonoColors, and the width of the grid of a color selector, the local constant width of handleEvent, is
-GridColumns; both are inside the unit.
+The record HistRec of histlist.cpp is not a type: the lists are one block of bytes, and a record is known by its
+offset in the block, where the offset NoRecord (-1) stands for the null pointer. RecordId, RecordLength and
+RecordChars read the id, the length byte and the text of the record at an offset, RecordText gives the text as a
+string, OffsetAfter is the function next, and StoreRecord is the constructor of HistRec. The block is HistoryBlock
+with the size BlockBytes that InitHistory took from HistorySize; it has BlockSlack bytes more, so that the length
+byte at the end of the last record can be read. The static variables curId, curRec and lastRec are the variables
+CurId, CurRec and LastRec of the unit, and startId, advanceStringPointer, deleteString and insertString are StartId,
+AdvanceStringPointer, DeleteString and InsertString; none of these is visible outside the unit. The text of a
+record is at most MaxStoredText bytes, because the length of a record is a byte, so HistoryAdd cuts a longer text;
+a text that is larger than the whole block is not stored, and the older entries are dropped. The functions
+HistoryAdd, HistoryCount, HistoryStr, ClearHistory, InitHistory and DoneHistory do nothing, and give 0 and nil, while
+there is no block. HistoryStr gives a PAnsiChar, nil when the list has no such entry, also for an index after the
+last entry; the text stays valid until the lists are changed. The variable historySize is HistorySize.
 
-The members of TColorSelector that handleEvent holds in one body are split: TrackMouse is the loop of the case
-evMouseDown, and StepByKey is the switch of the arrow keys, which tells whether the key is an arrow (the `return` of
-the default branch is its answer False). Both are private. ApplyData is the body of TColorDialog.SetData: the
-constructor of the C++ calls the setData of its own class, so the constructor calls ApplyData and SetData calls it too,
-and a class derived in Pascal does not take part in the call of the constructor. ApplyData is private.
+The type THistInit, which the C++ inherits virtually beside TWindow, is the class between TWindow and
+THistoryWindow, as TWindowInit is between TGroup and TWindow. Its constructor takes the bounds of the window, because
+the constructor of TWindow needs them, and the function that makes the list viewer; TCreateListViewerFunc is the type
+of that function, and the function THistoryWindow.InitViewer is a class function without Self. The member viewer of
+THistoryWindow is the protected field Viewer, and the function getSelection, which has a buffer in the C++, is
+GetSelection and returns the text, like GetText of TvList. The constructor of THistory takes the palette strings
+cpHistory, cpHistoryViewer and cpHistoryWindow, which keep their names, and the palettes made from them,
+HistoryPalette, HistoryViewerPalette and HistoryWindowPalette, are made when the unit starts and released when it
+ends. The static member icon of THistory is the private class variable Icon, which the unit sets to ArrowOfHistory.
+The part of handleEvent of THistory that opens the list is the private member OpenHistoryList, and the copy of the
+chosen text into the line is the private member TakeChoice; Rc4 makes a TRect from four numbers inside the unit. As in
+the C++, a scan of a list skips the record at the start of the block, which is the empty record of ClearHistory, so
+when that record has been dropped to make room the oldest entry is not seen. A THistory that has
+let go of its line in ShutDown ignores its events after the handling of its base class. When the unit starts it gives
+InitHistory and DoneHistory to InitHistoryHook and DoneHistoryHook of TvApp.
 
-Notify sends a message through MessageHook and does nothing while the hook is nil. PayloadOf turns a number into the
-pointer that a message carries, as the cast (void *)(size_t) does. AttrOfBios makes a TColorAttr from a BIOS value, and
-BiosOfAttr gives the BIOS value of a TColorAttr, which is the conversion of the C++ to uchar. TextOfBlock reads a block
-of characters that may be nil, and NameText does so and cuts the text to the largest length, as strnzcpy does with the
-size that is one more. GroupAtPosition and ItemAtPosition are the loops `while( cur && n-- > 0 )` that find the group or
-the item at a position, and give the first one for a position below 1 and nil past the end. CountItems and CountGroups
-are the loops that count a chain. These helpers and GridColumns are inside the unit and are not visible outside it.
+## Added by the translation of TvFiles
 
-The members name of TColorItem and TColorGroup are blocks of characters with a terminating zero that the object owns,
-and the constructors take a string. The field index of TColorGroup, which the constructor of the C++ leaves unset,
-starts at 0. The members pal, display, groups, forLabel, forSel, bakLabel, bakSel, monoLabel, monoSel and groupIndex of
-TColorDialog are Pal, Display, Groups, ForLabel, ForSel, BakLabel, BakSel, MonoLabel, MonoSel and GroupIndex. The
-argument of GetData and SetData is a Pointer to a TPalette object, which the dialog copies with Assign, as the C++
-copies with the operator =. The static functions freeItems and freeGroups are FreeItems and FreeGroups inside the
-unit, and the operators + that chain items and groups are global operators with the same operand types. The texts and
-the table icon of tvtext1.cpp are class variables, which the unit sets to their C++ values when it starts: Icon of
-TColorSelector, Button, Normal, Highlight, Underline and Inverse of TMonoSelector, and Colors, GroupText, ItemText,
-ForText, BakText, TextText, ColorText, OkText and CancelText of TColorDialog.
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: PSearchRec
+added: MaxNameLength
+added: TSortedNewListProc
+added: SortedListBoxNewListHook
+added: TMakeDefaultProc
+added: ChDirButtonDefaultHook
+added: GetDisk
+added: SendNotice
+added: CompareNames
+added: FindSeparator
+added: FindLastSeparator
+added: BeginsWithDot
+added: FindCode
+added: NewSearchRecord
+added: CopyFoundEntry
+added: SearchKey
+added: NoFileRecord
+added: CurrentDisk
+added: IndentStep
+added: DefaultParentTime
+
+PSearchRec is the pointer type that stands for TSearchRec *. The entries of a directory are records that the
+collections keep as pointers; the names of the entries are at most MaxNameLength characters, because the size
+MAXFILE + MAXEXT - 1 comes from a header that is not among the translated sources. TSearchRec is the record of the
+unit, not the one of SysUtils, which the unit names as SysUtils.TSearchRec when it searches a directory. The typed
+members of the collections (at, firstThat and lastThat) return the typed pointer; the other members keep the pointer
+of TvObjs, because a member that takes a different type of pointer cannot override a virtual member of the base. The
+sorted collection of files and the collection of directories are not related by a base, so the sorted list box turns
+the list of its base TListBox into a TSortedCollection by a typecast.
+
+The source file of TSortedListBox is not among the translated sources. SortedListBoxNewListHook stands for its
+newList, with the type TSortedNewListProc, and while it is nil the list is not given to the list box. Its handleEvent
+is not translated, its virtual getKey is abstract, and its member searchPos is left out. ChDirButtonDefaultHook, with
+the type TMakeDefaultProc, stands for the call chDirButton->makeDefault of the dialog TChDirDialog that owns a
+TDirListBox, and it does nothing while it is nil. The text tooManyFiles is the class variable TooManyFiles of
+TFileList, empty until the program sets it, and the warning is shown with MessageBox of TvMsgbox when the allocation
+of an entry fails (EOutOfMemory is caught, as the C++ tests a null pointer).
+
+The tables of TDirListBox (pathDir, firstDir, middleDir, lastDir, drives and graphics) are the class variables
+PathDir, FirstDir, MiddleDir, LastDir, Drives and Graphics, which get the values of tvtext1.cpp, in code page 437,
+when the unit starts. The paths that TDirListBox reads and builds use PathSep of TvPath as their separator, the
+texts of the drives keep the backslash, and a search of a directory uses PathAllFiles for the mask "*.*". GetDisk
+stands for getdisk and gives the disk C. SendNotice is the call of MessageHook, CompareNames is strcmp, FindSeparator
+and FindLastSeparator are strchr and strrchr for the separator, BeginsWithDot is the test of the first character of
+a name, FindCode is strchr of a character in a block, NewSearchRecord is the operator new of DirSearchRec and
+CopyFoundEntry is its member readFf_blk. SearchKey is the static record of getKey, NoFileRecord is the static record
+noFile of readDirectory, and CurrentDisk, IndentStep and DefaultParentTime are the values 'C', 2 and 0x210000 that the
+C++ writes in its code. The routines validFileName, getCurDir, fexpand, squeeze and getHomeDir are not in this unit.
+
+## Added by the translation of TvFileDlg
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: MaxPath
+added: TFileInputLineEventProc
+added: TFileInfoPaneDrawProc
+added: TFileInfoPaneEventProc
+added: TCurDirFunc
+added: TValidFileNameFunc
+added: FileInputLineEventHook
+added: FileInfoPaneDrawHook
+added: FileInfoPaneEventHook
+added: GetCurDirHook
+added: ValidFileNameHook
+added: TFileInfoPane.FileBlock
+added: TFileDialog.AddButton
+added: TFileDialog.FitToScreen
+added: TFileDialog.FinishWithFileCommand
+added: TFileDialog.TurnDoubleClickIntoOK
+added: CopyThrough
+added: TrimName
+added: SplitPath
+added: MergePath
+
+MaxPath stands for MAXPATH, which a header outside the translated sources defines; it is the size that strnzcpy is
+given for the wild card and for the text of the input line. StrNZCopyHook of TvHist stands for strnzcpy, as it does
+for THistory: while it is nil a text is not copied and its target keeps its text. GetCurDirHook, with the type
+TCurDirFunc, stands for getCurDir and gives the current directory; while it is nil the directory of a file dialog
+becomes the empty text. ValidFileNameHook, with the type TValidFileNameFunc, stands for validFileName; while it is nil
+no name is a valid file name, so Valid of a dialog shows the message of invalidFileText. Both functions are defined in
+files that are not among the translated sources. fexpand is PathExpandFrom of TvPath, and fnsplit and fnmerge are
+SplitPath and MergePath, made with PathDrive and PathSplit of TvPath: the drive is the drive of the path, the
+directory is what PathSplit gives after the drive, and the merge puts the four parts one after the other. The
+function trim of tfildlg.cpp is TrimName, because Trim belongs to SysUtils; it is the branch for a flat memory model,
+which copies the text up to its first zero character and does not cut white space, because tv.h defines __FLAT__.
+
+The source file of TFileInputLine and of TFileInfoPane is not among the translated sources, so only what stddlg.h
+declares is translated. The constructor of TFileInputLine calls the one of TInputLine. FileInputLineEventHook, with the
+type TFileInputLineEventProc, stands for the handleEvent of TFileInputLine, and FileInfoPaneDrawHook and
+FileInfoPaneEventHook, with the types TFileInfoPaneDrawProc and TFileInfoPaneEventProc, stand for the draw and the
+handleEvent of TFileInfoPane. The hooks do nothing while they are nil; the two event hooks are called after the
+handleEvent of the base class, and the draw hook is the whole of Draw. The member file_block of TFileInfoPane is the
+public field FileBlock, so that a hook can read it. The static tables months, pmText and amText and the palette of
+TFileInfoPane are left out with that file.
+
+The texts filesText, openText, okText, replaceText, clearText, cancelText, helpText, invalidDriveText and
+invalidFileText of TFileDialog are defined in a file that is not among the translated sources, so they are the
+public class variables FilesText, OpenText, OkText, ReplaceText, ClearText, CancelText, HelpText, InvalidDriveText and
+InvalidFileText, empty until the program sets them. The members fileName, fileList, wildCard and directory are the
+public fields FileName, FileList, WildCard and Directory, and the last two are strings. The function getFileName has no
+buffer here: GetFileName returns the name as a string, as GetText of TvList does, and GetData copies it with its
+terminating zero into the block that it is given. The parameter of the constructor that is a TStringView is a const
+string. A file dialog with no application, which is a TProgram.Application that is nil, keeps the bounds of its
+constructor, where the C++ would read the size of the application; FitToScreen is the block of the constructor that
+fits the dialog to the screen, and AddButton is the repeated insertion of a button of the row at the right of the list,
+which gives the button the grow mode gfGrowLoX or gfGrowHiX and moves the rectangle down by three rows.
+HandleEvent is split by the kind of event: FinishWithFileCommand is the case of evCommand that ends the dialog at
+cmFileOpen, cmFileReplace and cmFileClear, and TurnDoubleClickIntoOK is the case of evBroadcast that turns
+cmFileDoubleClicked into a cmOK command that is put back. Both are private.
