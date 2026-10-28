@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 29 | 29 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 30 | 30 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvactions.pas` | specification | specification:tvactions | 2 | 2 | 0 |
@@ -52,6 +52,7 @@
 | `src/tvscreen.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tscreen.cpp:1-339 | 2 | 2 | 1 |
 | `src/tvstreams.pas` | translation | magiblot/tvision:include/tvision/tobjstrm.h:1-662; magiblot/tvision:source/tvision/tobjstrm.cpp:1-885; magiblot/tvision:source/tvision/strmstat.cpp:1-17 | 2 | 2 | 0 |
 | `src/tvsys.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301; magiblot/tvision:include/tvision/hardware.h:1-327 | 3 | 3 | 0 |
+| `src/tvtermos.pas` | translation | magiblot/tvision:include/tvision/internal/conctl.h:1-66; magiblot/tvision:source/platform/conctl.cpp:1-352; magiblot/tvision:include/tvision/internal/getenv.h:1-31 | 1 | 1 | 0 |
 | `src/tvtermosbase.pas` | specification | specification:tvtermosbase | 2 | 2 | 0 |
 | `src/tvtext.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
 | `src/tvtimer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 2 | 2 | 0 |
@@ -105,6 +106,7 @@
 | `tests/t_proc.pas` | specification | specification:tvproc | 1 | 1 | 0 |
 | `tests/t_screen.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tscreen.cpp:1-339 | 3 | 3 | 0 |
 | `tests/t_streams.pas` | translation | magiblot/tvision:include/tvision/tobjstrm.h:1-662; magiblot/tvision:source/tvision/tobjstrm.cpp:1-885; magiblot/tvision:source/tvision/strmstat.cpp:1-17 | 1 | 1 | 0 |
+| `tests/t_termos.pas` | translation | magiblot/tvision:include/tvision/internal/conctl.h:1-66; magiblot/tvision:source/platform/conctl.cpp:1-352; magiblot/tvision:include/tvision/internal/getenv.h:1-31 | 1 | 1 | 0 |
 | `tests/t_termosbase.pas` | specification | specification:tvtermosbase | 1 | 1 | 0 |
 | `tests/t_text.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
 | `tests/t_timer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 1 | 1 | 0 |
