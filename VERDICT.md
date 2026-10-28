@@ -30,6 +30,7 @@ provenance check: pending version docs/API-NAMES.md dccf706675ccbaebaa45e824d2bd
 provenance check: pending version docs/API-NAMES.md bd22adbfc0a48b47a5773712476f64486be0be3f
 provenance check: pending version docs/API-NAMES.md 47780ccad876ab75196a8fdeb00499f6cfd18e9c
 provenance check: pending version docs/API-NAMES.md a2048efd2ca34c33b069d33a1ab46ffab8f7a810
+provenance check: pending version docs/API-NAMES.md d872e102f16b560f3e6bf259c3dd88d30a12adcc
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvactions.pas 959a5bd05279e29dbc23beb3e1d04d6306ece9a1
@@ -44,6 +45,8 @@ provenance check: pending version src/tvascii.pas dbbce8251af73b1263499faa2c6ad4
 provenance check: pending version src/tvascii.pas 76ff80ae8c63c9e329a60c1d0d83729ba9549411
 provenance check: pending version src/tvcell.pas 778a73ffae8b4c1166fdfb7ff2e6921e190d6ebf
 provenance check: pending version src/tvcell.pas 1201291008a0e44fbea44c57db075dec63222d40
+provenance check: pending version src/tvchdir.pas 0e734fe8495cc83e67aaa9af4b5c6af6d67b916e
+provenance check: pending version src/tvchdir.pas 1aec3629b49d115191495907b88f91f0e35865f9
 provenance check: pending version src/tvclip.pas 2682a491b0a468af86636ed63e4b97b5305518e5
 provenance check: pending version src/tvclip.pas 34d463a7e16070ac9d016510b28a0abfb88760f3
 provenance check: pending version src/tvclipcmd.pas bd08025442b7d172256a3b5ce74308698a519b2e
@@ -131,6 +134,7 @@ provenance check: pending version tests/t_appdir.pas f06a58e341ffda54fe47c38cb8d
 provenance check: pending version tests/t_ascii.pas 2c1d394aaac96e5a72ded05840842b6dfba0b513
 provenance check: pending version tests/t_async.pas 14ce5137adfefb1119864153c133111c849cae54
 provenance check: pending version tests/t_cell.pas c140b91e20cd2ea8d6a0606800195cb3acc735c6
+provenance check: pending version tests/t_chdir.pas fc29c14452f8978fa78fbc589faaa61fc226e9e8
 provenance check: pending version tests/t_clip.pas aa537d4f456345057afb0e6dbdcfb1286d54ea27
 provenance check: pending version tests/t_clipcmd.pas 832a10b698ef9c756a3a36bd17a4f81aab338737
 provenance check: pending version tests/t_cluster.pas 90c09f7b0fe22358d821ce49156fe970031e1563
