@@ -1,7 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (TFileInputLine, TFileInfoPane, TFileDialog and the option flags fd...),
   source/tvision/tfildlg.cpp, include/tvision/tv.h, include/tvision/views.h, include/tvision/ttypes.h,
-  include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp
+  include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   Test program of the unit TvFileDlg.
@@ -540,10 +540,23 @@ begin
   Check(fdHelpButton = $0010, 'fdHelpButton is $10');
   Check(fdNoLoadDir = $0100, 'fdNoLoadDir is $100');
   Check(MaxPath = 260, 'MaxPath is 260');
-  Check((TFileDialog.FilesText = '') and (TFileDialog.OpenText = '') and (TFileDialog.OkText = '') and
-    (TFileDialog.ReplaceText = '') and (TFileDialog.ClearText = '') and (TFileDialog.CancelText = '') and
-    (TFileDialog.HelpText = '') and (TFileDialog.InvalidDriveText = '') and (TFileDialog.InvalidFileText = ''),
-    'the texts of TFileDialog start empty');
+  Check(TFileDialog.FilesText = '~F~iles', 'filesText is the text of the C++');
+  Check(TFileDialog.OpenText = '~O~pen', 'openText is the text of the C++');
+  Check(TFileDialog.OkText = 'O~K~', 'okText is the text of the C++');
+  Check(TFileDialog.ReplaceText = '~R~eplace', 'replaceText is the text of the C++');
+  Check(TFileDialog.ClearText = '~C~lear', 'clearText is the text of the C++');
+  Check(TFileDialog.CancelText = 'Cancel', 'cancelText is the text of the C++');
+  Check(TFileDialog.HelpText = '~H~elp', 'helpText is the text of the C++');
+  Check(TFileDialog.InvalidDriveText = 'Invalid drive or directory', 'invalidDriveText is the text of the C++');
+  Check(TFileDialog.InvalidFileText = 'Invalid file name', 'invalidFileText is the text of the C++');
+  Check(TFileInfoPane.PmText = 'p', 'pmText is the text of the C++');
+  Check(TFileInfoPane.AmText = 'a', 'amText is the text of the C++');
+  Check((TFileInfoPane.Months[0] = '') and (TFileInfoPane.Months[1] = 'Jan') and (TFileInfoPane.Months[2] = 'Feb') and
+    (TFileInfoPane.Months[3] = 'Mar') and (TFileInfoPane.Months[4] = 'Apr') and (TFileInfoPane.Months[5] = 'May') and
+    (TFileInfoPane.Months[6] = 'Jun'), 'months of the first half year are the texts of the C++');
+  Check((TFileInfoPane.Months[7] = 'Jul') and (TFileInfoPane.Months[8] = 'Aug') and (TFileInfoPane.Months[9] = 'Sep') and
+    (TFileInfoPane.Months[10] = 'Oct') and (TFileInfoPane.Months[11] = 'Nov') and (TFileInfoPane.Months[12] = 'Dec'),
+    'months of the second half year are the texts of the C++');
   Check(not Assigned(FileInputLineEventHook) and not Assigned(FileInfoPaneDrawHook) and
     not Assigned(FileInfoPaneEventHook), 'the hooks of the input line and of the info pane start as nil');
   Check(not Assigned(GetCurDirHook) and not Assigned(ValidFileNameHook), 'the hooks of the directory and of the name start as nil');
@@ -650,13 +663,14 @@ begin
 
   filesLabel := NthOfClass(dlg, TLabel, 2);
   Check((filesLabel <> nil) and RectIs(filesLabel.GetBounds, 2, 5, 8, 6), 'the bounds of the label of the list');
-  Check((LabelText(filesLabel) = '') and (TLabelPeek(filesLabel).LinkOf = dlg.FileList), 'the label of the list has the text FilesText, empty here, and points to the list');
+  Check((LabelText(filesLabel) = '~F~iles') and (TLabelPeek(filesLabel).LinkOf = dlg.FileList),
+    'the label of the list has the text FilesText and points to the list');
   Check(filesLabel.GrowMode = 0, 'the label of the list does not grow');
 
   Check(NthOfClass(dlg, TButton, 4) = nil, 'two buttons and the cancel button make three');
-  Check(ButtonIs(dlg, 1, cmFileOpen, bfDefault, '', 35, 3, 46, 5), 'the OK button is the default button of the first row');
-  Check(ButtonIs(dlg, 2, cmCancel, bfNormal, '', 35, 6, 46, 8), 'the cancel button is the second');
-  Check(ButtonIs(dlg, 3, cmHelp, bfNormal, '', 35, 9, 46, 11), 'the help button is the third');
+  Check(ButtonIs(dlg, 1, cmFileOpen, bfDefault, 'O~K~', 35, 3, 46, 5), 'the OK button is the default button of the first row');
+  Check(ButtonIs(dlg, 2, cmCancel, bfNormal, 'Cancel', 35, 6, 46, 8), 'the cancel button is the second');
+  Check(ButtonIs(dlg, 3, cmHelp, bfNormal, '~H~elp', 35, 9, 46, 11), 'the help button is the third');
   Check(NthOfClass(dlg, TButton, 1).GrowMode = (gfGrowLoX or gfGrowHiX), 'a button moves with the right side');
   Check(NthOfClass(dlg, TButton, 3).GrowMode = (gfGrowLoX or gfGrowHiX), 'the help button moves with the right side');
 
@@ -670,29 +684,19 @@ procedure TestButtonRows;
 var
   dlg: TProbeDialog;
 begin
-  TFileDialog.OpenText := 'Open';
-  TFileDialog.OkText := 'OK';
-  TFileDialog.ReplaceText := 'Replace';
-  TFileDialog.ClearText := 'Clear';
-  TFileDialog.CancelText := 'Cancel';
-  TFileDialog.HelpText := 'Help';
-  TFileDialog.FilesText := 'Files';
-  TFileDialog.InvalidDriveText := 'Bad drive';
-  TFileDialog.InvalidFileText := 'Bad file';
-
   dlg := MakeDialog('*', fdOpenButton or fdReplaceButton or fdClearButton or fdNoLoadDir);
   Check(ViewCount(dlg) = 12, 'a dialog with three buttons and cancel has twelve views');
-  Check(ButtonIs(dlg, 1, cmFileOpen, bfDefault, 'Open', 35, 3, 46, 5), 'the open button is the default button');
-  Check(ButtonIs(dlg, 2, cmFileReplace, bfNormal, 'Replace', 35, 6, 46, 8), 'the replace button is normal and follows');
-  Check(ButtonIs(dlg, 3, cmFileClear, bfNormal, 'Clear', 35, 9, 46, 11), 'the clear button is normal and follows');
+  Check(ButtonIs(dlg, 1, cmFileOpen, bfDefault, '~O~pen', 35, 3, 46, 5), 'the open button is the default button');
+  Check(ButtonIs(dlg, 2, cmFileReplace, bfNormal, '~R~eplace', 35, 6, 46, 8), 'the replace button is normal and follows');
+  Check(ButtonIs(dlg, 3, cmFileClear, bfNormal, '~C~lear', 35, 9, 46, 11), 'the clear button is normal and follows');
   Check(ButtonIs(dlg, 4, cmCancel, bfNormal, 'Cancel', 35, 12, 46, 14), 'the cancel button is the last');
   Check(NthOfClass(dlg, TButton, 5) = nil, 'there is no help button when it is not asked for');
-  Check(LabelText(NthOfClass(dlg, TLabel, 2)) = 'Files', 'the label of the list has the text FilesText');
+  Check(LabelText(NthOfClass(dlg, TLabel, 2)) = '~F~iles', 'the label of the list has the text FilesText');
   DestroyDialog(dlg);
 
   dlg := MakeDialog('*', fdOpenButton or fdOKButton or fdNoLoadDir);
-  Check(ButtonIs(dlg, 1, cmFileOpen, bfDefault, 'Open', 35, 3, 46, 5), 'with both, the open button is first and the default');
-  Check(ButtonIs(dlg, 2, cmFileOpen, bfNormal, 'OK', 35, 6, 46, 8), 'with both, the OK button is the second and normal');
+  Check(ButtonIs(dlg, 1, cmFileOpen, bfDefault, '~O~pen', 35, 3, 46, 5), 'with both, the open button is first and the default');
+  Check(ButtonIs(dlg, 2, cmFileOpen, bfNormal, 'O~K~', 35, 6, 46, 8), 'with both, the OK button is the second and normal');
   Check(ButtonIs(dlg, 3, cmCancel, bfNormal, 'Cancel', 35, 9, 46, 11), 'the cancel button follows them');
   DestroyDialog(dlg);
 
@@ -702,9 +706,9 @@ begin
   DestroyDialog(dlg);
 
   dlg := MakeDialog('*', fdClearButton or fdHelpButton or fdNoLoadDir);
-  Check(ButtonIs(dlg, 1, cmFileClear, bfDefault, 'Clear', 35, 3, 46, 5), 'the clear button is the default when it is first');
+  Check(ButtonIs(dlg, 1, cmFileClear, bfDefault, '~C~lear', 35, 3, 46, 5), 'the clear button is the default when it is first');
   Check(ButtonIs(dlg, 2, cmCancel, bfNormal, 'Cancel', 35, 6, 46, 8), 'cancel follows the clear button');
-  Check(ButtonIs(dlg, 3, cmHelp, bfNormal, 'Help', 35, 9, 46, 11), 'help follows cancel');
+  Check(ButtonIs(dlg, 3, cmHelp, bfNormal, '~H~elp', 35, 9, 46, 11), 'help follows cancel');
   DestroyDialog(dlg);
 end;
 
@@ -996,7 +1000,6 @@ var
 begin
   ValidFileNameHook := @TestValidName;
   ValidNameAnswer := False;
-  MsgBoxText.ErrorText := 'Error';
   dlg := MakeDialog(WildText, fdNoLoadDir);
   dlg.Directory := TempRoot;
   ResetCounters;
@@ -1006,12 +1009,13 @@ begin
   Check(not dlg.Valid(cmOK), 'a name that the check refuses is not valid');
   Check(ValidNameCalls = 1, 'the check was asked once');
   Check(Snap.Taken and (Snap.Title = 'Error'), 'a message box of the class error was shown');
-  Check(Snap.MessageText = 'Bad file: ''' + TempRoot + 'rd/missing.txt' + '''', 'the box tells the text and the name');
+  Check(Snap.MessageText = 'Invalid file name: ''' + TempRoot + 'rd/missing.txt' + '''',
+    'the box tells the text and the name');
 
   ValidFileNameHook := nil;
   ArmCommand(cmOK);
   Check(not dlg.Valid(cmOK), 'no name is valid without the check');
-  Check(Snap.Taken and (Snap.MessageText = 'Bad file: ''' + TempRoot + 'rd/missing.txt' + ''''),
+  Check(Snap.Taken and (Snap.MessageText = 'Invalid file name: ''' + TempRoot + 'rd/missing.txt' + ''''),
     'the box is shown without the check as well');
   ValidFileNameHook := @TestValidName;
 
@@ -1024,7 +1028,8 @@ begin
   ArmCommand(cmOK);
   Check(not dlg.Valid(cmOK), 'a wild name in a directory that does not exist is not valid');
   Check(Snap.Taken and (Snap.Title = 'Error'), 'a message box of the class error was shown for the directory');
-  Check(Snap.MessageText = 'Bad drive: ''' + TempRoot + 'nodir/' + '''', 'the box tells the text and the directory');
+  Check(Snap.MessageText = 'Invalid drive or directory: ''' + TempRoot + 'nodir/' + '''',
+    'the box tells the text and the directory');
   Check(dlg.Current = dlg.FileName, 'the input line is selected after the directory error');
   Check((dlg.Directory = directoryBefore) and (dlg.WildCard = wildBefore) and (NewListCalls = 0),
     'the directory, the wild card and the list stay');
@@ -1092,16 +1097,6 @@ begin
   TEventQueue.Backend := FakeEvents;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  TDeskTop.DefaultBkgrnd := '.';
-
-  MsgBoxText.YesText := 'Yes';
-  MsgBoxText.NoText := 'No';
-  MsgBoxText.OkText := 'OK';
-  MsgBoxText.CancelText := 'Cancel';
-  MsgBoxText.WarningText := 'Warning';
-  MsgBoxText.ErrorText := 'Error';
-  MsgBoxText.InformationText := 'Information';
-  MsgBoxText.ConfirmText := 'Confirm';
 
   DrainPosted;
   App := TMsgApp.Create;

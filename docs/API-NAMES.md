@@ -213,8 +213,7 @@ TvSys stand for them.
 
 The static data of the classes are class variables: StatusLine, MenuBar, DeskTop, Application, AppPalette and the
 text ExitText of TProgram, the protected Pending and the private TimerQueue, and DefaultBkgrnd of TDeskTop. ExitText
-and DefaultBkgrnd are defined in files that are not among the sources of the unit, so the program sets them; they
-start as an empty text and as the character 0. The flags ctrlBreakHit and saveCtrlBreak of TSystemError are the class
+and DefaultBkgrnd hold the values of tvtext2.cpp when the unit starts. The flags ctrlBreakHit and saveCtrlBreak of TSystemError are the class
 variables CtrlBreakHit and SaveCtrlBreak. TSystemError has the members of the branch of syserr.cpp for the flat memory
 model: Create, Destroy, Resume and Suspend. The three palettes of the application are made from the tables cpAppColor,
 cpAppBlackWhite and cpAppMonochrome of app.h, which are kept as hexadecimal digits, and the palette of TBackground is
@@ -271,8 +270,8 @@ a scroll bar while the view is active and visible and hides it otherwise. These 
 The function getText has no buffer here: GetText returns the text as a string, and its second parameter is the
 largest length of the text, which is the third parameter of the C++. In TListBox the text is the block of characters
 of the item up to its terminating zero or up to that length. A nil item gives an empty text. The static member
-emptyText of TListViewer is defined in a file that is not among the sources of the unit, so it is the class variable
-EmptyText, which starts as an empty text and which the program sets. The member list of TListBox is the function
+emptyText of TListViewer is the class variable EmptyText, which holds the text of tvtext2.cpp when the unit starts.
+The member list of TListBox is the function
 List, and the protected member items is Items. The record TListBoxRec keeps its name, with the members Items and
 Selection. The destructor of TListBox does not free its list, as the destructor of the C++ is empty; the list is
 freed by NewList when another list is given, by SetData and by the owner of the list.
@@ -296,11 +295,12 @@ TFilterValidator, TRangeValidator and TStringLookupValidator makes; it takes the
 call (the picture, or the two limits of the range) and does nothing while it is nil. The constants mfError and
 mfOKButton are not passed, because every call of the validators has the same two.
 
-The texts errorMsg of the classes and validUnsignedChars and validSignedChars of TRangeValidator are defined in files
-that are not among the sources of the unit, so they are the class variables ErrorMsg of TPXPictureValidator,
-TFilterValidator and TStringLookupValidator, and ValidUnsignedChars and ValidSignedChars of TRangeValidator, which
-start as empty texts and which the program sets. The errorMsg of TRangeValidator is RangeErrorMsg, because a class
-variable of a derived class does not take the name of one of its base class. TStringCollection is not defined by a unit
+The texts errorMsg of the classes and validUnsignedChars and validSignedChars of TRangeValidator are the class
+variables ErrorMsg of TPXPictureValidator, TFilterValidator and TStringLookupValidator, and ValidUnsignedChars and
+ValidSignedChars of TRangeValidator, which hold the texts of tvtext2.cpp when the unit starts. The errorMsg of
+TRangeValidator is RangeErrorMsg, because a class variable of a derived class does not take the name of one of its
+base class. The texts are formats of the Format function, so the conversion %ld of the range message is %d, and the
+character \n of the picture message is the character 10. TStringCollection is not defined by a unit
 or by an input, so TStringLookupValidator takes and holds a TNSCollection whose items are blocks of characters with a
 terminating zero, and its destructor and NewStringList destroy it with TvObject.DestroyObject, as destroy does.
 
@@ -475,7 +475,7 @@ newList, with the type TSortedNewListProc, and while it is nil the list is not g
 is not translated, its virtual getKey is abstract, and its member searchPos is left out. ChDirButtonDefaultHook, with
 the type TMakeDefaultProc, stands for the call chDirButton->makeDefault of the dialog TChDirDialog that owns a
 TDirListBox, and it does nothing while it is nil. The text tooManyFiles is the class variable TooManyFiles of
-TFileList, empty until the program sets it, and the warning is shown with MessageBox of TvMsgbox when the allocation
+TFileList, which holds the text of tvtext2.cpp when the unit starts, and the warning is shown with MessageBox of TvMsgbox when the allocation
 of an entry fails (EOutOfMemory is caught, as the C++ tests a null pointer).
 
 The tables of TDirListBox (pathDir, firstDir, middleDir, lastDir, drives and graphics) are the class variables
@@ -530,13 +530,13 @@ type TFileInputLineEventProc, stands for the handleEvent of TFileInputLine, and 
 FileInfoPaneEventHook, with the types TFileInfoPaneDrawProc and TFileInfoPaneEventProc, stand for the draw and the
 handleEvent of TFileInfoPane. The hooks do nothing while they are nil; the two event hooks are called after the
 handleEvent of the base class, and the draw hook is the whole of Draw. The member file_block of TFileInfoPane is the
-public field FileBlock, so that a hook can read it. The static tables months, pmText and amText and the palette of
-TFileInfoPane are left out with that file.
+public field FileBlock, so that a hook can read it. The palette of TFileInfoPane is left out with that file.
 
 The texts filesText, openText, okText, replaceText, clearText, cancelText, helpText, invalidDriveText and
-invalidFileText of TFileDialog are defined in a file that is not among the translated sources, so they are the
-public class variables FilesText, OpenText, OkText, ReplaceText, ClearText, CancelText, HelpText, InvalidDriveText and
-InvalidFileText, empty until the program sets them. The members fileName, fileList, wildCard and directory are the
+invalidFileText of TFileDialog are the public class variables FilesText, OpenText, OkText, ReplaceText, ClearText,
+CancelText, HelpText, InvalidDriveText and InvalidFileText, and the texts pmText, amText and months of TFileInfoPane
+are the public class variables PmText, AmText and Months (an array from 0 to 12). They hold the texts of tvtext2.cpp
+when the unit starts. The members fileName, fileList, wildCard and directory are the
 public fields FileName, FileList, WildCard and Directory, and the last two are strings. The function getFileName has no
 buffer here: GetFileName returns the name as a string, as GetText of TvList does, and GetData copies it with its
 terminating zero into the block that it is given. The parameter of the constructor that is a TStringView is a const
