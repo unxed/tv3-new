@@ -1,5 +1,5 @@
 { Translated from magiblot/tvision @ b4831e2
-  C++ sources: include/tvision/msgbox.h, source/tvision/msgbox.cpp
+  C++ sources: include/tvision/msgbox.h, source/tvision/msgbox.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The functions
@@ -10,9 +10,8 @@
       rectangle and a limit; it returns the view that edits the text. While the hook is nil the dialog has no input
       line: the label has no link and the data of the dialog goes to no view.
 
-  The texts of the class MsgBoxText are defined in a file that is not among the sources of the unit, so they are the
-  class variables of MsgBoxText, which start as empty texts and which the program sets. The tables of the buttons and
-  of the titles read them when a box is made.
+  The texts of the class MsgBoxText are the class variables of MsgBoxText, which hold the texts of the C++ when the
+  unit starts. The tables of the buttons and of the titles read them when a box is made.
 
   The buffer of inputBox is a block of characters with a terminating zero, as the C++ keeps it, and it is given to
   the data of the dialog and taken from it as it is. The formatted variants of messageBox and messageBoxRect take a
@@ -279,4 +278,13 @@ begin
   Result := answer;
 end;
 
+initialization
+  MsgBoxText.YesText := '~Y~es';
+  MsgBoxText.NoText := '~N~o';
+  MsgBoxText.OkText := 'O~K~';
+  MsgBoxText.CancelText := '~C~ancel';
+  MsgBoxText.WarningText := 'Warning';
+  MsgBoxText.ErrorText := 'Error';
+  MsgBoxText.InformationText := 'Information';
+  MsgBoxText.ConfirmText := 'Confirm';
 end.

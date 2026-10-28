@@ -1,5 +1,5 @@
 { Translated from magiblot/tvision @ b4831e2
-  C++ sources: include/tvision/msgbox.h, source/tvision/msgbox.cpp
+  C++ sources: include/tvision/msgbox.h, source/tvision/msgbox.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   The display is a screen of 60 by 20 cells in memory and the application has only a desktop, which fills the
@@ -7,8 +7,8 @@
   a script of one event: when the modal dialog of a box asks for its first event, the application takes a snapshot
   of the dialog (its bounds, title, subviews and the kind of the focused one), lets the test change something
   through DuringModal, and then answers the event that the test armed. Any later request for an event is a
-  cmCancel, so that a failure ends the dialog and does not wait. The texts of MsgBoxText are set to short words by
-  the test, after a check that they start empty. The input line is a view of the test that records what the dialog
+  cmCancel, so that a failure ends the dialog and does not wait. The texts of MsgBoxText are checked as the unit
+  sets them. The input line is a view of the test that records what the dialog
   gives it and writes a text of the test when the dialog asks for its data. The buttons and labels are read through
   classes that make their protected members public to the test. }
 program t_msgbox;
@@ -518,9 +518,14 @@ begin
   Check(mfCancelButton = $0800, 'mfCancelButton is $0800');
   Check(mfYesNoCancel = $0B00, 'mfYesNoCancel is yes, no and cancel');
   Check(mfOKCancel = $0C00, 'mfOKCancel is ok and cancel');
-  Check((MsgBoxText.YesText = '') and (MsgBoxText.NoText = '') and (MsgBoxText.OkText = '') and
-    (MsgBoxText.CancelText = '') and (MsgBoxText.WarningText = '') and (MsgBoxText.ErrorText = '') and
-    (MsgBoxText.InformationText = '') and (MsgBoxText.ConfirmText = ''), 'the texts of MsgBoxText start empty');
+  Check(MsgBoxText.YesText = '~Y~es', 'yesText is the text of the C++');
+  Check(MsgBoxText.NoText = '~N~o', 'noText is the text of the C++');
+  Check(MsgBoxText.OkText = 'O~K~', 'okText is the text of the C++');
+  Check(MsgBoxText.CancelText = '~C~ancel', 'cancelText is the text of the C++');
+  Check(MsgBoxText.WarningText = 'Warning', 'warningText is the text of the C++');
+  Check(MsgBoxText.ErrorText = 'Error', 'errorText is the text of the C++');
+  Check(MsgBoxText.InformationText = 'Information', 'informationText is the text of the C++');
+  Check(MsgBoxText.ConfirmText = 'Confirm', 'confirmText is the text of the C++');
   Check(not Assigned(InputLineHook), 'InputLineHook starts as nil');
 end;
 
@@ -552,7 +557,7 @@ begin
   Check(ButtonAt(cmNo, 15, 6, 25, 8), 'the no button is 12 cells after the yes button');
   Check(ButtonAt(cmCancel, 27, 6, 37, 8), 'the cancel button is 12 cells after the no button');
   Check(FindButton(cmOK) = 0, 'there is no ok button when it is not asked for');
-  Check((ButtonTitle(cmYes) = 'Yes') and (ButtonTitle(cmNo) = 'No') and (ButtonTitle(cmCancel) = 'Cancel'),
+  Check((ButtonTitle(cmYes) = '~Y~es') and (ButtonTitle(cmNo) = '~N~o') and (ButtonTitle(cmCancel) = '~C~ancel'),
     'the buttons have the texts of MsgBoxText');
   Check((ButtonFlags(cmYes) = bfNormal) and (ButtonFlags(cmNo) = bfNormal) and (ButtonFlags(cmCancel) = bfNormal),
     'the buttons of a message box are normal buttons');
@@ -748,7 +753,7 @@ begin
     (Snap.Items[labelPosition].Link = Snap.Items[entryPosition].Ref), 'the label is linked to the input line');
   Check(ButtonAt(cmOK, 36, 4, 46, 6), 'the ok button is at (width - 24, height - 4)');
   Check(ButtonAt(cmCancel, 48, 4, 58, 6), 'the cancel button is 12 cells right of the ok button');
-  Check((ButtonTitle(cmOK) = 'OK') and (ButtonTitle(cmCancel) = 'Cancel'), 'the buttons have the texts of MsgBoxText');
+  Check((ButtonTitle(cmOK) = 'O~K~') and (ButtonTitle(cmCancel) = '~C~ancel'), 'the buttons have the texts of MsgBoxText');
   Check(ButtonFlags(cmOK) = bfDefault, 'the ok button is the default button');
   Check(ButtonFlags(cmCancel) = bfNormal, 'the cancel button is a normal button');
   Check(FakeSetCalls = 1, 'the data of the dialog was set once');
@@ -837,16 +842,6 @@ begin
   TEventQueue.Backend := FakeEvents;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  TDeskTop.DefaultBkgrnd := '.';
-
-  MsgBoxText.YesText := 'Yes';
-  MsgBoxText.NoText := 'No';
-  MsgBoxText.OkText := 'OK';
-  MsgBoxText.CancelText := 'Cancel';
-  MsgBoxText.WarningText := 'Warning';
-  MsgBoxText.ErrorText := 'Error';
-  MsgBoxText.InformationText := 'Information';
-  MsgBoxText.ConfirmText := 'Confirm';
 
   DrainPosted;
   App := TMsgApp.Create;
