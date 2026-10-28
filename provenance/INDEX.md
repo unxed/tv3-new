@@ -151,6 +151,7 @@
 | `tools/audit/corpora.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/audit/facts/charsets/8859-1.TXT` | standard | Character set mapping table 8859-1.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/8859-10.TXT` | standard | Character set mapping table 8859-10.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-11.TXT` | standard | Character set mapping table 8859-11.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/8859-13.TXT` | standard | Character set mapping table 8859-13.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/8859-14.TXT` | standard | Character set mapping table 8859-14.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/8859-15.TXT` | standard | Character set mapping table 8859-15.TXT | 1 | 1 | 0 |
@@ -192,6 +193,7 @@
 | `tools/audit/facts/charsets/KOI8-U.TXT` | standard | Character set mapping table KOI8-U.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/ROMAN.TXT` | standard | Character set mapping table ROMAN.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/ibm-1125_P100-1997.ucm` | standard | Character set mapping table ibm-1125_P100-1997.ucm | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/ibm-720_P100-1997.ucm` | standard | Character set mapping table ibm-720_P100-1997.ucm | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/ibm-858_P100-1997.ucm` | standard | Character set mapping table ibm-858_P100-1997.ucm | 1 | 1 | 0 |
 | `tools/audit/facts/windows-console-mouse-event-record-str.md` | standard | MOUSE_EVENT_RECORD structure | 1 | 1 | 0 |
 | `tools/audit/facts/windows-virtual-key-codes.md` | standard | Virtual-Key Codes (Winuser.h) | 1 | 1 | 0 |

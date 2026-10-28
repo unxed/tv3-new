@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/ibm-720_P100-1997.ucm",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table ibm-720_P100-1997.ucm",
+      "url": "https://raw.githubusercontent.com/unicode-org/icu-data/bae5ca647fa41703393dbf00240ec1b807a9c353/charset/data/ucm/ibm-720_P100-1997.ucm"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table ibm-720_P100-1997.ucm",
+      "sha256": "8a1aaa95adb7aedbbf805b92d59804cdd84b56b1ee0be4a3674efc02dfbd4ce0"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "364d8394d75b9b9a876a44debfb5accf31cc0450",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
