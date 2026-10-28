@@ -936,3 +936,34 @@ the errno of the C library. The part of createPty that runs in the child process
 block of characters to the descriptor 2, as fprintf to stderr does, without allocating memory. The message of the failed
 program is written with SayOnStderr from its parts, with the same text, and the message of the failed fork is built as a
 string before it is passed to the callback.
+
+## Added by the translation of TvTextView
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TTextDeviceBuf
+added: TTextDevice.StreamBuf
+added: TLineChunk
+added: TTerminal.CopyLine
+added: TTerminal.TrimChunk
+added: MaxCharSize
+added: LargestBuffer
+added: LeastOf
+added: GreatestOf
+added: FindLfBackwards
+
+The class TTextDevice has the bases TScroller and streambuf in the C++. A Pascal class has one parent, so TTextDevice
+descends from TScroller and holds a stream buffer, the class TTextDeviceBuf of TvStreams, whose writes go to Xsputn;
+StreamBuf gives it, and the stream otstream is an opstream on it. The text is written to an otstream with the members of
+opstream that write bytes: Put of an AnsiChar and WriteBytes stand for the operator << of the C++ for characters and
+blocks of characters. The functions do_sputn, overflow and xsputn are Do_sputn, Overflow and Xsputn; the default of the
+parameter of overflow is -1, the value of EOF, and a char pointer is a PAnsiChar. Do_sputn is abstract, Xsputn is
+protected and calls Do_sputn, and the stream buffer calls Xsputn for every block that is written to it.
+
+The members bufSize, buffer, queFront, queBack and bufDec of TTerminal are protected and are BufSize, Buffer, QueFront,
+QueBack and BufDec. The static function findLfBackwards of ttprvlns.cpp is FindLfBackwards inside the unit. CopyLine is the part of draw that copies the bytes of a line, which
+may cross the end of the buffer, into a TLineChunk, the array s of 256 characters, and TrimChunk is the static function
+discardPossiblyTruncatedCharsAtEnd; MaxCharSize is maxCharSize of config.h and LargestBuffer is the limit 32000 of the
+constructor. LeastOf and GreatestOf are min and max inside the unit. These five are not visible outside the unit
+except TLineChunk, which is the type of the parameters of the two private members. The members read, write, build and
+streamableName are not translated. A negative count of Do_sputn is taken as 0.
