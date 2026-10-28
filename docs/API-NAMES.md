@@ -1483,3 +1483,125 @@ FreeMem, as TWindow frees it, so ResizeTitle replaces it with a block of the cap
 attribute (the conversion of a TColorAttr to a Byte), which is given back to the buffer as a TColorAttr. A range of
 a row that reaches outside the columns of the view is cut to those columns by UpdateDisplay, where the C++ copies
 the cells that the range names.
+
+## Added by TvFar2l
+
+TvFar2l is the client side of the far2l terminal extensions as VTExts.md specifies them; it has no C++ counterpart. The
+constants of the document keep its names (FARTTY_FEAT_*, FARTTY_FEATCLIP_*, CF_*, the control key state and mouse flags
+of the key and mouse records, WP_IMGCAP_*, WP_IMG_*, WP_IMGTF_*) and are not listed. The names below are listed one per
+line, as "added: <name>".
+
+added: TF2lStack
+added: TF2lStack.Load
+added: TF2lStack.Serialized
+added: TF2lStack.Size
+added: TF2lStack.PutRaw
+added: TF2lStack.PutNumber
+added: TF2lStack.PutSigned
+added: TF2lStack.PutString
+added: TF2lStack.PopRaw
+added: TF2lStack.PopNumber
+added: TF2lStack.PopSigned
+added: TF2lStack.PopString
+added: TF2lStack.Failed
+added: TF2lTerminator
+added: TF2lRequestKind
+added: TF2lRequest
+added: TF2lAnswer
+added: TF2lEventKind
+added: TF2lEvent
+added: TF2lDecodeResult
+added: TF2lItemKind
+added: TF2lItem
+added: TF2lPlainProc
+added: TF2lDecoder
+added: TF2lDecoder.Reset
+added: TF2lDecoder.FeedByte
+added: TF2lDecoder.Feed
+added: TF2lDecoder.Next
+added: TF2lDecoder.Pending
+added: TF2lDecoder.TakePlain
+added: TF2lDecoder.BodyLimit
+added: TF2lDecoder.Skipped
+added: TF2lDecoder.OnPlain
+added: TF2lSendProc
+added: TF2lAnswerProc
+added: TF2lEventProc
+added: TF2lConsoleSender
+added: TF2lConsoleSender.Send
+added: TF2lProbeState
+added: TFar2lClient
+added: TFar2lClient.CreateForConsole
+added: TFar2lClient.Probe
+added: TFar2lClient.Announce
+added: TFar2lClient.ProbeTimedOut
+added: TFar2lClient.Deactivate
+added: TFar2lClient.SendHostIdentity
+added: TFar2lClient.Feed
+added: TFar2lClient.TakePlain
+added: TFar2lClient.Submit
+added: TFar2lClient.PutClipboardData
+added: TFar2lClient.InFlightCount
+added: TFar2lClient.IsPending
+added: TFar2lClient.Terminator
+added: TFar2lClient.ProbeState
+added: TFar2lClient.Supported
+added: TFar2lClient.Acknowledged
+added: TFar2lClient.ServerClipFeatures
+added: TFar2lClient.Strays
+added: TFar2lClient.Decoder
+added: TFar2lClient.OnAnswer
+added: TFar2lClient.OnEvent
+added: ClipChunkSize
+added: ClipChunkAckEvery
+added: MaxRequestsInFlight
+added: DefaultBodyLimit
+added: ActivationText
+added: DeactivationText
+added: StatusQueryText
+added: HostIdentityText
+added: WrapRequest
+added: Far2lDecodePayload
+added: ValidClientId
+added: ImageCapsHasJpeg
+added: PlainRequest
+added: RequestFeatures
+added: RequestCursorHeight
+added: RequestNotification
+added: RequestFKeyTitles
+added: RequestClipOpen
+added: RequestClipFormat
+added: RequestClipRegister
+added: RequestClipSetData
+added: RequestClipChunk
+added: RequestImageSet
+added: RequestImageTransform
+added: RequestImageDelete
+added: EncodeRequest
+added: DecodeAnswer
+added: DecodeEvent
+added: Far2lToEvent
+
+The enumerators of the types keep one prefix for each type: tm (TF2lTerminator), rq (TF2lRequestKind), fe (TF2lEventKind),
+dr (TF2lDecodeResult), ik (TF2lItemKind) and pp (TF2lProbeState). The requests, replies and events are the stacks of
+section 4.3 of the document: TF2lStack pushes and pops the integers (little-endian), the strings (bytes, then the length
+as four bytes) and the raw data, and a pop from a stack that is too short sets Failed and takes nothing. The names of the
+requests are those of the document without the prefix FARTTY_INTERACT_ (the clipboard and image sub-commands keep their
+letters: rqClipOpen is CLIP_OPEN, rqImageSet is IMAGE_SET). EncodeRequest gives the stack bytes of a request with its
+ID; WrapRequest puts them in the APC string with the prefix far2l: and the terminator BEL or ST. The answers, for which
+the ID of the reply says the request, are read by DecodeAnswer from the stack of the reply without the ID, and the
+events by DecodeEvent from the stack that has the event code on top. Far2lDecodePayload reads Base64 as far2l does, up to
+the first character that is not of the alphabet.
+
+TF2lDecoder takes input bytes of any piece size. The APC strings that begin with f2l are events, those that begin with
+far2l are replies, and the string far2lok is the acknowledgement; the other bytes are passed on in order. A string
+that is cut off by another escape sequence or is longer than BodyLimit is thrown away and counted in Skipped. The
+kinds of an item that stand for an error are ikBadReply and ikBadEvent (a reply without an ID, an event without a code,
+a truncated size event), which a client answers by failing every request that waits, and ikDropped (a broken key or
+mouse event), which is ignored. TFar2lClient takes the transport as a procedure of object (TF2lSendProc), or a
+ConsoleCtl through CreateForConsole, keeps the IDs in flight (at most MaxRequestsInFlight, skipping 0) and gives the
+answers to OnAnswer and the events to OnEvent. Probe writes the activation string and the device status report, and the
+result is Supported: the acknowledgement came before the answer of the status report. PutClipboardData cuts the data of
+a set into the pieces of the chunked upload when the server reports FARTTY_FEATCLIP_CHUNKED_SET. Far2lToEvent turns a
+key press or a mouse event into a TEvent with GetWin32Key and GetWin32Mouse of TvEvents; a compact key event has the
+scan code 0, which the conversion of TvEvents makes from the virtual key code.
