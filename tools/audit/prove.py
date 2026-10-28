@@ -67,7 +67,7 @@ class Allowed:
         if facts_dir and os.path.isdir(facts_dir):
             for root, _dirs, names in os.walk(facts_dir):
                 for name in sorted(names):
-                    if name.lower().endswith(".md"):
+                    if name.lower().endswith((".md", ".txt", ".ucm")):
                         full = os.path.join(root, name)
                         rel = os.path.relpath(full, facts_dir).replace(os.sep, "/")
                         self.files["facts:" + rel] = full
