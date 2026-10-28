@@ -46,6 +46,22 @@ jobs:
           cat src/tvwidth.inc
           echo "----- END src/tvwidth.inc -----"
           git diff --exit-code src/tvwidth.inc
+      - name: The generated code page tables are current
+        run: |
+          python3 tools/gen_tables.py cp > src/tvcp.inc
+          echo "----- BEGIN src/tvcp.inc -----"
+          cat src/tvcp.inc
+          echo "----- END src/tvcp.inc -----"
+          git ls-files --error-unmatch src/tvcp.inc
+          git diff --exit-code src/tvcp.inc
+      - name: The generated set tables are current
+        run: |
+          python3 tools/gen_tables.py sets > src/tvcsets.inc
+          echo "----- BEGIN src/tvcsets.inc -----"
+          cat src/tvcsets.inc
+          echo "----- END src/tvcsets.inc -----"
+          git ls-files --error-unmatch src/tvcsets.inc
+          git diff --exit-code src/tvcsets.inc
       - name: Provenance check with the history
         run: python3 tools/audit/provenance_lint.py --history
       - name: Install Free Pascal

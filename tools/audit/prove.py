@@ -7,6 +7,13 @@ A proof is one of:
       SOURCE is magiblot/tvision or magiblot/tvterm. It holds when every identifier and every literal of the
       match occurs among the tokens of those lines of the allowed file (identifiers in any letter case,
       literals by value).
+  standard FILE[,FILE...]
+      Each FILE is a path relative to tools/audit/facts (for example charsets/CP437.TXT; the logical name
+      is facts:FILE). It holds when every literal of the match occurs, by value, among the literals of
+      those files (in a ucm file the code points <UXXXX> and the bytes \\xBB count as numbers; in
+      IBMGRAPH.TXT the bare hexadecimal values of the first three columns of the data lines count as numbers),
+      and every
+      identifier of the match is a keyword or a predeclared name.
   api
       It holds when the match is only keywords, punctuation and names written in backticks in
       docs/API-NAMES.md, and no literal.
@@ -37,6 +44,8 @@ include exclude create destroy free
 LOCATION_RE = re.compile(r"^(magiblot/tvision|magiblot/tvterm):(.+):([0-9]+)-([0-9]+)$")
 BACKTICK_RE = re.compile(r"`([^`\n]+)`")
 WORD_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+HEX_RE = re.compile(r"^[0-9A-Fa-f]+$")
+UCM_WORD_RE = re.compile(r"^(?:u([0-9a-f]{4,6})|x([0-9a-f]{2}))$")
 
 
 def read_text(path):
@@ -82,6 +91,42 @@ class Allowed:
                 self._cache[logical] = T.tokenize(read_text(path), lang)
         return self._cache[logical]
 
+    def literals(self, logical):
+        """The set of literal texts of a whole file, or None when the file is not available.
+
+        In a ucm file the code point `<UXXXX>` and the byte `\\xBB` are numbers as well. In IBMGRAPH.TXT the
+        hexadecimal values of the first three columns of the data lines are numbers as well.
+        """
+        src = self.tokens(logical)
+        if src is None:
+            return None
+        lits = set()
+        ucm = logical.lower().endswith(".ucm")
+        for cls, text, _line in src:
+            if cls == "l":
+                lits.add(text)
+            elif cls == "i" and ucm:
+                m = UCM_WORD_RE.match(text)
+                if m:
+                    lits.add("n%d" % int(m.group(1) or m.group(2), 16))
+        if logical.rsplit("/", 1)[-1].lower() == "ibmgraph.txt":
+            lits |= ibmgraph_values(read_text(self.files[logical]))
+        return lits
+
+
+def ibmgraph_values(text):
+    """The numbers "n%d" of the hexadecimal values in the first three tab separated columns of the data
+    lines (lines that do not start with #) of a table of the IBM PC video graphics. A value "--" is ignored."""
+    values = set()
+    for line in text.splitlines():
+        if line.startswith("#"):
+            continue
+        for col in line.split("\t")[:3]:
+            col = col.strip()
+            if HEX_RE.match(col):
+                values.add("n%d" % int(col, 16))
+    return values
+
 
 def api_names(path):
     names = set()
@@ -112,6 +157,17 @@ def load_proofs(path):
 
 def _name_ok(text, known):
     return text in PREDECLARED or text in T.PASCAL_KEYWORDS or text in known
+
+
+def _compare(toks, idents, lits):
+    """Whether every identifier of the tokens is a keyword, a predeclared name or in idents, and every
+    literal is in lits. Returns (holds, reason)."""
+    for cls, text in toks:
+        if cls == "i" and not _name_ok(text, idents):
+            return False, "identifier %s does not occur" % text
+        if cls == "l" and text not in lits:
+            return False, "literal %s does not occur" % text
+    return True, ""
 
 
 def check_proof(match, proof, allowed, names):
@@ -148,12 +204,20 @@ def check_proof(match, proof, allowed, names):
                         idents.add(text)
                     elif cls == "l":
                         lits.add(text)
-        for cls, text in toks:
-            if cls == "i" and not _name_ok(text, idents):
-                return False, "identifier %s does not occur" % text
-            if cls == "l" and text not in lits:
-                return False, "literal %s does not occur" % text
-        return True, ""
+        return _compare(toks, idents, lits)
+    if kind == "standard":
+        lits = set()
+        if not rest:
+            return False, "no file"
+        for part in rest.split(","):
+            rel = part.strip()
+            if not rel:
+                return False, "empty file name"
+            found = allowed.literals("facts:" + rel)
+            if found is None:
+                return False, "no facts file %s" % rel
+            lits |= found
+        return _compare(toks, set(), lits)
     return False, "unknown proof %r" % kind
 
 

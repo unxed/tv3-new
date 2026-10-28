@@ -2,7 +2,7 @@
 
 | file | kind | sources | versions | pending versions | proofs |
 | --- | --- | --- | --- | --- | --- |
-| `.github/workflows/ci.yml` | specification | specification:infra-requirements | 5 | 5 | 0 |
+| `.github/workflows/ci.yml` | specification | specification:infra-requirements | 6 | 6 | 0 |
 | `.gitignore` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `CLAUDE.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `COPYRIGHT.magiblot` | verbatim | magiblot/tvision:COPYRIGHT@a200eae | 1 | 1 | 0 |
@@ -25,7 +25,9 @@
 | `src/tvcodepg.pas` | translation | magiblot/tvision:include/tvision/internal/codepage.h:1-43; magiblot/tvision:source/platform/codepage.cpp:1-89 | 2 | 2 | 3 |
 | `src/tvcolors.pas` | translation | magiblot/tvision:include/tvision/colors.h:1-855; magiblot/tvision:source/platform/colors.cpp:1-253 | 2 | 2 | 0 |
 | `src/tvcolorsel.pas` | translation | magiblot/tvision:include/tvision/colorsel.h:1-467; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/colorsel.cpp:1-881; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121 | 3 | 3 | 0 |
+| `src/tvcp.inc` | standard | Character set mapping table CP437.TXT; Character set mapping table CP737.TXT; Character set mapping table CP775.TXT; Character set mapping table CP850.TXT; Character set mapping table CP852.TXT; Character set mapping table CP855.TXT; Character set mapping table CP857.TXT; Character set mapping table ibm-858_P100-1997.ucm; Character set mapping table CP860.TXT; Character set mapping table CP861.TXT; Character set mapping table CP862.TXT; Character set mapping table CP863.TXT; Character set mapping table CP864.TXT; Character set mapping table CP865.TXT; Character set mapping table CP866.TXT; Character set mapping table CP869.TXT; Character set mapping table ibm-1125_P100-1997.ucm; IBM PC memory-mapped video graphics to Unicode (IBMGRAPH.TXT) | 1 | 1 | 21 |
 | `src/tvcrc.pas` | specification | specification:tvcrc | 2 | 2 | 0 |
+| `src/tvcsets.inc` | standard | Character set mapping table CP437.TXT; Character set mapping table ibm-720_P100-1997.ucm; Character set mapping table CP737.TXT; Character set mapping table CP775.TXT; Character set mapping table CP850.TXT; Character set mapping table CP852.TXT; Character set mapping table CP855.TXT; Character set mapping table CP857.TXT; Character set mapping table ibm-858_P100-1997.ucm; Character set mapping table CP860.TXT; Character set mapping table CP861.TXT; Character set mapping table CP862.TXT; Character set mapping table CP863.TXT; Character set mapping table CP864.TXT; Character set mapping table CP865.TXT; Character set mapping table CP866.TXT; Character set mapping table CP869.TXT; Character set mapping table CP874.TXT; Character set mapping table ibm-1125_P100-1997.ucm; Character set mapping table CP1250.TXT; Character set mapping table CP1251.TXT; Character set mapping table CP1252.TXT; Character set mapping table CP1253.TXT; Character set mapping table CP1254.TXT; Character set mapping table CP1255.TXT; Character set mapping table CP1256.TXT; Character set mapping table CP1257.TXT; Character set mapping table CP1258.TXT; Character set mapping table KOI8-R.TXT; Character set mapping table KOI8-U.TXT; Character set mapping table 8859-1.TXT; Character set mapping table 8859-2.TXT; Character set mapping table 8859-3.TXT; Character set mapping table 8859-4.TXT; Character set mapping table 8859-5.TXT; Character set mapping table 8859-6.TXT; Character set mapping table 8859-7.TXT; Character set mapping table 8859-8.TXT; Character set mapping table 8859-9.TXT; Character set mapping table 8859-10.TXT; Character set mapping table 8859-11.TXT; Character set mapping table 8859-13.TXT; Character set mapping table 8859-14.TXT; Character set mapping table 8859-15.TXT; Character set mapping table 8859-16.TXT; Character set mapping table ROMAN.TXT | 1 | 1 | 39 |
 | `src/tvcstr.pas` | specification | specification:tvcstr | 2 | 2 | 0 |
 | `src/tvdialog.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tdialog.cpp:1-116; magiblot/tvision:source/tvision/tbutton.cpp:1-344; magiblot/tvision:source/tvision/tstatict.cpp:1-148; magiblot/tvision:source/tvision/tlabel.cpp:1-136; magiblot/tvision:source/tvision/tparamte.cpp:1-89; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121 | 3 | 3 | 0 |
 | `src/tvdispbuf.pas` | translation | magiblot/tvision:include/tvision/internal/dispbuff.h:1-106; magiblot/tvision:source/platform/dispbuff.cpp:1-475; magiblot/tvision:include/tvision/internal/platform.h:1-147; magiblot/tvision:include/tvision/scrncell.h:1-270; magiblot/tvision:include/tvision/internal/mutex.h:1-79; magiblot/tvision:source/platform/mutex.cpp:1-16 | 1 | 1 | 0 |
@@ -189,6 +191,7 @@
 | `tools/audit/facts/charsets/CP866.TXT` | standard | Character set mapping table CP866.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/CP869.TXT` | standard | Character set mapping table CP869.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/CP874.TXT` | standard | Character set mapping table CP874.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/IBMGRAPH.TXT` | standard | IBM PC memory-mapped video graphics to Unicode (IBMGRAPH.TXT) | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/KOI8-R.TXT` | standard | Character set mapping table KOI8-R.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/KOI8-U.TXT` | standard | Character set mapping table KOI8-U.TXT | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/ROMAN.TXT` | standard | Character set mapping table ROMAN.TXT | 1 | 1 | 0 |
@@ -198,17 +201,19 @@
 | `tools/audit/facts/windows-console-mouse-event-record-str.md` | standard | MOUSE_EVENT_RECORD structure | 1 | 1 | 0 |
 | `tools/audit/facts/windows-virtual-key-codes.md` | standard | Virtual-Key Codes (Winuser.h) | 1 | 1 | 0 |
 | `tools/audit/facts/xterm-ctlseqs.txt` | standard | XTerm Control Sequences | 1 | 1 | 0 |
-| `tools/audit/proofs.txt` | specification | specification:infra-requirements | 6 | 6 | 0 |
-| `tools/audit/prove.py` | specification | specification:infra-requirements | 2 | 2 | 0 |
+| `tools/audit/proofs.txt` | specification | specification:infra-requirements | 8 | 8 | 0 |
+| `tools/audit/prove.py` | specification | specification:infra-requirements | 4 | 4 | 0 |
 | `tools/audit/provenance_lint.py` | specification | specification:infra-requirements | 2 | 2 | 0 |
 | `tools/audit/run.sh` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/tokens.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/verdict.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
+| `tools/gen_tables.py` | new | - | 1 | 1 | 0 |
 | `tools/gen_width.py` | standard | Unicode 15.0.0 EastAsianWidth.txt; Unicode 15.0.0 DerivedGeneralCategory.txt | 1 | 1 | 0 |
 | `tools/test.sh` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_audit.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_corpora.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `tools/tests/test_prove.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
+| `tools/tests/test_gen_tables.py` | new | - | 1 | 1 | 0 |
+| `tools/tests/test_prove.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/tests/test_provenance_lint.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_text_lint.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/tests/test_tokens.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
