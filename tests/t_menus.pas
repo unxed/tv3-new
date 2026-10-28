@@ -10,7 +10,8 @@
   and it remembers the events that the views put back into it. The palette of the root has seven entries, so that
   each color of the menu palette gives a distinct attribute: the normal text $22, the disabled text $33, the
   shortcut text $44, the selection $55, the disabled selection $66 and the shortcut selection $77. The hooks for
-  the shortcut of a menu item, for the comparison of texts and for the application are test doubles. }
+  the shortcut of a menu item and for the application are test doubles; the comparison of texts is the one of
+  TvLocale. }
 program t_menus;
 
 {$mode objfpc}
@@ -139,20 +140,18 @@ procedure OnScreenWrite(X, Y: Integer; Buf: PScreenCell; Count: Integer);
 begin
 end;
 
-{ The shortcut of a name is the character between a pair of tildes. }
+{ The shortcut of a name is the text between the first pair of tildes. }
 function TestHotKeyStr(const Name: string): string;
 var
-  A: Integer;
+  A, B: Integer;
 begin
   Result := '';
   A := Pos('~', Name);
-  if (A > 0) and (A + 2 <= Length(Name)) and (Name[A + 2] = '~') then
-    Result := Name[A + 1];
-end;
-
-function TestEquals(const A, B: string): Boolean;
-begin
-  Result := UpperCase(A) = UpperCase(B);
+  if A = 0 then
+    Exit;
+  B := Pos('~', Copy(Name, A + 1, Length(Name)));
+  if B > 1 then
+    Result := Copy(Name, A + 1, B - 1);
 end;
 
 function TestApp: TGroup;
@@ -808,9 +807,8 @@ begin
   HotKeyStrHook := nil;
   Check(Bar.FindItem('f') = nil, 'FindItem finds nothing while the hook for the shortcut is not set');
   HotKeyStrHook := @TestHotKeyStr;
-  EqualsIgnoreCaseHook := nil;
-  Check(Bar.FindItem('f') = nil, 'FindItem finds nothing while the hook for the comparison is not set');
-  EqualsIgnoreCaseHook := @TestEquals;
+  Check(Bar.FindItem('F') = FileSub, 'FindItem finds an item by the upper case of its shortcut');
+  Check(Bar.FindItem('fe') = nil, 'FindItem compares the whole text, not its first character');
 
   Check(Bar.HotKey(TKey.Create(kbF4)) = NewItem, 'HotKey looks into sub menus');
   Check(Bar.HotKey(TKey.Create(kbAltX)) = ExitItem, 'HotKey finds an item after a line');
@@ -828,6 +826,33 @@ begin
   Check(Box.HotKey(TKey.Create(kbF3)) = OpenItem, 'a box finds a hot key');
   TvObject.DestroyObject(Box);
   TvObject.DestroyObject(Bar);
+end;
+
+{ Shortcuts outside ASCII: a name holds one in UTF-8 or as a byte of code page 437, and the text that is looked for
+  holds it in either form. #$C3#$BC is the letter u with a diaeresis in UTF-8 and #$81 is that letter in code page
+  437; #$C3#$A9 and #$82 are the letter e with an acute accent. }
+procedure TestFindExtended;
+var
+  First, Second, Third, Chain: TMenuItem;
+  M: TMenu;
+  Box: TMenuBox;
+begin
+  First := TMenuItem.Create('~'#$C3#$BC'~ber', cmNew, TKey.Create(kbNoKey));
+  Second := TMenuItem.Create('~'#$82'~cole', cmOpen, TKey.Create(kbNoKey));
+  Third := TMenuItem.Create('~Q~uit', cmQuit, TKey.Create(kbNoKey));
+  Chain := First + Second + Third;
+  M := TMenu.Create(Chain);
+  Box := TMenuBox.Create(Rc(0, 1, 40, 20), M, nil);
+  Check(Box.FindItem(#$C3#$BC) = First, 'a UTF-8 shortcut is found by the same text');
+  Check(Box.FindItem(#$81) = First, 'a UTF-8 shortcut is found by the byte of the code page');
+  Check(Box.FindItem(#$82) = Second, 'a shortcut that is a byte of the code page is found by that byte');
+  Check(Box.FindItem(#$C3#$A9) = Second, 'a shortcut that is a byte of the code page is found by its UTF-8 text');
+  Check(Box.FindItem('u') = nil, 'a letter with a diaeresis is not the letter without it');
+  Check(Box.FindItem('e') = nil, 'a letter with an accent is not the letter without it');
+  Check(Box.FindItem('q') = Third, 'the lower case of an upper case shortcut is found');
+  Check(Box.FindItem('Q') = Third, 'the upper case shortcut is found');
+  TvObject.DestroyObject(Box);
+  M.Free;
 end;
 
 procedure TestHelpCtx;
@@ -1648,7 +1673,6 @@ begin
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
   HotKeyStrHook := @TestHotKeyStr;
-  EqualsIgnoreCaseHook := @TestEquals;
   ApplicationHook := @TestApp;
   EventBackend := TEventBackend.Create;
   TEventQueue.Backend := EventBackend;
@@ -1664,6 +1688,7 @@ begin
   TestBoxGeometry;
   TestBoxDraw;
   TestFindAndHotKey;
+  TestFindExtended;
   TestHelpCtx;
   TestBarExec;
   TestBoxExec;
@@ -1678,7 +1703,6 @@ begin
   TEventQueue.Backend := nil;
   EventBackend.Free;
   HotKeyStrHook := nil;
-  EqualsIgnoreCaseHook := nil;
   ApplicationHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
