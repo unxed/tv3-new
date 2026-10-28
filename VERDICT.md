@@ -304,6 +304,7 @@ provenance check: pending version tools/audit/corpora.py 6e49b92b208899703f338d6
 provenance check: pending version tools/audit/corpora.py bdab186f502e09f7357d4082eec6b20e1bd7b03b
 provenance check: pending version tools/audit/facts/charsets/8859-1.TXT 3a55afefc462f807c9a890972344d38593a2df76
 provenance check: pending version tools/audit/facts/charsets/8859-10.TXT 0ec67d72ee0aa6e20ee87dd7e5da4c9a2dc46231
+provenance check: pending version tools/audit/facts/charsets/8859-11.TXT 5334e3c27687b7b30f00321924d5c49d46a84d24
 provenance check: pending version tools/audit/facts/charsets/8859-13.TXT b613dc00e11d2abe1dd7c46c88cffa93132dfee7
 provenance check: pending version tools/audit/facts/charsets/8859-14.TXT 0351d1652b316c5485b3d52cd80f7e83261921d8
 provenance check: pending version tools/audit/facts/charsets/8859-15.TXT ada8fcae62eec9dc5753373419dd9bcfd198e99d
@@ -345,6 +346,7 @@ provenance check: pending version tools/audit/facts/charsets/KOI8-R.TXT 2a1afb70
 provenance check: pending version tools/audit/facts/charsets/KOI8-U.TXT c533b394097d21385954701816ee16233506d3fc
 provenance check: pending version tools/audit/facts/charsets/ROMAN.TXT 5b3b8b4005be2c7d1ef3ea0c70528455ad3b2e22
 provenance check: pending version tools/audit/facts/charsets/ibm-1125_P100-1997.ucm f91dfd93999229633115cc618f1235b0fc9035df
+provenance check: pending version tools/audit/facts/charsets/ibm-720_P100-1997.ucm 364d8394d75b9b9a876a44debfb5accf31cc0450
 provenance check: pending version tools/audit/facts/charsets/ibm-858_P100-1997.ucm 0bb9cc6632e48744b04c06e1a00761e4eb87cb1c
 provenance check: pending version tools/audit/facts/windows-console-mouse-event-record-str.md 07a0cf3c44cb5e3850f4260caaf56b1d211a136a
 provenance check: pending version tools/audit/facts/windows-virtual-key-codes.md 741a1fbc2aef340ff98af0254569a138611a56dc
