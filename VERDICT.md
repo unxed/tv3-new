@@ -44,6 +44,7 @@ provenance check: pending version docs/API-NAMES.md b11ef95fbab2eb1420faadacb659
 provenance check: pending version docs/API-NAMES.md feb195cd66c08c677df0298da01de164e4dd75ab
 provenance check: pending version docs/API-NAMES.md 7d7d109103174a933215e527241cd6f7f7def048
 provenance check: pending version docs/API-NAMES.md 0ca2bfbc2abb34c0f4a77038a5ec09fcda6ed6bc
+provenance check: pending version docs/API-NAMES.md 3ff85ee5b8408cfdda51d44ec619bcd6af86bed4
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvactions.pas 959a5bd05279e29dbc23beb3e1d04d6306ece9a1
@@ -152,6 +153,7 @@ provenance check: pending version src/tvtermosbase.pas fb1b8205239fc93529ddb0a36
 provenance check: pending version src/tvtermosbase.pas 2bffb85d2e67b48d55a3d8fb6a47281182572906
 provenance check: pending version src/tvtext.pas f49e98fa6e85533b611f1039c1a6aea0e38f4095
 provenance check: pending version src/tvtext.pas 135d7c71e13e33b5f144cc0bac3a37a73e711729
+provenance check: pending version src/tvtextview.pas 98c456f612f495068da787dc2ac6cd85ef37620c
 provenance check: pending version src/tvtimer.pas 49194f23df53ef60ce8221701d823f9a20d5e1fe
 provenance check: pending version src/tvtimer.pas 90fffe035fff259a3be7022ee5a1d15c525c74f5
 provenance check: pending version src/tvunix.pas 0ac437be780617320dd4ef6324b55fb29ba0ee6a
@@ -248,6 +250,7 @@ provenance check: pending version tests/t_termio.pas aa4540c7806e59dd1891d371472
 provenance check: pending version tests/t_termos.pas 755b978bca4ff5f1f0a7cdbe5bd1be5d78ed98ce
 provenance check: pending version tests/t_termosbase.pas 0404ecb0d3bab2bfa9907125752df89b12a40abc
 provenance check: pending version tests/t_text.pas 73cfa8a3559be87f4de027051f8dadba95fe175a
+provenance check: pending version tests/t_textview.pas a12d72977d6fd7c872c3da51fa4439edf1808707
 provenance check: pending version tests/t_timer.pas 41b9c344ad769483e144bab63ed252f6728c91f6
 provenance check: pending version tests/t_unix.pas 35280a4cc00c361af2deb70f137474da9ed8889f
 provenance check: pending version tests/t_ustr.pas 6328b7a88822dc90eb2dc0d5ab868b5dd8a8d6d3
