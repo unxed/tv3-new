@@ -1,6 +1,6 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/util.h, source/tvision/drivers2.cpp, source/tvision/tvtext2.cpp,
-  source/tvision/newstr.cpp, source/tvision/fmtstr.cpp
+  source/tvision/newstr.cpp, source/tvision/fmtstr.cpp, source/tvision/misc.cpp
   See COPYRIGHT.magiblot. }
 program t_util;
 
@@ -259,6 +259,72 @@ begin
   Check(VFormatStr('%d', []) = '%d', 'a failed vformat gives the format');
 end;
 
+procedure TestStrnzcpy;
+var
+  Dst: string;
+  N: SizeInt;
+begin
+  Dst := 'old';
+  N := Strnzcpy(Dst, 'abc', 10);
+  Check((N = 3) and (Dst = 'abc'), 'a text that fits is copied whole');
+  N := Strnzcpy(Dst, 'abcdef', 4);
+  Check((N = 3) and (Dst = 'abc'), 'a text is cut to the size less one');
+  N := Strnzcpy(Dst, 'abc', 3);
+  Check((N = 2) and (Dst = 'ab'), 'a text of the size of the buffer loses its last character');
+  N := Strnzcpy(Dst, 'abcd', 5);
+  Check((N = 4) and (Dst = 'abcd'), 'a text of the size less one is copied whole');
+  N := Strnzcpy(Dst, 'abc', 1);
+  Check((N = 0) and (Dst = ''), 'a buffer of one character holds the empty text');
+  Dst := 'keep';
+  N := Strnzcpy(Dst, 'abc', 0);
+  Check((N = 0) and (Dst = 'keep'), 'a buffer of no character is not changed');
+  Dst := 'x';
+  N := Strnzcpy(Dst, '', 5);
+  Check((N = 0) and (Dst = ''), 'the empty text replaces the old text');
+  Dst := 'longer text';
+  N := Strnzcpy(Dst, 'ab', 20);
+  Check((N = 2) and (Dst = 'ab'), 'the old text is replaced, not overwritten in part');
+  N := Strnzcpy(Dst, 'a'#0'b', 10);
+  Check((N = 3) and (Dst = 'a'#0'b'), 'a zero inside the text is copied');
+end;
+
+procedure TestStrnzcat;
+var
+  Dst: string;
+  N: SizeInt;
+begin
+  Dst := 'ab';
+  N := Strnzcat(Dst, 'cd', 10);
+  Check((N = 4) and (Dst = 'abcd'), 'a text that fits is appended whole');
+  Dst := 'ab';
+  N := Strnzcat(Dst, 'cdef', 5);
+  Check((N = 4) and (Dst = 'abcd'), 'the appended text is cut to the room that is left');
+  Dst := 'abcd';
+  N := Strnzcat(Dst, 'ef', 5);
+  Check((N = 4) and (Dst = 'abcd'), 'nothing is appended to a full buffer');
+  Dst := '';
+  N := Strnzcat(Dst, 'xyz', 3);
+  Check((N = 2) and (Dst = 'xy'), 'a text is appended to the empty text up to the size less one');
+  Dst := 'ab';
+  N := Strnzcat(Dst, 'cd', 0);
+  Check((N = 0) and (Dst = 'ab'), 'a buffer of no character is not changed');
+  Dst := 'ab';
+  N := Strnzcat(Dst, '', 10);
+  Check((N = 2) and (Dst = 'ab'), 'the empty text appends nothing');
+  Dst := 'ab'#0'cd';
+  N := Strnzcat(Dst, 'X', 10);
+  Check((N = 3) and (Dst = 'abX'), 'the text is appended at the first zero character');
+  Dst := 'abcdef';
+  N := Strnzcat(Dst, 'X', 4);
+  Check((N = 3) and (Dst = 'abc'), 'a text that is longer than the buffer holds is cut and nothing is appended');
+  Dst := '';
+  N := Strnzcpy(Dst, 'abc', 10);
+  N := Strnzcat(Dst, 'def', 10);
+  Check((N = 6) and (Dst = 'abcdef'), 'Strnzcat goes on after Strnzcpy');
+  N := Strnzcat(Dst, 'ghijkl', 10);
+  Check((N = 9) and (Dst = 'abcdefghi'), 'the last append stops at the size less one');
+end;
+
 begin
   TestMinMax;
   TestAltCodes;
@@ -271,5 +337,7 @@ begin
   TestStrwidth;
   TestNewStr;
   TestFormatStr;
+  TestStrnzcpy;
+  TestStrnzcat;
   Done;
 end.

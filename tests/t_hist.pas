@@ -2,14 +2,13 @@
   C++ sources: include/tvision/dialogs.h (THistoryViewer, THistInit, THistoryWindow, THistory),
   include/tvision/views.h, include/tvision/ttypes.h, include/tvision/tv.h, include/tvision/config.h,
   source/tvision/histlist.cpp, source/tvision/thistory.cpp, source/tvision/thistwin.cpp, source/tvision/thstview.cpp,
-  source/tvision/tvtext1.cpp (the icon of THistory)
+  source/tvision/tvtext1.cpp (the icon of THistory), include/tvision/util.h, source/tvision/misc.cpp (strnzcpy)
   See COPYRIGHT.magiblot.
 
   The display is a screen of 40 by 20 cells in memory; the root of the views is a group that writes into it. The
   root reads its events from a script, and from the posted events of the event queue when the script asks for it.
-  The colors of the root are the BIOS attributes $41 and above: the entry k of its palette is $40 + k. The routine
-  that stands for strnzcpy is given to StrNZCopyHook by the tests that need it, and it keeps the arguments of its
-  last call. The hook of the messages is nil, so no message reaches a view. }
+  The colors of the root are the BIOS attributes $41 and above: the entry k of its palette is $40 + k. The messages
+  that the views send to their owners reach the views of the root. }
 program t_hist;
 
 {$mode objfpc}
@@ -103,9 +102,6 @@ var
   GetCalls: Integer;
   WakeFlag: LongInt;
   RootPal: TPalette;
-  CopyCalls: Integer;
-  CopySource: string;
-  CopySize: Integer;
 
 { The fake display and the hooks. }
 
@@ -130,15 +126,6 @@ end;
 function Now64: Int64;
 begin
   Result := Int64(GetTickCount64);
-end;
-
-{ The stand-in for strnzcpy: at most BufferSize - 1 bytes of the text. }
-function CopyForTest(const Source: string; BufferSize: Integer): string;
-begin
-  Inc(CopyCalls);
-  CopySource := Source;
-  CopySize := BufferSize;
-  Result := Copy(Source, 1, BufferSize - 1);
 end;
 
 { Small helpers. }
@@ -757,11 +744,14 @@ begin
   Check((H.RecordCalls = 3) and (EntryOf(12, 2) = 'typed'), 'a click records the text of the line first');
 
   Line.SetState(sfFocused, False);
+  Check((H.RecordCalls = 4) and (H.LastRecorded = 'typed'),
+    'a line that gives up the focus tells its history view through its owner');
   Ev := KeyEv(kbDown);
   H.HandleEvent(Ev);
   Check((Ev.What = evKeyDown) and (H.WindowCalls = 1), 'the key Down does nothing while the line is not focused');
   Line.SetState(sfFocused, True);
   Check((Line.State and sfFocused) <> 0, 'the line is focused');
+  Check(H.RecordCalls = 4, 'a line that gets the focus is not recorded');
   Ev := KeyEv(kbDown);
   H.HandleEvent(Ev);
   Check((Ev.What = evNothing) and (H.WindowCalls = 2), 'the key Down opens the list while the line is focused');
@@ -791,8 +781,6 @@ begin
   HistoryAdd(13, 'first');
   HistoryAdd(13, 'second');
   HistoryAdd(13, 'third');
-  StrNZCopyHook := @CopyForTest;
-  CopyCalls := 0;
 
   MakeScene(Root, Line, H, 13);
   H.MakeWindow := True;
@@ -805,7 +793,6 @@ begin
   Check(H.LastHelp = 77, 'the window has the help context of the line');
   Check(RectIs(H.LastArea, 4, 1, 26, 9), 'the window that runs has the area that was computed');
   Check(Line.Data = 'second', 'Enter takes the focused entry into the line');
-  Check((CopyCalls = 1) and (CopySource = 'second') and (CopySize = 20), 'the copy gets the text and the limit of the line plus 1');
   Check((Line.SelStart = 0) and (Line.SelEnd = 6), 'the new text of the line is selected');
   Check((HistoryCount(13) = 4) and (EntryOf(13, 3) = 'typed'), 'the typed text was recorded, the chosen one was not');
   Check(Root.ErrorCount = 0, 'no event was left over');
@@ -857,17 +844,17 @@ begin
   Check(Line.Data <> 'keep4', 'a double click on an entry takes it into the line');
   FreeRoot(Root);
 
-  StrNZCopyHook := nil;
-  MakeScene(Root, Line, H, 13);
+  { A chosen text that is longer than the line holds is cut to the limit of the line: 19 bytes. }
+  HistoryAdd(14, 'a');
+  HistoryAdd(14, 'abcdefghijklmnopqrstuvwxyz');
+  MakeScene(Root, Line, H, 14);
   H.MakeWindow := True;
   Line.Data := 'typed3';
-  Line.SelStart := 0;
-  Line.SelEnd := 0;
   Root.AddEvent(KeyEv(kbEnter));
   Ev := MouseEv(26, 2);
   H.HandleEvent(Ev);
-  Check(Line.Data = 'typed3', 'without the copy routine the line keeps its text');
-  Check((Line.SelStart = 0) and (Line.SelEnd = 6), 'the line is selected even then');
+  Check(Line.Data = 'abcdefghijklmnopqrs', 'a chosen text that is longer than the line holds is cut to its limit');
+  Check((Line.SelStart = 0) and (Line.SelEnd = 19), 'the cut text is selected');
   FreeRoot(Root);
 
   { A line that does not give up the focus is not asked for its history. }
@@ -946,8 +933,6 @@ begin
     #$51#$52#$53#$54#$55#$56#$57#$58#$59#$5A#$5B#$5C#$5D#$5E#$5F#$60, 32);
   Check((cpHistory = #22#23) and (cpHistoryViewer = #6#6#7#6#6) and (cpHistoryWindow = #19#19#21#24#23#19#20),
     'the palette strings of the history views');
-  Check(not Assigned(StrNZCopyHook), 'the copy routine is not given by the unit');
-
   Fake := TFakeDisplay.Create;
   SavedBackend := TDisplay.Backend;
   TDisplay.Backend := Fake;
@@ -955,7 +940,6 @@ begin
   TScreen.CursorLines := 20;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := nil;
   EventBackend := TEventBackend.Create;
   TEventQueue.Backend := EventBackend;
   Queue := TEventQueue.Create;
@@ -970,7 +954,6 @@ begin
   Queue.Free;
   TEventQueue.Backend := nil;
   EventBackend.Free;
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TScreen.ScreenBuffer := nil;

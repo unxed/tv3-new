@@ -31,6 +31,12 @@
       "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
       "file": "source/tvision/fmtstr.cpp",
       "lines": "1-61"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/misc.cpp",
+      "lines": "1-79"
     }
   ],
   "inputs": [
@@ -81,9 +87,13 @@
     {
       "origin": "repository:src/tvutf8.pas",
       "sha256": "194a547ad470bae95d60e1bc980f759151f16d987ffefac1a3c06c86512e1e14"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/misc.cpp",
+      "sha256": "e18716cd91a58086009962c30451e551b1aeeee7e19cdcbe4bb8ecd2bc625ec5"
     }
   ],
-  "implementer": "implementer 14",
+  "implementer": "implementer 14, implementer 52",
   "proofs": [],
   "versions": [
     {
@@ -94,6 +104,12 @@
     },
     {
       "blob": "8ec5f82f50d35fdc47e041ffed96351f0ebafba6",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "db37a1e07c8e5aabb79d72b8bc4ca4e5d4f02a68",
       "commit": null,
       "pr": null,
       "audit_run": null

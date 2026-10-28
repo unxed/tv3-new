@@ -2,7 +2,8 @@
   C++ sources: include/tvision/dialogs.h (the button flags, TDialog, TButton, TStaticText, TParamText, TLabel),
   include/tvision/ttypes.h (specialChars), source/tvision/tdialog.cpp, source/tvision/tbutton.cpp,
   source/tvision/tstatict.cpp, source/tvision/tparamte.cpp, source/tvision/tlabel.cpp,
-  source/tvision/tvtext1.cpp (specialChars and the tables of TButton)
+  source/tvision/tvtext1.cpp (specialChars and the tables of TButton), include/tvision/util.h,
+  source/tvision/misc.cpp
   See COPYRIGHT.magiblot.
 
   The display is a screen of 40 by 20 cells in memory; the root of the views is a group that writes into it. The
@@ -10,7 +11,8 @@
   An event that a view puts back is the next one the root reads. The root hands out the timers as the numbers 1,
   2, 3, and counts the timers that are set and killed. The colors of the root are the BIOS attributes 1 to 127:
   the entry k of its palette is k, so the attribute of a cell is the entry of the palette of the root that the
-  palettes of the views lead to. The hook of the messages records the messages and delivers none. The hook of the
+  palettes of the views lead to. The root and the dialog of the modal tests record the events that they get, which
+  are the messages that their views send to them. The hook of the
   hot keys is a function of the test that returns the upper case letter after the first tilde of a text. The
   characters of the shadow, of the markers and of specialChars are set to letters, so that the cells can be read
   as text; their values in the C++ are checked first. }
@@ -60,11 +62,18 @@ type
     LastKilled: TTimerId;
     procedure AddEvent(const Ev: TEvent);
     procedure GetEvent(var Event: TEvent); override;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure PutEvent(var Event: TEvent); override;
     procedure EventError(var Event: TEvent); override;
     function GetPalette: TPalette; override;
     function SetTimer(TimeoutMs: Cardinal; PeriodMs: Integer = -1): TTimerId; override;
     procedure KillTimer(Id: TTimerId); override;
+  end;
+
+  { A dialog that records the events that it gets. }
+  TLogDialog = class(TDialog)
+  public
+    procedure HandleEvent(var Event: TEvent); override;
   end;
 
   { A selectable view that draws nothing. }
@@ -146,15 +155,15 @@ procedure OnScreenWrite(X, Y: Integer; Buf: PScreenCell; Count: Integer);
 begin
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
+{ Records the event that the view Receiver gets. }
+procedure LogEvent(Receiver: TView; const Event: TEvent);
 begin
-  Result := nil;
   if LogCount < MaxLog then
   begin
     LogTarget[LogCount] := Receiver;
-    LogKind[LogCount] := What;
-    LogCode[LogCount] := Command;
-    LogInfo[LogCount] := InfoPtr;
+    LogKind[LogCount] := Event.What;
+    LogCode[LogCount] := Event.Message.Command;
+    LogInfo[LogCount] := Event.Message.InfoPtr;
   end;
   Inc(LogCount);
 end;
@@ -382,6 +391,18 @@ begin
     Event := CmdEv(cmCancel)
   else
     TEventQueue.WaitForEvents(Guard);
+end;
+
+procedure TRoot.HandleEvent(var Event: TEvent);
+begin
+  LogEvent(Self, Event);
+  inherited HandleEvent(Event);
+end;
+
+procedure TLogDialog.HandleEvent(var Event: TEvent);
+begin
+  LogEvent(Self, Event);
+  inherited HandleEvent(Event);
 end;
 
 procedure TRoot.PutEvent(var Event: TEvent);
@@ -1499,7 +1520,7 @@ begin
   TButton.Shadows := 'abc';
   Root := NewRoot;
   Root.Requeue := True;
-  Dlg := TDialog.Create(Rc(5, 3, 30, 10), 'Dlg');
+  Dlg := TLogDialog.Create(Rc(5, 3, 30, 10), 'Dlg');
   Btn := TButton.Create(Rc(2, 4, 12, 6), '~O~K', cmOK, bfDefault);
   Dlg.Insert(Btn);
   Root.AddEvent(KeyEv(kbEnter));
@@ -1507,7 +1528,7 @@ begin
   R := Root.ExecView(Dlg);
   Check(R = cmOK, 'Enter presses the default button, which ends the dialog with its command');
   Check((Root.TimerCount = 1) and (Root.LastTimeout = 100), 'the default button animated its press with one timer');
-  Check(LogHas(cmRecordHistory), 'the press recorded the history');
+  Check(LogHas(cmRecordHistory), 'the press recorded the history through the dialog');
   Check((Root.ScriptPos = 2) and (Root.ErrorCount = 0), 'every event was taken by a view');
   TvObject.DestroyObject(Dlg);
   FreeRoot(Root);
@@ -1591,7 +1612,6 @@ begin
   TScreen.CursorLines := 20;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
   HotKeyHook := @TestHotKey;
   EventBackend := TEventBackend.Create;
   TEventQueue.Backend := EventBackend;
@@ -1622,7 +1642,6 @@ begin
   TEventQueue.Backend := nil;
   EventBackend.Free;
   HotKeyHook := nil;
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TScreen.ScreenBuffer := nil;

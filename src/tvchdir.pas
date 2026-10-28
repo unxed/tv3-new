@@ -1,7 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (the options cdNormal, cdNoLoadDir and cdHelpButton, the commands cmChangeDir
   and cmRevert, TChDirDialog), source/tvision/tchdrdlg.cpp, include/tvision/ttypes.h (EOS),
-  source/tvision/tvtext1.cpp (the text of the drives)
+  source/tvision/tvtext1.cpp (the text of the drives), include/tvision/util.h, source/tvision/misc.cpp (strnzcpy)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -11,10 +11,11 @@
   Parts of the C++ that have no unit yet:
     - getCurDir, which getCurrentDir of tchdrdlg.cpp calls, is defined in a file that is not among the sources of
       this unit; GetCurDirHook stands for it, and while it is nil the current directory is empty.
-    - strnzcpy, which puts a path into the line, is StrNZCopyHook of TvHist; while it is nil the line keeps its text.
     - The functions of the compatibility headers (fexpand, chdir) are made with TvPath and SysUtils, as TvFiles makes
       them. setdisk is left out, because the target has no drives: the path that changeDir of tchdrdlg.cpp gets
       never has a drive letter before a colon that selects a disk.
+
+  strnzcpy, which puts a path into the line, is Strnzcpy of TvUtil.
 
   The texts of the dialog (changeDirTitle, dirNameText, dirTreeText, okText, chdirText, revertText, helpText,
   drivesText and invalidText) are defined in a file that is not among the sources of this unit, so they are the class
@@ -98,7 +99,7 @@ procedure MakeChDirButtonDefault(Box: TDirListBox; Enable: Boolean);
 implementation
 
 uses
-  SysUtils, TvHist, TvMsgbox, TvPath;
+  SysUtils, TvHist, TvMsgbox, TvPath, TvUtil;
 
 const
   { The characters of a drive that getCurDir writes and that getCurrentDir removes. }
@@ -248,8 +249,7 @@ var
   shownPath: string;
 begin
   shownPath := WithoutEndSeparator(Path);
-  if Assigned(StrNZCopyHook) then
-    DirInput.Data := StrNZCopyHook(shownPath, DirInput.MaxLen + 1);
+  Strnzcpy(DirInput.Data, shownPath, DirInput.MaxLen + 1);
   DirInput.DrawView;
 end;
 

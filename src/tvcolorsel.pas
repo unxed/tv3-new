@@ -1,15 +1,14 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/colorsel.h, source/tvision/colorsel.cpp, source/tvision/tvtext1.cpp (the texts and the
   tables of TColorSelector, TMonoSelector and TColorDialog), include/tvision/views.h, include/tvision/ttypes.h,
-  include/tvision/config.h, include/tvision/tv.h
+  include/tvision/config.h, include/tvision/tv.h, include/tvision/util.h, source/tvision/misc.cpp (message)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
   read, write, build and streamableName of the classes, the constructors with StreamableInit and the members
   writeItems, writeGroups, readItems and readGroups of TColorGroupList belong to a later unit.
 
-  Parts of the C++ that have no unit yet:
-    - message() sends a message to a view; MessageHook of TvViews stands for it and does nothing while it is nil.
+  message() sends a message to a view; it is Message of TvViews.
 
   The texts and tables of tvtext1.cpp are class variables: Icon of TColorSelector, Button, Normal, Highlight,
   Underline and Inverse of TMonoSelector, and Colors, GroupText, ItemText, ForText, BakText, TextText, ColorText,
@@ -262,14 +261,6 @@ begin
   Result := Pointer(PtrUInt(Value));
 end;
 
-{ Sends a message through the hook; nothing happens while there is none. }
-procedure Notify(Target: TView; Kind, Code: Word; Payload: Pointer);
-begin
-  if MessageHook = nil then
-    Exit;
-  MessageHook(Target, Kind, Code, Payload);
-end;
-
 { The group at the position Position of a chain; the first group for a position below 1, nil past the end. }
 function GroupAtPosition(First: TColorGroup; Position: Integer): TColorGroup;
 var
@@ -483,7 +474,7 @@ begin
     command := cmColorForegroundChanged
   else
     command := cmColorBackgroundChanged;
-  Notify(Owner, evBroadcast, command, PayloadOf(Color));
+  Message(Owner, evBroadcast, command, PayloadOf(Color));
 end;
 
 { The loop of the mouse: the color under the mouse is chosen while the mouse is in the view and OldColor
@@ -654,7 +645,7 @@ begin
   for half := 0 to 1 do
   begin
     nibble := PtrInt((Value shr (half * 4)) and $0F);
-    Notify(Owner, evBroadcast, Commands[half], PayloadOf(nibble));
+    Message(Owner, evBroadcast, Commands[half], PayloadOf(nibble));
   end;
 end;
 
@@ -746,7 +737,7 @@ var
 begin
   Color := AColor;
   currentBios := BiosOfAttr(Color^);
-  Notify(Owner, evBroadcast, cmColorSet, PayloadOf(currentBios));
+  Message(Owner, evBroadcast, cmColorSet, PayloadOf(currentBios));
   DrawView;
 end;
 
@@ -773,7 +764,7 @@ begin
   chosenGroup := GroupAtPosition(Groups, ItemIndex);
   if chosenGroup = nil then
     Exit;
-  Notify(Owner, evBroadcast, cmNewColorItem, chosenGroup);
+  Message(Owner, evBroadcast, cmNewColorItem, chosenGroup);
 end;
 
 function TColorGroupList.GetText(ItemIndex, MaxLen: SmallInt): string;
@@ -865,12 +856,12 @@ var
   chosenItem: TColorItem;
 begin
   inherited FocusItem(ItemIndex);
-  Notify(Owner, evBroadcast, cmSaveColorIndex, PayloadOf(ItemIndex));
+  Message(Owner, evBroadcast, cmSaveColorIndex, PayloadOf(ItemIndex));
 
   chosenItem := ItemAtPosition(Items, ItemIndex);
   if chosenItem = nil then
     Exit;
-  Notify(Owner, evBroadcast, cmNewColorIndex, PayloadOf(chosenItem.Index));
+  Message(Owner, evBroadcast, cmNewColorIndex, PayloadOf(chosenItem.Index));
 end;
 
 function TColorItemList.GetText(ItemIndex, MaxLen: SmallInt): string;

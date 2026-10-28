@@ -2,12 +2,13 @@
   C++ sources: include/tvision/views.h, include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h,
   include/tvision/tstrview.h, include/tvision/tspan.h, source/tvision/tview.cpp, source/tvision/tgroup.cpp,
   source/tvision/tcmdset.cpp, source/tvision/tvwrite.cpp, source/tvision/tvexposd.cpp, source/tvision/tvcursor.cpp,
-  source/tvision/tgrmv.cpp
+  source/tvision/tgrmv.cpp, source/tvision/misc.cpp, include/tvision/util.h
   See COPYRIGHT.magiblot.
 
   The display is a screen of 40 by 20 cells in memory; the root of the views is a group that writes into it, and
   the display of the carets is a fake that remembers the last caret. The root reads its events from a script, and
-  from the posted events of the event queue when the script asks for it. }
+  from the posted events of the event queue when the script asks for it. The root also records the broadcasts of
+  focus that its subviews send to it. }
 program t_views;
 
 {$mode objfpc}
@@ -98,11 +99,23 @@ type
     KilledId: Pointer;
     procedure AddEvent(const Ev: TEvent);
     procedure GetEvent(var Event: TEvent); override;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure PutEvent(var Event: TEvent); override;
     procedure EventError(var Event: TEvent); override;
     function GetPalette: TPalette; override;
     function SetTimer(TimeoutMs: Cardinal; PeriodMs: Integer): TTimerId; override;
     procedure KillTimer(Id: TTimerId); override;
+  end;
+
+  { Records the event that it gets, and clears it while ClearIt is set. }
+  TRecorder = class(TView)
+  public
+    Calls: Integer;
+    SeenWhat: Word;
+    SeenCommand: Word;
+    SeenInfo: Pointer;
+    ClearIt: Boolean;
+    procedure HandleEvent(var Event: TEvent); override;
   end;
 
   { A view that ends its modal loop at a command. }
@@ -354,17 +367,32 @@ begin
   Result := GroupPal;
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
+procedure TRecorder.HandleEvent(var Event: TEvent);
+begin
+  Inc(Calls);
+  SeenWhat := Event.What;
+  SeenCommand := Event.Message.Command;
+  SeenInfo := Event.Message.InfoPtr;
+  if ClearIt then
+    ClearEvent(Event);
+end;
+
+procedure TRoot.HandleEvent(var Event: TEvent);
 var
   Mark: string;
+  Command: Word;
 begin
-  if Command = cmReceivedFocus then
-    Mark := '=in '
-  else
-    Mark := '=out ';
-  if (InfoPtr <> nil) and (TObject(InfoPtr) is TBox) then
-    MsgLog := MsgLog + TBox(InfoPtr).Tag + Mark;
-  Result := nil;
+  Command := Event.Message.Command;
+  if (Event.What = evBroadcast) and ((Command = cmReceivedFocus) or (Command = cmReleasedFocus)) and
+     (Event.Message.InfoPtr <> nil) and (TObject(Event.Message.InfoPtr) is TBox) then
+  begin
+    if Command = cmReceivedFocus then
+      Mark := '=in '
+    else
+      Mark := '=out ';
+    MsgLog := MsgLog + TBox(Event.Message.InfoPtr).Tag + Mark;
+  end;
+  inherited HandleEvent(Event);
 end;
 
 procedure TRoot.AddEvent(const Ev: TEvent);
@@ -1029,6 +1057,51 @@ begin
   Check(Root2.Current = S1, 'SelectNext with a single selectable view changes nothing');
   Check(Root2.FocusNext(True), 'FocusNext with a single selectable view is true');
   FreeRoot(Root2);
+  FreeRoot(Root);
+end;
+
+procedure TestMessage;
+var
+  Root: TRoot;
+  R: TRecorder;
+  Box: TBox;
+  Answer: Pointer;
+  Marker: Integer;
+begin
+  Check(Message(nil, evBroadcast, cmOK, Pointer(@Marker)) = nil, 'a message to no view gets no answer');
+
+  R := TRecorder.Create(Rc(0, 0, 1, 1));
+  Answer := Message(R, evBroadcast, cmReceivedFocus, Pointer(@Marker));
+  Check(R.Calls = 1, 'the receiver handles the message once');
+  Check((R.SeenWhat = evBroadcast) and (R.SeenCommand = cmReceivedFocus) and (R.SeenInfo = Pointer(@Marker)),
+    'the receiver gets the kind, the command and the information of the message');
+  Check(Answer = nil, 'a message that the receiver leaves as it is gets no answer');
+
+  Answer := Message(R, evBroadcast, cmOK, nil);
+  Check((R.Calls = 2) and (R.SeenInfo = nil) and (Answer = nil), 'a message with no information');
+
+  R.ClearIt := True;
+  Answer := Message(R, evCommand, cmOK, Pointer(@Marker));
+  Check((R.Calls = 3) and (R.SeenWhat = evCommand) and (R.SeenCommand = cmOK), 'a command is sent as it is');
+  Check(Answer = Pointer(R), 'a message that the receiver clears is answered with the view that cleared it');
+  R.Free;
+
+  Root := NewRoot;
+  Box := TBox.Create(Rc(0, 0, 2, 2), 'm', 'm');
+  Box.EventMask := evBroadcast;
+  Root.Insert(Box);
+  EvLog := '';
+  Answer := Message(Root, evBroadcast, cmOK, nil);
+  Check(EvLog = 'm:F ', 'a message to a group goes to the subviews that take it');
+  Check(Answer = nil, 'a message that no subview clears gets no answer');
+  Box.ClearIt := True;
+  EvLog := '';
+  Answer := Message(Root, evBroadcast, cmOK, nil);
+  Check((EvLog = 'm:F ') and (Answer = Pointer(Box)), 'a subview that clears the message answers with itself');
+  Box.EventMask := evMouseDown;
+  EvLog := '';
+  Answer := Message(Root, evBroadcast, cmOK, nil);
+  Check((EvLog = '') and (Answer = nil), 'a subview that does not take broadcasts is not asked');
   FreeRoot(Root);
 end;
 
@@ -2002,7 +2075,6 @@ begin
   TScreen.CursorLines := 20;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
   EventBackend := TEventBackend.Create;
   TEventQueue.Backend := EventBackend;
   Queue := TEventQueue.Create;
@@ -2015,6 +2087,7 @@ begin
   TestHierarchy;
   TestIteration;
   TestFocus;
+  TestMessage;
   TestLock;
   TestClipping;
   TestOverlap;
@@ -2033,7 +2106,6 @@ begin
   Queue.Free;
   TEventQueue.Backend := nil;
   EventBackend.Free;
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TScreen.ScreenBuffer := nil;

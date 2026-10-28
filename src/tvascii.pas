@@ -9,7 +9,7 @@
 
   The text of a cell comes from the hook CharText of the table, which a program may replace. The keys that move the
   cursor are chosen by the virtual method KeyAction and the typed character by TypedCode, so that a subclass can
-  change them. Messages are sent through MessageHook of TvViews and are lost while it is nil.
+  change them. Messages are sent with Message of TvViews.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The views of
   this unit are not streamable: the views of TvViews have no stream members that they could extend. }
@@ -160,12 +160,10 @@ begin
   Result := pair.Attrs[0];
 end;
 
-{ Sends a message to Target through the hook; nothing happens while there is no hook. }
+{ Sends a message to Target with Message of TvViews; nothing happens when Target is nil. }
 procedure SendMessage(Target: TView; Kind, Command: Word; Info: Pointer);
 begin
-  if (Target = nil) or (MessageHook = nil) then
-    Exit;
-  MessageHook(Target, Kind, Command, Info);
+  Message(Target, Kind, Command, Info);
 end;
 
 { The text that stands for a code in the table or in the report when no hook is assigned. }

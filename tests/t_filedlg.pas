@@ -1,20 +1,19 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (TFileInputLine, TFileInfoPane, TFileDialog and the option flags fd...),
   source/tvision/tfildlg.cpp, include/tvision/tv.h, include/tvision/views.h, include/tvision/ttypes.h,
-  include/tvision/config.h
+  include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp
   See COPYRIGHT.magiblot.
 
   Test program of the unit TvFileDlg.
 
-  The first part has no application: a file dialog keeps the bounds of its constructor, and the messages that the
-  views send go through the hook of the messages, which records them and delivers none. The second part has an
+  The first part has no application: a file dialog keeps the bounds of its constructor, and the dialog of the test
+  records the events that it gets, which are the messages of its views. The second part has an
   application, a TApplication of the test that reads its events from a script of one event: when the modal dialog
   of a message box asks for its first event, the application takes a snapshot of the dialog (its title and its
   text) and answers cmOK. Any later request for an event is a cmCancel, so that a failure ends the dialog and does
   not wait. The size of the application is changed by the test to give the file dialog the sizes of screen that
   its constructor tells apart.
 
-  The hook of the copy of a text cuts it to the size that is given less one, as strnzcpy does, and counts its calls.
   The hook of the new list of a sorted list box gives the list to the list box of TvList. The tests that touch
   files make a directory of their own under the directory of temporary files and remove it at the end. The
   directory rd of the tests has the files a.txt, b.txt and c.dat, the directories sub1 and sub2 and the hidden
@@ -72,11 +71,12 @@ type
     procedure GetEvent(var Event: TEvent); override;
   end;
 
-  { A file dialog that remembers the events that it puts back. }
+  { A file dialog that remembers the events that it gets, and the events that it puts back. }
   TProbeDialog = class(TFileDialog)
   public
     PutCount: Integer;
     LastPut: TEvent;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure PutEvent(var Event: TEvent); override;
   end;
 
@@ -123,7 +123,7 @@ var
   MessageCount: Integer;
 
   { What the other hooks of the unit saw. }
-  NewListCalls, NZCalls, NZLastSize, CurDirCalls: Integer;
+  NewListCalls, CurDirCalls: Integer;
   ValidNameCalls: Integer;
   CurDirAnswer, ValidNameLast: string;
   ValidNameAnswer: Boolean;
@@ -203,27 +203,10 @@ end;
 
 { The hooks and the classes of the test }
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
-begin
-  Inc(MessageCount);
-  LastReceiver := Receiver;
-  LastWhat := What;
-  LastCommand := Command;
-  LastInfo := InfoPtr;
-  Result := nil;
-end;
-
 procedure OnNewList(Box: TSortedListBox; NewItems: TSortedCollection);
 begin
   Inc(NewListCalls);
   TListBox(Box).NewList(TCollection(NewItems));
-end;
-
-function TestStrNZCopy(const Source: string; BufferSize: Integer): string;
-begin
-  Inc(NZCalls);
-  NZLastSize := BufferSize;
-  Result := Copy(Source, 1, BufferSize - 1);
 end;
 
 function TestCurDir: string;
@@ -287,6 +270,16 @@ end;
 function TInvalidView.Valid(Command: Word): Boolean;
 begin
   Result := Command = cmCancel;
+end;
+
+procedure TProbeDialog.HandleEvent(var Event: TEvent);
+begin
+  Inc(MessageCount);
+  LastReceiver := Self;
+  LastWhat := Event.What;
+  LastCommand := Event.Message.Command;
+  LastInfo := Event.Message.InfoPtr;
+  inherited HandleEvent(Event);
 end;
 
 procedure TProbeDialog.PutEvent(var Event: TEvent);
@@ -422,8 +415,6 @@ begin
   LastCommand := 0;
   LastInfo := nil;
   NewListCalls := 0;
-  NZCalls := 0;
-  NZLastSize := 0;
   CurDirCalls := 0;
   ValidNameCalls := 0;
   ValidNameLast := '';
@@ -623,7 +614,6 @@ var
   pane: TView;
 begin
   ResetCounters;
-  StrNZCopyHook := @TestStrNZCopy;
   dlg := MakeDialog(WildText, fdOKButton or fdHelpButton or fdNoLoadDir);
   Check(RectIs(dlg.GetBounds, 15, 1, 64, 20), 'a dialog without an application has the bounds of its constructor');
   Check((dlg.Options and ofCentered) = ofCentered, 'the dialog is centred');
@@ -632,7 +622,6 @@ begin
   Check((dlg.FileName <> nil) and (dlg.FileList <> nil), 'the dialog has an input line and a file list');
   Check(dlg.WildCard = WildText, 'the wild card is the text that was given');
   Check(dlg.FileName.Data = WildText, 'the input line starts with the wild card');
-  Check((NZCalls = 2) and (NZLastSize = MaxPath), 'both texts were copied with the size MaxPath');
   Check(dlg.Directory = '', 'the directory is empty before a directory is read');
   Check((NewListCalls = 0) and (CurDirCalls = 0), 'fdNoLoadDir reads no directory');
   Check(ViewCount(dlg) = 11, 'the dialog has a frame and ten more views');
@@ -675,7 +664,6 @@ begin
   Check((pane <> nil) and RectIs(pane.GetBounds, 1, 16, 48, 18), 'the bounds of the info pane');
   Check(pane.GrowMode = (gfGrowLoY or gfGrowHiX or gfGrowHiY), 'the info pane grows in every direction but the left');
   DestroyDialog(dlg);
-  StrNZCopyHook := nil;
 end;
 
 procedure TestButtonRows;
@@ -691,7 +679,6 @@ begin
   TFileDialog.FilesText := 'Files';
   TFileDialog.InvalidDriveText := 'Bad drive';
   TFileDialog.InvalidFileText := 'Bad file';
-  StrNZCopyHook := @TestStrNZCopy;
 
   dlg := MakeDialog('*', fdOpenButton or fdReplaceButton or fdClearButton or fdNoLoadDir);
   Check(ViewCount(dlg) = 12, 'a dialog with three buttons and cancel has twelve views');
@@ -719,7 +706,6 @@ begin
   Check(ButtonIs(dlg, 2, cmCancel, bfNormal, 'Cancel', 35, 6, 46, 8), 'cancel follows the clear button');
   Check(ButtonIs(dlg, 3, cmHelp, bfNormal, 'Help', 35, 9, 46, 11), 'help follows cancel');
   DestroyDialog(dlg);
-  StrNZCopyHook := nil;
 end;
 
 procedure TestLoadingAtConstruction;
@@ -727,7 +713,6 @@ var
   dlg: TProbeDialog;
 begin
   ResetCounters;
-  StrNZCopyHook := @TestStrNZCopy;
   GetCurDirHook := @TestCurDir;
   CurDirAnswer := TempRoot + 'rd/';
   dlg := MakeDialog(WildText, fdOKButton);
@@ -749,19 +734,12 @@ begin
   Check(dlg.Directory = '', 'without the hook the directory is empty');
   Check(NewListCalls = 1, 'the list is read without the hook of the directory');
   DestroyDialog(dlg);
-
-  ResetCounters;
-  StrNZCopyHook := nil;
-  dlg := MakeDialog(WildText, fdNoLoadDir);
-  Check((dlg.WildCard = '') and (dlg.FileName.Data = ''), 'without the hook of the copy no text is copied');
-  DestroyDialog(dlg);
 end;
 
 procedure TestGetFileName;
 var
   dlg: TProbeDialog;
 begin
-  StrNZCopyHook := @TestStrNZCopy;
   dlg := MakeDialog('*.txt', fdNoLoadDir);
   dlg.Directory := TempRoot;
 
@@ -794,7 +772,6 @@ begin
   Check(BufferText = TempRoot + 'b.txt', 'GetData gives the name of GetFileName');
   Check(Buf[Length(TempRoot + 'b.txt') + 1] = 'Z', 'GetData writes the name and its zero and nothing more');
   DestroyDialog(dlg);
-  StrNZCopyHook := nil;
 end;
 
 procedure TestEvents;
@@ -802,7 +779,6 @@ var
   dlg: TProbeDialog;
   ev: TEvent;
 begin
-  StrNZCopyHook := @TestStrNZCopy;
   dlg := MakeDialog('*', fdNoLoadDir);
   dlg.State := dlg.State or sfModal;
 
@@ -838,7 +814,6 @@ begin
   dlg.HandleEvent(ev);
   Check((dlg.PutCount = 0) and (ev.What = evNothing), 'an empty event does nothing');
   DestroyDialog(dlg);
-  StrNZCopyHook := nil;
 end;
 
 procedure TestSizeLimitsAndShutDown;
@@ -846,7 +821,6 @@ var
   dlg: TProbeDialog;
   smallest, largest: TPoint;
 begin
-  StrNZCopyHook := @TestStrNZCopy;
   dlg := MakeDialog('*', fdNoLoadDir);
   smallest.X := 0;
   smallest.Y := 0;
@@ -859,7 +833,6 @@ begin
   dlg.ShutDown;
   Check((dlg.FileName = nil) and (dlg.FileList = nil), 'ShutDown lets go of the input line and of the list');
   TvObject.DestroyObject(dlg);
-  StrNZCopyHook := nil;
 end;
 
 { The tests of the second part: with an application }
@@ -889,8 +862,6 @@ var
   dlg: TProbeDialog;
   list, pane, okButton: TView;
 begin
-  StrNZCopyHook := @TestStrNZCopy;
-
   CheckDialogBounds(60, 20, 15, 1, 64, 20, 'a small screen leaves the bounds of the constructor');
   CheckDialogBounds(63, 25, 15, 1, 64, 20, 'a screen of 63 by 25 is still small');
   CheckDialogBounds(64, 25, 7, 1, 57, 20, 'a screen of 64 columns takes seven columns off each side');
@@ -937,7 +908,6 @@ begin
 
   App.Size.X := ScrW;
   App.Size.Y := ScrH;
-  StrNZCopyHook := nil;
 end;
 
 procedure TestValidSimple;
@@ -945,7 +915,6 @@ var
   dlg: TProbeDialog;
   bad: TInvalidView;
 begin
-  StrNZCopyHook := @TestStrNZCopy;
   ValidFileNameHook := @TestValidName;
   ValidNameAnswer := True;
   SortedListBoxNewListHook := @OnNewList;
@@ -974,7 +943,6 @@ procedure TestValidWildAndDirectory;
 var
   dlg: TProbeDialog;
 begin
-  StrNZCopyHook := @TestStrNZCopy;
   ValidFileNameHook := @TestValidName;
   ValidNameAnswer := True;
   dlg := MakeDialog(WildText, fdNoLoadDir);
@@ -1026,7 +994,6 @@ var
   dlg: TProbeDialog;
   directoryBefore, wildBefore: string;
 begin
-  StrNZCopyHook := @TestStrNZCopy;
   ValidFileNameHook := @TestValidName;
   ValidNameAnswer := False;
   MsgBoxText.ErrorText := 'Error';
@@ -1068,7 +1035,6 @@ procedure TestSetData;
 var
   dlg: TProbeDialog;
 begin
-  StrNZCopyHook := @TestStrNZCopy;
   ValidFileNameHook := @TestValidName;
   ValidNameAnswer := True;
   dlg := MakeDialog(WildText, fdNoLoadDir);
@@ -1101,7 +1067,6 @@ begin
 end;
 
 begin
-  MessageHook := @OnMessage;
   SortedListBoxNewListHook := @OnNewList;
   MakeTree;
   ResetCounters;
@@ -1159,9 +1124,7 @@ begin
   Fake.Free;
 
   RemoveTree(TempRoot);
-  MessageHook := nil;
   SortedListBoxNewListHook := nil;
-  StrNZCopyHook := nil;
   GetCurDirHook := nil;
   ValidFileNameHook := nil;
   Done;

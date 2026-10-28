@@ -1,8 +1,9 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/views.h (the constants, TCommandSet, TPalette, TView, TGroup),
   include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h, include/tvision/tstrview.h,
-  include/tvision/tspan.h, source/tvision/tview.cpp, source/tvision/tgroup.cpp, source/tvision/tcmdset.cpp,
-  source/tvision/tvwrite.cpp, source/tvision/tvexposd.cpp, source/tvision/tvcursor.cpp, source/tvision/tgrmv.cpp
+  include/tvision/tspan.h, include/tvision/util.h, source/tvision/tview.cpp, source/tvision/tgroup.cpp,
+  source/tvision/tcmdset.cpp, source/tvision/tvwrite.cpp, source/tvision/tvexposd.cpp, source/tvision/tvcursor.cpp,
+  source/tvision/tgrmv.cpp, source/tvision/misc.cpp (message)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe, and the
@@ -14,8 +15,8 @@
   write, build and streamableName of TView and TGroup, and the constructors with StreamableInit, belong to a later
   unit.
 
-  A class that has no unit yet is reached through a hook:
-    - message() sends a message to a view; MessageHook stands for it and does nothing while it is nil;
+  message() of misc.cpp is the function Message, which sends a message to a view through its HandleEvent. A class
+  that has no unit yet is reached through a hook:
     - THardwareInfo::setCaretPosition and THardwareInfo::screenWrite are CaretPositionHook and ScreenWriteHook,
       and the size of the caret is set through TDisplay.Backend;
     - TProgram::eventTimeoutMs is EventTimeoutMs;
@@ -427,8 +428,6 @@ type
     procedure GetBuffer;
   end;
 
-  { Sends a message to Receiver; the result is the pointer that the receiver answers with, or nil. }
-  TMessageFunc = function(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
   { Moves the caret of the display. }
   TCaretPositionProc = procedure(X, Y: Integer);
   { Writes Count cells, which are at X and Y of the screen, to the display. }
@@ -442,9 +441,13 @@ var
   ShadowAttr: TColorAttr;
   { The time-out of the wait for events, in milliseconds. }
   EventTimeoutMs: Integer;
-  MessageHook: TMessageFunc;
   CaretPositionHook: TCaretPositionProc;
   ScreenWriteHook: TScreenWriteProc;
+
+{ Sends the event of the kind What with the command Command and the information InfoPtr to Receiver, by its
+  HandleEvent. The result is the information that the receiver leaves in the event when it clears it, which is the
+  pointer that ClearEvent sets, or nil when the receiver does not clear the event or Receiver is nil. }
+function Message(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
 
 implementation
 
@@ -2160,8 +2163,7 @@ begin
     Command := cmReceivedFocus;
     if not Enable then
       Command := cmReleasedFocus;
-    if Assigned(MessageHook) then
-      MessageHook(Owner, evBroadcast, Command, Self);
+    Message(Owner, evBroadcast, Command, Self);
   end;
 end;
 
@@ -2960,6 +2962,26 @@ begin
     Result := Current.GetHelpCtx;
   if Result = hcNoContext then
     Result := inherited GetHelpCtx;
+end;
+
+{ Message }
+
+function Message(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
+var
+  Event: TEvent;
+begin
+  Result := nil;
+  if Receiver = nil then
+    Exit;
+
+  FillChar(Event, SizeOf(Event), 0);
+  Event.What := What;
+  Event.Message.Command := Command;
+  Event.Message.InfoPtr := InfoPtr;
+  Receiver.HandleEvent(Event);
+  if Event.What <> evNothing then
+    Exit;
+  Result := Event.Message.InfoPtr;
 end;
 
 initialization

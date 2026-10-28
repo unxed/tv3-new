@@ -1,7 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (TFileInputLine, TFileInfoPane, TFileDialog and the option flags fd...),
   source/tvision/tfildlg.cpp, include/tvision/tv.h, include/tvision/views.h, include/tvision/ttypes.h,
-  include/tvision/config.h
+  include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp (strnzcpy)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -19,15 +19,14 @@
     - The texts of TFileDialog (filesText, openText, okText, replaceText, clearText, cancelText, helpText,
       invalidDriveText and invalidFileText) are defined in a file that is not among the inputs, so they are the
       class variables FilesText to InvalidFileText, empty until the program sets them.
-    - The constant MAXPATH, the functions strnzcpy, getCurDir and validFileName and the functions of the
-      compatibility headers have no source here. MaxPath stands for MAXPATH. StrNZCopyHook of TvHist stands for
-      strnzcpy and is called with MaxPath; GetCurDirHook stands for getCurDir and ValidFileNameHook for
-      validFileName. While StrNZCopyHook is nil a text is not copied and its target keeps its text; while
-      GetCurDirHook is nil the directory of a file dialog becomes the empty text; while ValidFileNameHook is nil no
-      name is a valid file name. fexpand is PathExpandFrom of TvPath, and fnsplit and fnmerge are made with
-      PathDrive and PathSplit of TvPath and a joining of the parts.
-    - message() sends a message to a view; MessageHook of TvViews stands for it, as it does in TvFiles.
+    - The constant MAXPATH, the functions getCurDir and validFileName and the functions of the compatibility
+      headers have no source here. MaxPath stands for MAXPATH. GetCurDirHook stands for getCurDir and
+      ValidFileNameHook for validFileName. While GetCurDirHook is nil the directory of a file dialog becomes the
+      empty text; while ValidFileNameHook is nil no name is a valid file name. fexpand is PathExpandFrom of TvPath,
+      and fnsplit and fnmerge are made with PathDrive and PathSplit of TvPath and a joining of the parts.
     - The branches of trim that the C++ compiles when __FLAT__ is not defined are left out, because tv.h defines it.
+
+  strnzcpy is Strnzcpy of TvUtil, and it is called with MaxPath.
 
   The text of a path is a string. A file dialog that has no application (TProgram.Application is nil) keeps the
   bounds that its constructor gives it, because the fit to the screen needs the size of the application. }
@@ -151,14 +150,6 @@ const
   { The smallest size of the dialog. }
   SmallestWidth = 49;
   SmallestHeight = 19;
-
-{ The text that StrNZCopyHook gives for Source, put in Target; Target keeps its text while there is no hook. }
-procedure CopyThrough(var Target: string; const Source: string);
-begin
-  if not Assigned(StrNZCopyHook) then
-    Exit;
-  Target := StrNZCopyHook(Source, MaxPath);
-end;
 
 { The text up to its first zero character, as the copy of trim for a target with a flat memory model takes it. }
 function TrimName(const Source: string): string;
@@ -285,10 +276,10 @@ begin
   Directory := '';
   Options := Options or ofCentered;
   Flags := Byte(Flags or wfGrow);
-  CopyThrough(WildCard, WildCardText);
+  Strnzcpy(WildCard, WildCardText, MaxPath);
 
   FileName := TFileInputLine.Create(TRect.Create(3, 3, InputLineRight, 4), MaxPath);
-  CopyThrough(FileName.Data, WildCard);
+  Strnzcpy(FileName.Data, WildCard, MaxPath);
   Insert(FileName);
   First.GrowMode := Byte(gfGrowHiX);
 

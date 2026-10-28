@@ -1,15 +1,15 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/views.h (TListViewer), include/tvision/dialogs.h (TListBox, TListBoxRec),
-  include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h, source/tvision/tlstview.cpp,
-  source/tvision/tlistbox.cpp, source/tvision/tvtext1.cpp (specialChars)
+  include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h, include/tvision/util.h,
+  source/tvision/tlstview.cpp, source/tvision/tlistbox.cpp, source/tvision/tvtext1.cpp (specialChars),
+  source/tvision/misc.cpp (message)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
   read, write, build and streamableName of the classes, and the constructors with StreamableInit, belong to a later
   unit.
 
-  Parts of the C++ that have no unit yet:
-    - message() sends a message to a view; MessageHook of TvViews stands for it and does nothing while it is nil.
+  message() sends a message to a view; it is Message of TvViews.
 
   The text that a list viewer shows for an item is returned by GetText as a string, in the place of the buffer and
   the length that the C++ takes; MaxLen is the largest length of the text. The items of a TListBox are blocks of
@@ -118,14 +118,6 @@ var
 function AnyBit(Bits, Mask: Word): Boolean;
 begin
   Result := (Bits and Mask) <> 0;
-end;
-
-{ Sends a message through the hook; nothing happens while there is none. }
-procedure Notify(Target: TView; Kind, Code: Word; Payload: Pointer);
-begin
-  if MessageHook = nil then
-    Exit;
-  MessageHook(Target, Kind, Code, Payload);
 end;
 
 { The low attribute of the color of the entry Entry of the palette of a view. }
@@ -515,7 +507,7 @@ end;
 
 procedure TListViewer.SelectItem(ItemIndex: SmallInt);
 begin
-  Notify(Owner, evBroadcast, cmListItemSelected, Self);
+  Message(Owner, evBroadcast, cmListItemSelected, Self);
 end;
 
 procedure TListViewer.SetRange(NewRange: SmallInt);
