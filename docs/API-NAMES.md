@@ -381,3 +381,121 @@ CheckValid cut a text that is longer than MaxLen, where the C++ would write beyo
 Word, as ushort is, so it wraps for a limit above 65534 bytes in the same way. The argument rec of GetData and SetData
 is a Pointer to a record of at least DataSize bytes. The text of a key event has at most four bytes, which is
 maxCharSize of config.h.
+
+## Added by the translation of TvHist
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TStrNZCopyFunc
+added: StrNZCopyHook
+added: TCreateListViewerFunc
+added: THistory.OpenHistoryList
+added: THistory.TakeChoice
+added: Rc4
+added: RecordId
+added: RecordLength
+added: RecordChars
+added: RecordText
+added: OffsetAfter
+added: StoreRecord
+added: TextOfChars
+added: NoRecord
+added: MaxStoredText
+added: RecordOverhead
+added: TextOffsetInRecord
+added: BlockSlack
+added: ArrowOfHistory
+added: HistoryBlock
+added: BlockBytes
+added: HistoryPalette
+added: HistoryViewerPalette
+added: HistoryWindowPalette
+
+TStrNZCopyFunc is the procedural type of the hook that stands for a part of the C++ that no unit has yet and no input
+defines. StrNZCopyHook stands for the function strnzcpy, which THistory calls to put the chosen text into the line
+with the limit maxLen + 1; it takes the text and that limit and gives the text that the buffer holds, and while it is
+nil the line keeps its text (the line is still selected and drawn). The function strwidth is the width of TText of
+TvUtf8, and ctrlToArrow is the function of TvKeys.
+
+The record HistRec of histlist.cpp is not a type: the lists are one block of bytes, and a record is known by its
+offset in the block, where the offset NoRecord (-1) stands for the null pointer. RecordId, RecordLength and
+RecordChars read the id, the length byte and the text of the record at an offset, RecordText gives the text as a
+string, OffsetAfter is the function next, and StoreRecord is the constructor of HistRec. The block is HistoryBlock
+with the size BlockBytes that InitHistory took from HistorySize; it has BlockSlack bytes more, so that the length
+byte at the end of the last record can be read. The static variables curId, curRec and lastRec are the variables
+CurId, CurRec and LastRec of the unit, and startId, advanceStringPointer, deleteString and insertString are StartId,
+AdvanceStringPointer, DeleteString and InsertString; none of these is visible outside the unit. The text of a
+record is at most MaxStoredText bytes, because the length of a record is a byte, so HistoryAdd cuts a longer text;
+a text that is larger than the whole block is not stored, and the older entries are dropped. The functions
+HistoryAdd, HistoryCount, HistoryStr, ClearHistory, InitHistory and DoneHistory do nothing, and give 0 and nil, while
+there is no block. HistoryStr gives a PAnsiChar, nil when the list has no such entry, also for an index after the
+last entry; the text stays valid until the lists are changed. The variable historySize is HistorySize.
+
+The type THistInit, which the C++ inherits virtually beside TWindow, is the class between TWindow and
+THistoryWindow, as TWindowInit is between TGroup and TWindow. Its constructor takes the bounds of the window, because
+the constructor of TWindow needs them, and the function that makes the list viewer; TCreateListViewerFunc is the type
+of that function, and the function THistoryWindow.InitViewer is a class function without Self. The member viewer of
+THistoryWindow is the protected field Viewer, and the function getSelection, which has a buffer in the C++, is
+GetSelection and returns the text, like GetText of TvList. The constructor of THistory takes the palette strings
+cpHistory, cpHistoryViewer and cpHistoryWindow, which keep their names, and the palettes made from them,
+HistoryPalette, HistoryViewerPalette and HistoryWindowPalette, are made when the unit starts and released when it
+ends. The static member icon of THistory is the private class variable Icon, which the unit sets to ArrowOfHistory.
+The part of handleEvent of THistory that opens the list is the private member OpenHistoryList, and the copy of the
+chosen text into the line is the private member TakeChoice; Rc4 makes a TRect from four numbers inside the unit. As in
+the C++, a scan of a list skips the record at the start of the block, which is the empty record of ClearHistory, so
+when that record has been dropped to make room the oldest entry is not seen. A THistory that has
+let go of its line in ShutDown ignores its events after the handling of its base class. When the unit starts it gives
+InitHistory and DoneHistory to InitHistoryHook and DoneHistoryHook of TvApp.
+
+## Added by the translation of TvFiles
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: PSearchRec
+added: MaxNameLength
+added: TSortedNewListProc
+added: SortedListBoxNewListHook
+added: TMakeDefaultProc
+added: ChDirButtonDefaultHook
+added: GetDisk
+added: SendNotice
+added: CompareNames
+added: FindSeparator
+added: FindLastSeparator
+added: BeginsWithDot
+added: FindCode
+added: NewSearchRecord
+added: CopyFoundEntry
+added: SearchKey
+added: NoFileRecord
+added: CurrentDisk
+added: IndentStep
+added: DefaultParentTime
+
+PSearchRec is the pointer type that stands for TSearchRec *. The entries of a directory are records that the
+collections keep as pointers; the names of the entries are at most MaxNameLength characters, because the size
+MAXFILE + MAXEXT - 1 comes from a header that is not among the translated sources. TSearchRec is the record of the
+unit, not the one of SysUtils, which the unit names as SysUtils.TSearchRec when it searches a directory. The typed
+members of the collections (at, firstThat and lastThat) return the typed pointer; the other members keep the pointer
+of TvObjs, because a member that takes a different type of pointer cannot override a virtual member of the base. The
+sorted collection of files and the collection of directories are not related by a base, so the sorted list box turns
+the list of its base TListBox into a TSortedCollection by a typecast.
+
+The source file of TSortedListBox is not among the translated sources. SortedListBoxNewListHook stands for its
+newList, with the type TSortedNewListProc, and while it is nil the list is not given to the list box. Its handleEvent
+is not translated, its virtual getKey is abstract, and its member searchPos is left out. ChDirButtonDefaultHook, with
+the type TMakeDefaultProc, stands for the call chDirButton->makeDefault of the dialog TChDirDialog that owns a
+TDirListBox, and it does nothing while it is nil. The text tooManyFiles is the class variable TooManyFiles of
+TFileList, empty until the program sets it, and the warning is shown with MessageBox of TvMsgbox when the allocation
+of an entry fails (EOutOfMemory is caught, as the C++ tests a null pointer).
+
+The tables of TDirListBox (pathDir, firstDir, middleDir, lastDir, drives and graphics) are the class variables
+PathDir, FirstDir, MiddleDir, LastDir, Drives and Graphics, which get the values of tvtext1.cpp, in code page 437,
+when the unit starts. The paths that TDirListBox reads and builds use PathSep of TvPath as their separator, the
+texts of the drives keep the backslash, and a search of a directory uses PathAllFiles for the mask "*.*". GetDisk
+stands for getdisk and gives the disk C. SendNotice is the call of MessageHook, CompareNames is strcmp, FindSeparator
+and FindLastSeparator are strchr and strrchr for the separator, BeginsWithDot is the test of the first character of
+a name, FindCode is strchr of a character in a block, NewSearchRecord is the operator new of DirSearchRec and
+CopyFoundEntry is its member readFf_blk. SearchKey is the static record of getKey, NoFileRecord is the static record
+noFile of readDirectory, and CurrentDisk, IndentStep and DefaultParentTime are the values 'C', 2 and 0x210000 that the
+C++ writes in its code. The routines validFileName, getCurDir, fexpand, squeeze and getHomeDir are not in this unit.
