@@ -31,6 +31,7 @@ provenance check: pending version docs/API-NAMES.md bd22adbfc0a48b47a5773712476f
 provenance check: pending version docs/API-NAMES.md 47780ccad876ab75196a8fdeb00499f6cfd18e9c
 provenance check: pending version docs/API-NAMES.md a2048efd2ca34c33b069d33a1ab46ffab8f7a810
 provenance check: pending version docs/API-NAMES.md d872e102f16b560f3e6bf259c3dd88d30a12adcc
+provenance check: pending version docs/API-NAMES.md 56475c9098347cd3a9f02f418c951efbbc50aa40
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvactions.pas 959a5bd05279e29dbc23beb3e1d04d6306ece9a1
@@ -57,6 +58,8 @@ provenance check: pending version src/tvcodepg.pas 2a3276dc58cc1eb46ad93a93e7f17
 provenance check: pending version src/tvcodepg.pas 9f802bd415b91505ac992d71a4cac25a2c62aa20
 provenance check: pending version src/tvcolors.pas 6bbad51cb883678ede6925b0e8e8606f6a79b1c9
 provenance check: pending version src/tvcolors.pas 8dc39e21c87c0fbd6f03c41988fbe2501220e624
+provenance check: pending version src/tvcolorsel.pas 965b165a9fea34718dfb87b111760b2825633a79
+provenance check: pending version src/tvcolorsel.pas 15398c87bb525fb0edca758c6bf1f98a117f83b9
 provenance check: pending version src/tvcrc.pas 04cdbe4023685af26b3eba88d0d7b9b04dbd5fd4
 provenance check: pending version src/tvcrc.pas 730274980acea295e1785701ef0962b71693783f
 provenance check: pending version src/tvcstr.pas 36d6d5b33dff82e42de561f6aa0ed160d20d382f
@@ -140,6 +143,7 @@ provenance check: pending version tests/t_clipcmd.pas 832a10b698ef9c756a3a36bd17
 provenance check: pending version tests/t_cluster.pas 90c09f7b0fe22358d821ce49156fe970031e1563
 provenance check: pending version tests/t_codepg.pas d5aa702210c34adefd49035e7002e97fc7f05b4c
 provenance check: pending version tests/t_colors.pas 2efb824f08c544f3b9d6900a3514b7ce355eac41
+provenance check: pending version tests/t_colorsel.pas 07c92107fa6d6582fa98b208448400107bee7577
 provenance check: pending version tests/t_crc.pas 402c1c8f77a9db939b45e016448fbd3c159005b7
 provenance check: pending version tests/t_cstr.pas b7ce3547efe01b5916b02a4efea99f8c4113b550
 provenance check: pending version tests/t_dialog.pas 7a4e2639fecfe9bd5e8accea7a5a3a3c42e9bdf4
