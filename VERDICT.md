@@ -209,6 +209,8 @@ provenance check: pending version src/tvwindow.pas e3f07296400b7f49fa2502304540e
 provenance check: pending version src/tvwindow.pas 77ed4192e944d57c6c6acca3f0ec57293aaba923
 provenance check: pending version src/tvwordnav.pas ce98451477ad25de6b9c32918b7e7e5113b4330b
 provenance check: pending version src/tvwordnav.pas af0efa1633c91418427ede5d57634cbdb97a1c88
+provenance check: pending version src/tvxlat.pas f90bcfd60d89a0d612129ea481ebe9fa27404337
+provenance check: pending version src/tvxlat.pas 6bd23409f1e86824fbdec4a15561ecbabcb7da14
 provenance check: pending version tests/t_actions.pas 91d2aa0627c3bb803dd8a66f7b3df63cb484307b
 provenance check: pending version tests/t_ansi.pas 4c9ec15af9e77a8915a0a35e299d3325f32ba5e1
 provenance check: pending version tests/t_app.pas 5843a781a494c31f812f228628ab68412fa598c2
@@ -310,6 +312,7 @@ provenance check: pending version tests/t_wild.pas 0000df297f6e869e6d312419652eb
 provenance check: pending version tests/t_window.pas 87fe2594d54bd748c8bde8eea9d6fe444e5b7b44
 provenance check: pending version tests/t_window.pas 2a52349ad429b87f200a7be5ce7bb9fd3ae8ad1a
 provenance check: pending version tests/t_wordnav.pas d3f9b3cbfdca79f550d07152dedbc417156fa4a4
+provenance check: pending version tests/t_xlat.pas 19397a635799359b453bc08c569ed3d3a6aced18
 provenance check: pending version tests/testlib.inc 0822cbaece08a16b0760fd01ea7bf1ca0f61601d
 provenance check: pending version tools/audit/audit.py a3e15023e4aaa3ae21cad7121f4949b7474a8510
 provenance check: pending version tools/audit/audit.py 808835b9bd131ac5349e0012f12453710859ab71
