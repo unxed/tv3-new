@@ -272,6 +272,7 @@ provenance check: pending version tools/audit/corpora.py 6e49b92b208899703f338d6
 provenance check: pending version tools/audit/corpora.py bdab186f502e09f7357d4082eec6b20e1bd7b03b
 provenance check: pending version tools/audit/facts/windows-console-mouse-event-record-str.md 07a0cf3c44cb5e3850f4260caaf56b1d211a136a
 provenance check: pending version tools/audit/facts/windows-virtual-key-codes.md 741a1fbc2aef340ff98af0254569a138611a56dc
+provenance check: pending version tools/audit/facts/xterm-ctlseqs.txt 236c79fdb101ae50df1f128a207aeb29dbc9e744
 provenance check: pending version tools/audit/proofs.txt b3460c5fcd3790d23e392b4a13967bb4f78d7243
 provenance check: pending version tools/audit/proofs.txt e9664550ed252303d4532b6810ecb867be418b05
 provenance check: pending version tools/audit/proofs.txt 344ae53682403627db040fc14325cc3ac7f2841e
