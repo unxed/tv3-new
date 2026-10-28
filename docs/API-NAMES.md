@@ -1046,3 +1046,73 @@ ShowSurface; both are private. The static function fillWithSpaces is FillWithSpa
 max(v, 0). The palette of the static variable of getPalette is SurfaceViewPalette, made from cpSurfaceView when the
 unit starts and released when it ends; cpSurfaceView keeps its name and is inside the unit. The members read, write,
 build and streamableName are not translated.
+
+## Added by the translation of TvVtKeys
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TVtKey
+added: TVtModifier
+added: TVtModifiers
+added: TVtMouseTracking
+added: TVtMouseEncoding
+added: TVtInputModes
+added: TVtMouseState
+added: DefaultInputModes
+added: NewMouseState
+added: KeyBytes
+added: UnicharBytes
+added: ProcessPaste
+added: ProcessKeypad
+added: ProcessFocus
+added: FunctionIndex
+added: ModifierParam
+added: CursorFinal
+added: PfFinal
+added: TildeNumber
+added: LetterSequence
+added: TildeSequence
+added: ControlCharKey
+added: ControlOf
+added: Utf8Text
+added: ModifierBits
+added: HeldButton
+added: AppendNumber
+added: MouseReport
+added: MouseMoved
+added: MouseButton
+added: KeypadLetter
+
+The unit is the conversion of the input events in vtermemu.cc. The namespace vtermemu is not a prefix, and the
+functions convKey, convMod, convMouse, processKey, processMouse and wheelToArrow are ConvKey, ConvMod, ConvMouse,
+ProcessKey, ProcessMouse and WheelToArrow, visible outside the unit. The enumerator mouseWheelScrollLines of
+VTermEmulator is the constant mouseWheelScrollLines. The functions of the emulation library that the C++ calls at the
+end of these functions (keyboard unichar, keyboard key, mouse move and mouse button) are not part of the sources; they
+give bytes here, and the routines of the unit return the bytes as an AnsiString instead of writing them to the client.
+
+TVtKey stands for VTermKey: the keys of the table keys (the values VTERM_KEY_ENTER to VTERM_KEY_FUNCTION(12)) are
+vkEnter, vkTab, vkBackspace, vkEscape, vkUp, vkDown, vkLeft, vkRight, vkIns, vkDel, vkHome, vkEnd, vkPageUp, vkPageDown
+and vkF1 to vkF12, and VTERM_KEY_NONE is vkNone. TVtModifiers stands for VTermModifier, a set of vmShift, vmAlt and
+vmCtrl. The value of each key is the scan code of its Turbo Vision key code, so ConvKey takes the high byte of the code
+when the low byte is zero (cursor, editing and function keys) and for kbEnter, kbTab, kbBack and kbEsc, and the table
+modifiers is the three tests of ConvMod. FunctionIndex gives the number of a function key. The call
+vterm_keyboard_key is KeyBytes and vterm_keyboard_unichar is UnicharBytes. ModifierParam is the second parameter of a
+key with modifiers (1 plus 1 for Shift, 2 for Alt and 4 for Control), CursorFinal, PfFinal and TildeNumber give the
+final character of the cursor keys, the final character of F1 to F4 and the number before the tilde of the editing
+keys and of F5 to F12, LetterSequence and TildeSequence build the two forms of sequence, and ControlCharKey builds the
+keys that are one control character. ControlOf is the control character that Control gives to a character.
+Utf8Text is the UTF-8 text of a code point.
+
+TVtInputModes is the record of the modes of the client that change the bytes: the cursor keys and keypad application
+modes (DECCKM and DECKPAM), the mouse tracking level (TVtMouseTracking: none, 9, 1000, 1002, 1003), the encoding of
+the mouse position (TVtMouseEncoding: default, 1005, 1006), bracketed paste (2004) and focus reporting (1004).
+DefaultInputModes gives all of them off. TVtMouseState holds what the emulation library keeps between two mouse
+calls: the last cell (Col and Row, -1 before the first event) and the buttons that are held (bit 0 for the left, 1 for
+the middle and 2 for the right button); NewMouseState gives the first state, and ProcessMouse takes it as a var
+parameter. vterm_mouse_move is MouseMoved and vterm_mouse_button is MouseButton; MouseReport builds the report, with
+AppendNumber for a number of the old encodings (the value plus 32, one byte up to 223 and two UTF-8 bytes up to 2015;
+a report that cannot be encoded is empty), ModifierBits gives 4, 8 and 16 for Shift, Alt and Control, and HeldButton
+gives the held button of the lowest number. A release in ProcessMouse, whose event has no button, lets go of the held
+button of the lowest number. ProcessPaste is the text of a paste with the brackets of mode 2004 when it is set,
+ProcessFocus is the report of focus in and out when mode 1004 is set, and ProcessKeypad is a character of the numeric
+keypad, which is the SS3 sequence of the character in application mode; KeypadLetter gives its final character.
