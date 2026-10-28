@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/ibm-858_P100-1997.ucm",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table ibm-858_P100-1997.ucm",
+      "url": "https://raw.githubusercontent.com/unicode-org/icu-data/bae5ca647fa41703393dbf00240ec1b807a9c353/charset/data/ucm/ibm-858_P100-1997.ucm"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table ibm-858_P100-1997.ucm",
+      "sha256": "37a872c270bd5e53932e03559002fb39b5124fd360c2ccdb521ae2010df3068e"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "0bb9cc6632e48744b04c06e1a00761e4eb87cb1c",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

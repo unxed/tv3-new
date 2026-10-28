@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/CP1253.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table CP1253.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table CP1253.TXT",
+      "sha256": "85d917854926ef09b22abefd19c7b61494e229fa391b648dc332f1fac0879ce3"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "20a55b04df67b56b5492c172cf4f7312d1c2b90f",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

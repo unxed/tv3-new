@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/8859-1.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table 8859-1.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table 8859-1.TXT",
+      "sha256": "2a06a462bf74ae65a77b700f235ac05156ac20f4aaefe39f09cc20d50628bb5e"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "3a55afefc462f807c9a890972344d38593a2df76",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/CP869.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table CP869.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP869.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table CP869.TXT",
+      "sha256": "8bded7115cb7de9fe60071db139649f6307a5781b0a349eae485c37ba020ef49"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "e661b517f78c0311faf7bfa8038eb4cb491dda48",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

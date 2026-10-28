@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/CP861.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table CP861.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP861.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table CP861.TXT",
+      "sha256": "a11e4a625a7c1ceab140b51591573fbd61d3b86cedf7eb26386febf637a0380b"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "0d6ec0c3f35dad6a09dd0f18e3884843a55f14e9",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

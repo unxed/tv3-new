@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/8859-2.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table 8859-2.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/ISO8859/8859-2.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table 8859-2.TXT",
+      "sha256": "020946e114335b17e7d29fe8a8449786cffed714cf409b11d0b3a375197188d1"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "20da9ba9937574a0b89b4584168d3ffeed9fdc96",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

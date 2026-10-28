@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/KOI8-U.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table KOI8-U.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table KOI8-U.TXT",
+      "sha256": "854bad6ab67c3644c7b60758cff3d0f30eb54dc45a354c3e5ce470da4015f042"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "c533b394097d21385954701816ee16233506d3fc",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

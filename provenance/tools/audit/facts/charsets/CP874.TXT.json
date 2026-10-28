@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/CP874.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table CP874.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP874.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table CP874.TXT",
+      "sha256": "2d6445c8460f10ca28668d0dc988b7e66c287ce9d6a4da67cd9af0632d4dba0b"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "8bd225dbe12274c3819121cf5c324ec45259d4d7",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

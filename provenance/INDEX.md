@@ -149,6 +149,50 @@
 | `tests/testlib.inc` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/audit.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/audit/corpora.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
+| `tools/audit/facts/charsets/8859-1.TXT` | standard | Character set mapping table 8859-1.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-10.TXT` | standard | Character set mapping table 8859-10.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-13.TXT` | standard | Character set mapping table 8859-13.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-14.TXT` | standard | Character set mapping table 8859-14.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-15.TXT` | standard | Character set mapping table 8859-15.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-16.TXT` | standard | Character set mapping table 8859-16.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-2.TXT` | standard | Character set mapping table 8859-2.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-3.TXT` | standard | Character set mapping table 8859-3.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-4.TXT` | standard | Character set mapping table 8859-4.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-5.TXT` | standard | Character set mapping table 8859-5.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-6.TXT` | standard | Character set mapping table 8859-6.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-7.TXT` | standard | Character set mapping table 8859-7.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-8.TXT` | standard | Character set mapping table 8859-8.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/8859-9.TXT` | standard | Character set mapping table 8859-9.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1250.TXT` | standard | Character set mapping table CP1250.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1251.TXT` | standard | Character set mapping table CP1251.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1252.TXT` | standard | Character set mapping table CP1252.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1253.TXT` | standard | Character set mapping table CP1253.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1254.TXT` | standard | Character set mapping table CP1254.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1255.TXT` | standard | Character set mapping table CP1255.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1256.TXT` | standard | Character set mapping table CP1256.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1257.TXT` | standard | Character set mapping table CP1257.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP1258.TXT` | standard | Character set mapping table CP1258.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP437.TXT` | standard | Character set mapping table CP437.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP737.TXT` | standard | Character set mapping table CP737.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP775.TXT` | standard | Character set mapping table CP775.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP850.TXT` | standard | Character set mapping table CP850.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP852.TXT` | standard | Character set mapping table CP852.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP855.TXT` | standard | Character set mapping table CP855.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP857.TXT` | standard | Character set mapping table CP857.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP860.TXT` | standard | Character set mapping table CP860.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP861.TXT` | standard | Character set mapping table CP861.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP862.TXT` | standard | Character set mapping table CP862.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP863.TXT` | standard | Character set mapping table CP863.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP864.TXT` | standard | Character set mapping table CP864.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP865.TXT` | standard | Character set mapping table CP865.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP866.TXT` | standard | Character set mapping table CP866.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP869.TXT` | standard | Character set mapping table CP869.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/CP874.TXT` | standard | Character set mapping table CP874.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/KOI8-R.TXT` | standard | Character set mapping table KOI8-R.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/KOI8-U.TXT` | standard | Character set mapping table KOI8-U.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/ROMAN.TXT` | standard | Character set mapping table ROMAN.TXT | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/ibm-1125_P100-1997.ucm` | standard | Character set mapping table ibm-1125_P100-1997.ucm | 1 | 1 | 0 |
+| `tools/audit/facts/charsets/ibm-858_P100-1997.ucm` | standard | Character set mapping table ibm-858_P100-1997.ucm | 1 | 1 | 0 |
 | `tools/audit/facts/windows-console-mouse-event-record-str.md` | standard | MOUSE_EVENT_RECORD structure | 1 | 1 | 0 |
 | `tools/audit/facts/windows-virtual-key-codes.md` | standard | Virtual-Key Codes (Winuser.h) | 1 | 1 | 0 |
 | `tools/audit/facts/xterm-ctlseqs.txt` | standard | XTerm Control Sequences | 1 | 1 | 0 |
