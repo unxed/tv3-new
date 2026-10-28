@@ -1,0 +1,68 @@
+{
+  "path": "src/tvlocale.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/internal/platform.h",
+      "lines": "1-147"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/platform/platfchr.cpp",
+      "lines": "1-129"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/platform/platform.cpp",
+      "lines": "1-148"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/platform/ttext.cpp",
+      "lines": "1-403"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/ttext.h",
+      "lines": "1-524"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/platform.h",
+      "sha256": "52533b992693e3ffebdb01dd8f90fd0c744f471a4acb336d6fb758f6d13bb57b"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/platfchr.cpp",
+      "sha256": "6be9b9b3e44b21fc1fb803eaf8fa8b79f470a7f42ab7368d167e93e370e8a183"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/platform.cpp",
+      "sha256": "7c139973ff50ddbad6d68e28f45faf2579aae825a9acf683155b847a176f0784"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/ttext.cpp",
+      "sha256": "e7e7a12b574e3f2b2f02093702b4409abf60c4ca97aba8d1972790994dd43d31"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/ttext.h",
+      "sha256": "811e551ad6872af981b5d8d64fe472a7e8437999b003de30283473f00e99c75a"
+    }
+  ],
+  "implementer": "implementer 72",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "72029e53d3f3d22d943b63b2ee1e5ba121405fae",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

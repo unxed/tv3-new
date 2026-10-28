@@ -21,7 +21,6 @@
 
   Parts of the C++ that no input defines are reached through hooks, which do nothing while they are nil:
     - hotKeyStr stands for HotKeyStrHook; while it is nil, a menu item has no shortcut character;
-    - TText::equalsIgnoreCase stands for EqualsIgnoreCaseHook; while it is nil, two texts are not equal;
     - TProgram::application stands for ApplicationHook; while it is nil, PopupMenu answers 0.
   The tables TMenuBox.FrameChars and TStatusLine.HintSeparator are class variables, set to their values when the
   unit starts. The characters are code page 437 bytes written as numbers. }
@@ -207,14 +206,11 @@ type
   { Gives the shortcut of a menu item name (the Name is empty for a separator); the answer is empty when the
     name has no shortcut. }
   THotKeyStrFunc = function(const Name: string): string;
-  { Tells whether two texts are equal when the case of letters is ignored. }
-  TEqualsIgnoreCaseFunc = function(const A, B: string): Boolean;
   { Gives the root of the application, or nil. }
   TApplicationFunc = function: TGroup;
 
 var
   HotKeyStrHook: THotKeyStrFunc;
-  EqualsIgnoreCaseHook: TEqualsIgnoreCaseFunc;
   ApplicationHook: TApplicationFunc;
 
 { A separator line for a menu: an item without a name. }
@@ -237,7 +233,7 @@ operator +(S1, S2: TStatusDef): TStatusDef;
 implementation
 
 uses
-  TvUtil;
+  TvUtil, TvLocale;
 
 const
   CpMenuView = #2#3#4#5#6#7;
@@ -281,14 +277,6 @@ begin
     Result := HotKeyStrHook(CStrOf(Name))
   else
     Result := '';
-end;
-
-function EqualsIgnoreCase(const A, B: string): Boolean;
-begin
-  if Assigned(EqualsIgnoreCaseHook) then
-    Result := EqualsIgnoreCaseHook(A, B)
-  else
-    Result := False;
 end;
 
 { TMenuItem }

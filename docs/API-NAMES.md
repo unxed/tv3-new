@@ -100,8 +100,6 @@ The names below have no counterpart in the C++ and are listed one per line, as "
 
 added: HotKeyStrHook
 added: THotKeyStrFunc
-added: EqualsIgnoreCaseHook
-added: TEqualsIgnoreCaseFunc
 added: ApplicationHook
 added: TApplicationFunc
 added: TMenuAction
@@ -119,14 +117,13 @@ added: CStrOf
 added: HotKeyStrOf
 added: SetCommandEvent
 added: PostCommand
-added: EqualsIgnoreCase
 
-THotKeyStrFunc, TEqualsIgnoreCaseFunc and TApplicationFunc are the procedural types of the hooks that stand for parts
+THotKeyStrFunc and TApplicationFunc are the procedural types of the hooks that stand for parts
 of the C++ that no unit has yet and no input defines. HotKeyStrHook stands for the function hotKeyStr, which gives the
-shortcut of the name of a menu item; EqualsIgnoreCaseHook stands for TText::equalsIgnoreCase; ApplicationHook stands
-for TProgram::application and gives the root of the application. While HotKeyStrHook or EqualsIgnoreCaseHook is nil,
+shortcut of the name of a menu item; ApplicationHook stands
+for TProgram::application and gives the root of the application. While HotKeyStrHook is nil,
 FindItem finds no item, and while ApplicationHook is nil, PopupMenu answers 0 and does not take the items. HotKeyStrOf
-and EqualsIgnoreCase call the hooks, and CStrOf turns a char pointer that may be null into a string. SetCommandEvent turns an event into a command event for a given command, and PostCommand does so, puts the event through a view and clears it.
+calls the hook, FindItem compares texts with EqualsIgnoreCase of TvLocale, and CStrOf turns a char pointer that may be null into a string. SetCommandEvent turns an event into a command event for a given command, and PostCommand does so, puts the event through a view and clears it.
 
 The tables frameChars of TMenuBox and hintSeparator of TStatusLine are the class variables TMenuBox.FrameChars and
 TStatusLine.HintSeparator, which the unit sets to their values when it starts.
@@ -871,8 +868,8 @@ for TimeoutMs milliseconds for a byte, the time that wtimeout sets in the C++, a
 read. The private members that Platform has for the console (setUpConsole, restoreConsole, checkConsole, createConsole and
 signalCallback) keep their names, and the two forms of setUpConsole and of restoreConsole are overloaded. The platform is
 a singleton that the C++ never frees; DestroyInstance gives the console back and frees it, and IsSetUp tells whether a console
-other than the dummy one is in use. The members of Platform that the C++ declares for a Windows console (sizeChanged) and the
-character operations (charOps, initLocale, initCharOps, initCharWidth and initCharToLower) are not translated.
+other than the dummy one is in use. The members of Platform that the C++ declares for a Windows console (sizeChanged) are not translated, and the
+character operations (charOps, initLocale, initCharOps, initCharWidth and initCharToLower) are in TvLocale.
 
 The macros of the signal handling are not used: the actions of the signals are SigActionRec of BaseUnix, the handler of an action is
 its first field, and a set of signals is a row of bits. The functions makeDefaultAction, makeHandlerAction, the comparison of two
@@ -1605,3 +1602,40 @@ result is Supported: the acknowledgement came before the answer of the status re
 a set into the pieces of the chunked upload when the server reports FARTTY_FEATCLIP_CHUNKED_SET. Far2lToEvent turns a
 key press or a mouse event into a TEvent with GetWin32Key and GetWin32Mouse of TvEvents; a compact key event has the
 scan code 0, which the conversion of TvEvents makes from the virtual key code.
+
+## Added by the translation of TvLocale
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TCharOps
+added: TCharWidthFunc
+added: TCharToLowerFunc
+added: EqualsIgnoreCase
+added: ReadChar
+added: InSpan
+added: LibcSetLocale
+added: LibcWcWidth
+added: LibcToWLower
+added: EnvironmentName
+added: LocaleDone
+added: OpsDone
+added: LocaleLock
+added: OpsLock
+
+The struct CharOps of Platform is the record TCharOps, because the name CharOps is the one of the variable
+charOps without regard to case; its members width and toLower are the fields Width and ToLower, whose types are the
+procedural types TCharWidthFunc and TCharToLowerFunc, and the static member charOps is the variable CharOps of the
+unit. The static functions initLocale, initCharOps, initCharWidth and initCharToLower of Platform are InitLocale,
+InitCharOps, InitCharWidth and InitCharToLower, visible outside the unit, and the file-level functions unixCharWidth,
+linuxConsoleCharWidth and charToLower are UnixCharWidth, LinuxConsoleCharWidth (on Linux only) and CharToLower, also
+visible. Only the branch of the files for a Unix system is translated. setlocale, wcwidth and towlower are external
+functions of the C library, declared inside the unit as LibcSetLocale, LibcWcWidth and LibcToWLower; the empty name
+that setlocale takes is EnvironmentName, and InSpan tests a range in LinuxConsoleCharWidth. The initial values of the fields of CharOps are set when the unit
+starts. The static locals init of initLocale and initCharOps are the flags LocaleDone and OpsDone, each guarded by a
+critical section, so that the first calls from two threads make the initialisation once. CharToLower does not test the
+size of wchar_t, which is 32 bits on the systems that the unit supports.
+
+TText::equalsIgnoreCase is EqualsIgnoreCase, a function of the unit, because the class TText of TvUtf8 cannot take a
+member from another unit. The texts are strings; the function reads the characters with TText.Next of TvUtf8 and
+Utf8To32, and takes a byte that does not begin a valid UTF-8 sequence as a code page character, as CpTranslator.ToUtf8
+gives it. ReadChar does this for one character inside the unit.
