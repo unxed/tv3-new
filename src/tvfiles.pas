@@ -3,7 +3,8 @@
   TSortedListBox, TFileList, TDirEntry, TDirCollection, TDirListBox), source/tvision/tfilecol.cpp,
   source/tvision/tfillist.cpp, source/tvision/tdircoll.cpp, source/tvision/tdirlist.cpp, source/tvision/tvtext1.cpp
   (the tables of TDirListBox), include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h,
-  include/tvision/views.h, include/tvision/util.h, source/tvision/misc.cpp (message)
+  include/tvision/views.h, include/tvision/util.h, source/tvision/misc.cpp (message), source/tvision/tvtext2.cpp
+  (tooManyFiles)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -21,8 +22,8 @@
       uses it.
     - TChDirDialog and its member chDirButton: the setState of TDirListBox reaches them through
       ChDirButtonDefaultHook, which does nothing while it is nil.
-    - The text tooManyFiles is defined in a file that is not among the inputs, so it is the class variable
-      TooManyFiles of TFileList, empty until the program sets it.
+    - The text tooManyFiles is the class variable TooManyFiles of TFileList, which holds the text of the C++ when
+      the unit starts.
     - The functions of the compatibility headers dir.h and dos.h (findfirst, findnext, getdisk, fnsplit, fnmerge,
       fexpand) are made with the routines of SysUtils and of TvPath: a search is FindFirst and FindNext of SysUtils
       with the mask faReadOnly, faArchive, faHidden and faSymLink for the files and faDirectory and faSymLink for the
@@ -849,7 +850,7 @@ begin
 end;
 
 initialization
-  TFileList.TooManyFiles := '';
+  TFileList.TooManyFiles := 'Too many files.';
   TDirListBox.PathDir := #$C0#$C4#$C2;
   TDirListBox.FirstDir := #$C0#$C2#$C4;
   TDirListBox.MiddleDir := ' '#$C3#$C4;

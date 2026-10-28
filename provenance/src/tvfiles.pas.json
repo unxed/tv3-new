@@ -73,6 +73,12 @@
       "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
       "file": "include/tvision/util.h",
       "lines": "1-121"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tvtext2.cpp",
+      "lines": "1-227"
     }
   ],
   "inputs": [
@@ -215,9 +221,13 @@
     {
       "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/util.h",
       "sha256": "26f7193298c61cb7ec2713832f3bdbdbe8f1c4113a0b5b1240966fb44d436085"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvtext2.cpp",
+      "sha256": "3b09041411da28340e66fc764cc7c6e04f82145220eb954f348b0277f663b6a6"
     }
   ],
-  "implementer": "implementer 48, implementer 52",
+  "implementer": "implementer 48, implementer 52, implementer 53",
   "proofs": [],
   "versions": [
     {
@@ -234,6 +244,12 @@
     },
     {
       "blob": "546b1358b1b47e3df4fbd89844c2535209018afd",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "2782e7fa956b27b1146e94bbb6feafb3e0272528",
       "commit": null,
       "pr": null,
       "audit_run": null

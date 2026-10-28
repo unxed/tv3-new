@@ -3,7 +3,7 @@
   TSortedListBox, TFileList, TDirEntry, TDirCollection, TDirListBox), source/tvision/tfilecol.cpp,
   source/tvision/tfillist.cpp, source/tvision/tdircoll.cpp, source/tvision/tdirlist.cpp, source/tvision/tvtext1.cpp
   (the tables of TDirListBox), include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h,
-  include/tvision/views.h, include/tvision/util.h, source/tvision/misc.cpp
+  include/tvision/views.h, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   Test program of the unit TvFiles.
@@ -225,7 +225,7 @@ begin
   Check(TDirListBox.LastDir = ' '#$C0#$C4, 'lastDir');
   Check(TDirListBox.Drives = 'Drives', 'drives');
   Check(TDirListBox.Graphics = #$C0#$C3#$C4, 'graphics');
-  Check(TFileList.TooManyFiles = '', 'tooManyFiles starts empty');
+  Check(TFileList.TooManyFiles = 'Too many files.', 'tooManyFiles is the text of the C++');
 end;
 
 procedure TestFunctions;
