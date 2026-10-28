@@ -1,0 +1,108 @@
+{
+  "path": "src/tvvtview.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termview.h",
+      "lines": "1-62"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "source/tvterm-core/termview.cc",
+      "lines": "1-340"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termwnd.h",
+      "lines": "1-69"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "source/tvterm-core/termwnd.cc",
+      "lines": "1-168"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termframe.h",
+      "lines": "1-24"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "source/tvterm-core/termframe.cc",
+      "lines": "1-34"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/consts.h",
+      "lines": "1-41"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termemu.h",
+      "lines": "1-288"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termctrl.h",
+      "lines": "1-75"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termview.h",
+      "sha256": "60c5680bdb8160696aa29bfd8b8739b632806b916f5791a78cb201dafd358fcf"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:source/tvterm-core/termview.cc",
+      "sha256": "3c3ab1837eac9bf95f70c0655862bac333243b38885449b825683be912a3e932"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termwnd.h",
+      "sha256": "5fa7a1c1f50b14ed6be7df270a0474477e85816fe9b2ef09e630ff24cad1dfbd"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:source/tvterm-core/termwnd.cc",
+      "sha256": "64fd191cd9705f821b495f0a9a9ef0cfd9f0c2274d8fcecb9818c631d9955073"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termframe.h",
+      "sha256": "8ea00267d8e9d09d70a5eb3c144a3cd7993e274713882d3177ea82aefaf68c5b"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:source/tvterm-core/termframe.cc",
+      "sha256": "f356283b30a3fe1d685bf78b9bca5178acec6e8fdb99943cddad6201be5599bc"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/consts.h",
+      "sha256": "14d40c41effa90de404eb83ca7c867ff4dae6f16901b8db2602f4fc89385975d"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termemu.h",
+      "sha256": "39a2689ed93f0b3c269280bac7711fcfd8ea9a7454507f3f49ae21e89fabe4a0"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termctrl.h",
+      "sha256": "15f04bb44aa8aa9717ad3699fac17ff990b075ec391c17f254966011657684d3"
+    }
+  ],
+  "implementer": "implementer 70",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "245614ed2d59068f36792ac013fd1738455bf167",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

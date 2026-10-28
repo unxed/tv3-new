@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 41 | 41 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 42 | 42 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvactions.pas` | specification | specification:tvactions | 2 | 2 | 0 |
@@ -72,6 +72,7 @@
 | `src/tvvtctrl.pas` | translation | magiblot/tvterm:include/tvterm/termctrl.h:1-75; magiblot/tvterm:source/tvterm-core/termctrl.cc:1-328; magiblot/tvterm:include/tvterm/termemu.h:1-288; magiblot/tvterm:include/tvterm/pty.h:1-66 | 1 | 1 | 0 |
 | `src/tvvtkeys.pas` | translation | magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744; magiblot/tvterm:include/tvterm/vtermemu.h:1-118 | 1 | 1 | 0 |
 | `src/tvvtscreen.pas` | translation | magiblot/tvterm:include/tvterm/vtermemu.h:1-118; magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744 | 1 | 1 | 0 |
+| `src/tvvtview.pas` | translation | magiblot/tvterm:include/tvterm/termview.h:1-62; magiblot/tvterm:source/tvterm-core/termview.cc:1-340; magiblot/tvterm:include/tvterm/termwnd.h:1-69; magiblot/tvterm:source/tvterm-core/termwnd.cc:1-168; magiblot/tvterm:include/tvterm/termframe.h:1-24; magiblot/tvterm:source/tvterm-core/termframe.cc:1-34; magiblot/tvterm:include/tvterm/consts.h:1-41; magiblot/tvterm:include/tvterm/termemu.h:1-288; magiblot/tvterm:include/tvterm/termctrl.h:1-75 | 1 | 1 | 0 |
 | `src/tvwidth.inc` | standard | Unicode 15.0.0 EastAsianWidth.txt; Unicode 15.0.0 DerivedGeneralCategory.txt | 1 | 1 | 0 |
 | `src/tvwild.pas` | specification | specification:tvwild | 2 | 2 | 0 |
 | `src/tvwindow.pas` | translation | magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tframe.cpp:1-220; magiblot/tvision:source/tvision/framelin.cpp:1-74; magiblot/tvision:source/tvision/tscrlbar.cpp:1-364; magiblot/tvision:source/tvision/tscrolle.cpp:1-202; magiblot/tvision:source/tvision/twindow.cpp:1-262; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121 | 3 | 3 | 0 |
@@ -137,6 +138,7 @@
 | `tests/t_vtctrl.pas` | translation | magiblot/tvterm:include/tvterm/termctrl.h:1-75; magiblot/tvterm:source/tvterm-core/termctrl.cc:1-328 | 1 | 1 | 0 |
 | `tests/t_vtkeys.pas` | translation | magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744; magiblot/tvterm:include/tvterm/vtermemu.h:1-118 | 1 | 1 | 0 |
 | `tests/t_vtscreen.pas` | translation | magiblot/tvterm:include/tvterm/vtermemu.h:1-118; magiblot/tvterm:source/tvterm-core/vtermemu.cc:1-744 | 1 | 1 | 0 |
+| `tests/t_vtview.pas` | translation | magiblot/tvterm:include/tvterm/termview.h:1-62; magiblot/tvterm:source/tvterm-core/termview.cc:1-340; magiblot/tvterm:include/tvterm/termwnd.h:1-69; magiblot/tvterm:source/tvterm-core/termwnd.cc:1-168; magiblot/tvterm:include/tvterm/termframe.h:1-24; magiblot/tvterm:source/tvterm-core/termframe.cc:1-34; magiblot/tvterm:include/tvterm/consts.h:1-41; magiblot/tvterm:include/tvterm/termemu.h:1-288; magiblot/tvterm:include/tvterm/termctrl.h:1-75 | 1 | 1 | 0 |
 | `tests/t_wild.pas` | specification | specification:tvwild | 1 | 1 | 0 |
 | `tests/t_window.pas` | translation | magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tframe.cpp:1-220; magiblot/tvision:source/tvision/framelin.cpp:1-74; magiblot/tvision:source/tvision/tscrlbar.cpp:1-364; magiblot/tvision:source/tvision/tscrolle.cpp:1-202; magiblot/tvision:source/tvision/twindow.cpp:1-262; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121 | 2 | 2 | 0 |
 | `tests/t_wordnav.pas` | specification | specification:tvwordnav | 1 | 1 | 0 |
