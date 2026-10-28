@@ -157,6 +157,7 @@
 | `tests/t_wild.pas` | specification | specification:tvwild | 1 | 1 | 0 |
 | `tests/t_window.pas` | translation | magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tframe.cpp:1-220; magiblot/tvision:source/tvision/framelin.cpp:1-74; magiblot/tvision:source/tvision/tscrlbar.cpp:1-364; magiblot/tvision:source/tvision/tscrolle.cpp:1-202; magiblot/tvision:source/tvision/twindow.cpp:1-262; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121 | 2 | 2 | 0 |
 | `tests/t_wordnav.pas` | specification | specification:tvwordnav | 1 | 1 | 0 |
+| `tests/t_xlat.pas` | specification | specification:tvxlat | 1 | 1 | 0 |
 | `tests/testlib.inc` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/audit.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/audit/corpora.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
