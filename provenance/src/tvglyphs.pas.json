@@ -1,0 +1,49 @@
+{
+  "path": "src/tvglyphs.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvglyphs"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvglyphs",
+      "sha256": "688c59af022750c3507ecfb2f21db3a8d2ab6be66a3daa87c53c20427a73ec62"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "36b8589aa7136bef2842bab58dc5abd556e8982e5e1923e49ed2e60ea4861bf6"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvcell.pas",
+      "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"
+    },
+    {
+      "origin": "repository:src/tvcolors.pas",
+      "sha256": "9fda94548caec8f5fb349c444977016783f51b8800d264539cb2f3f60a597037"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    },
+    {
+      "origin": "repository:src/tvcodepages.pas",
+      "sha256": "f76811c3c5a2ee9bd23e082e5e3f31a51213973faa6a163cff034f6b76dedde7"
+    }
+  ],
+  "implementer": "implementer 77",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "d75f702c020526175b5592b3db303d99caee4791",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
