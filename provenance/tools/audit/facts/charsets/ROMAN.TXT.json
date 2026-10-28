@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/ROMAN.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table ROMAN.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/APPLE/ROMAN.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table ROMAN.TXT",
+      "sha256": "18e571645be895e9553ed5c842ea8f65f9c5d3c9ccb43e66e0c33a132ed0d721"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "5b3b8b4005be2c7d1ef3ea0c70528455ad3b2e22",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

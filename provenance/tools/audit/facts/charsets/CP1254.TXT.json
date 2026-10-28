@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/CP1254.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table CP1254.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1254.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table CP1254.TXT",
+      "sha256": "f93569399f81abce90441793c118d2524770b58d9c5774de3233c64d88c9fca0"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "987ed98f759def24234a72b7d4c34a13e60e5216",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

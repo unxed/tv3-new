@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/CP737.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table CP737.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP737.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table CP737.TXT",
+      "sha256": "6abd7fef93b7afff8709ff507680397618898a6c73b6e72e681df48ed4367733"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "22473d10a94324198106efb951091ef4425734e9",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

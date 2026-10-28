@@ -1,0 +1,26 @@
+{
+  "path": "tools/audit/facts/charsets/CP437.TXT",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table CP437.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "standard:Character set mapping table CP437.TXT",
+      "sha256": "42beda350fe1e8d18ed4874fc270ff9d76fd11188100ac22e0e4140819801ec7"
+    }
+  ],
+  "implementer": "maintainer (document copy, line ends and trailing white space normalised)",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "34ff6c52fe7a4e053117107121b6dcffcbfed2fa",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
