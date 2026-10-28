@@ -199,7 +199,7 @@
 | `tools/audit/facts/windows-virtual-key-codes.md` | standard | Virtual-Key Codes (Winuser.h) | 1 | 1 | 0 |
 | `tools/audit/facts/xterm-ctlseqs.txt` | standard | XTerm Control Sequences | 1 | 1 | 0 |
 | `tools/audit/proofs.txt` | specification | specification:infra-requirements | 6 | 6 | 0 |
-| `tools/audit/prove.py` | specification | specification:infra-requirements | 2 | 2 | 0 |
+| `tools/audit/prove.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/audit/provenance_lint.py` | specification | specification:infra-requirements | 2 | 2 | 0 |
 | `tools/audit/run.sh` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/tokens.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
@@ -208,7 +208,7 @@
 | `tools/test.sh` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_audit.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_corpora.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `tools/tests/test_prove.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
+| `tools/tests/test_prove.py` | specification | specification:infra-requirements | 2 | 2 | 0 |
 | `tools/tests/test_provenance_lint.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_text_lint.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/tests/test_tokens.py` | specification | specification:infra-requirements | 1 | 1 | 0 |

@@ -72,6 +72,49 @@ class TranslationTests(unittest.TestCase):
         self.assertFalse(self.check([("p", ";")], "trust me")[0])
 
 
+class StandardTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        facts = os.path.join(self.tmp.name, "facts", "charsets")
+        os.makedirs(facts)
+        with open(os.path.join(facts, "CP1.TXT"), "w") as fh:
+            fh.write("# table\n0x80\t0x00C7\t#CAPITAL C\n0x81\t0x00FC\t#SMALL U\n")
+        with open(os.path.join(facts, "T.ucm"), "w") as fh:
+            fh.write("CHARMAP\n<U20AC> \\xD5 |0\nEND CHARMAP\n")
+        self.allowed = prove.Allowed(None, os.path.join(self.tmp.name, "facts"))
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def check(self, tokens, proof="standard charsets/CP1.TXT"):
+        return prove.check_proof(match(tokens), proof, self.allowed, set())
+
+    def test_holds(self):
+        toks = [("w", "const"), ("i", "word"), ("p", "="), ("l", "n199"), ("p", ","), ("l", "n252")]
+        ok, why = self.check(toks)
+        self.assertTrue(ok, why)
+
+    def test_literal_missing(self):
+        ok, why = self.check([("l", "n199"), ("l", "n1234")])
+        self.assertFalse(ok)
+        self.assertIn("literal", why)
+
+    def test_unknown_file(self):
+        self.assertFalse(self.check([("p", ";")], "standard charsets/NONE.TXT")[0])
+        self.assertFalse(self.check([("p", ";")], "standard charsets/CP1.TXT,charsets/NONE.TXT")[0])
+        self.assertFalse(self.check([("p", ";")], "standard")[0])
+
+    def test_identifier_that_is_not_a_keyword(self):
+        ok, why = self.check([("i", "cp437"), ("l", "n199")])
+        self.assertFalse(ok)
+        self.assertIn("cp437", why)
+
+    def test_several_files_and_ucm(self):
+        toks = [("l", "n199"), ("l", "n8364"), ("l", "n213")]
+        self.assertTrue(self.check(toks, "standard charsets/CP1.TXT,charsets/T.ucm")[0])
+        self.assertFalse(self.check(toks)[0])
+
+
 class ApiTests(unittest.TestCase):
     NAMES = {"tview", "draw"}
 
