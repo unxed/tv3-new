@@ -1,24 +1,26 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (the commands of the file dialogs, TSearchRec, TFileCollection,
-  TSortedListBox, TFileList, TDirEntry, TDirCollection, TDirListBox), source/tvision/tfilecol.cpp,
-  source/tvision/tfillist.cpp, source/tvision/tdircoll.cpp, source/tvision/tdirlist.cpp, source/tvision/tvtext1.cpp
-  (the tables of TDirListBox), include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h,
-  include/tvision/views.h, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/tvtext2.cpp
+  TSortedListBox, TFileList, TDirEntry, TDirCollection, TDirListBox), source/tvision/stddlg.cpp (TSortedListBox),
+  source/tvision/tfilecol.cpp, source/tvision/tfillist.cpp, source/tvision/tdircoll.cpp, source/tvision/tdirlist.cpp,
+  source/platform/dir.cpp, source/tvision/tvtext1.cpp (the tables of TDirListBox), include/tvision/ttypes.h,
+  include/tvision/config.h, include/tvision/tv.h, include/tvision/views.h, include/tvision/util.h,
+  source/tvision/misc.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   Test program of the unit TvFiles.
 
   The views have no screen. A view whose messages a test looks at is in a group that counts the events that it gets
-  and remembers the last one. The hook of the new list of a sorted list box gives
-  the list to the list box of TvList. The tests that touch files make a directory of their own under the directory of
-  temporary files and remove it at the end. The directory of the tests has the files a.txt (5 bytes), b.txt, c.dat
-  (3 bytes), the directories sub1 and sub2 and the hidden directory .hdir. }
+  and remembers the last one. The incremental search of the sorted list box is checked with the keys that the test
+  gives to a list of files, and with a list of texts that has the default key; the position of the cursor of the list
+  box after each key is the one that the arithmetic of handleEvent gives. The tests that touch files make a directory
+  of their own under the directory of temporary files and remove it at the end. The directory of the tests has the
+  files a.txt (5 bytes), b.txt, c.dat (3 bytes), the directories sub1 and sub2 and the hidden directory .hdir. }
 program t_files;
 
 {$mode objfpc}
 
 uses
-  SysUtils, TvGeom, TvKeys, TvEvents, TvObjs, TvViews, TvList, TvFiles;
+  SysUtils, TvGeom, TvKeys, TvEvents, TvObjs, TvViews, TvList, TvUtil, TvFiles;
 
 {$I testlib.inc}
 
@@ -45,7 +47,21 @@ type
   TListProbe = class(TFileList)
   public
     procedure SetShift(Value: Byte);
+    function Shift: Byte;
     function Key(const Text: string): PSearchRec;
+  end;
+
+  { A sorted collection of blocks of characters, in the order of the text without regard to the case. }
+  TTextCollection = class(TSortedCollection)
+  protected
+    function Compare(Key1, Key2: Pointer): Integer; override;
+    procedure FreeItem(Item: Pointer); override;
+  end;
+
+  { A sorted list box over a TTextCollection: it keeps the key of the base class. }
+  TTextBox = class(TSortedListBox)
+  public
+    function Shift: Byte;
   end;
 
   { A group that counts the events that it gets, and remembers the last one: the messages of the views that it holds. }
@@ -61,7 +77,6 @@ var
   LastWhat: Word;
   LastCommand: Word;
   LastInfo: Pointer;
-  NewListCalls: Integer;
   FilesDestroyed: Integer;
   DirsDestroyed: Integer;
   DefaultCalls: Integer;
@@ -91,9 +106,29 @@ begin
   ShiftState := Value;
 end;
 
+function TListProbe.Shift: Byte;
+begin
+  Result := ShiftState;
+end;
+
 function TListProbe.Key(const Text: string): PSearchRec;
 begin
   Result := PSearchRec(GetKey(Text));
+end;
+
+function TTextCollection.Compare(Key1, Key2: Pointer): Integer;
+begin
+  Result := CompareText(string(PAnsiChar(Key1)), string(PAnsiChar(Key2)));
+end;
+
+procedure TTextCollection.FreeItem(Item: Pointer);
+begin
+  FreeMem(Item);
+end;
+
+function TTextBox.Shift: Byte;
+begin
+  Result := ShiftState;
 end;
 
 procedure TProbeGroup.HandleEvent(var Event: TEvent);
@@ -106,12 +141,6 @@ begin
   LastCommand := Event.Message.Command;
   LastInfo := Event.Message.InfoPtr;
   inherited HandleEvent(Event);
-end;
-
-procedure OnNewList(Box: TSortedListBox; NewItems: TSortedCollection);
-begin
-  Inc(NewListCalls);
-  TListBox(Box).NewList(TCollection(NewItems));
 end;
 
 procedure OnDefault(Box: TDirListBox; Enable: Boolean);
@@ -252,6 +281,65 @@ begin
   Check(not PathValid(TempRoot + 'zzz/'), 'PathValid of a directory that does not exist');
 end;
 
+procedure TestValidFileName;
+begin
+  Check(ValidFileName('plain.txt'), 'a name with no directory is valid');
+  Check(ValidFileName(''), 'the empty name is valid');
+  Check(ValidFileName(TempRoot + 'a/b/new.txt'), 'a new name in a directory that exists is valid');
+  Check(ValidFileName(TempRoot + 'a/b/x.txt'), 'the name of a file that exists is valid');
+  Check(ValidFileName(TempRoot + 'a/b/'), 'a directory with no name is valid');
+  Check(not ValidFileName(TempRoot + 'zzz/new.txt'), 'a name in a directory that does not exist is not valid');
+  Check(not ValidFileName(TempRoot + 'a/b/x.txt/new.txt'), 'a name in a file that is taken for a directory is not valid');
+  Check(ValidFileName('/new.txt'), 'a name in the root is valid');
+
+  Check(not ValidFileName('a<b'), 'the character < is not allowed in a name');
+  Check(not ValidFileName('a>b'), 'the character > is not allowed in a name');
+  Check(not ValidFileName('a|b'), 'the character | is not allowed in a name');
+  Check(not ValidFileName('a"b'), 'the character " is not allowed in a name');
+  Check(not ValidFileName('file.t<t'), 'the character < is not allowed in an extension');
+  Check(not ValidFileName('file.t|t'), 'the character | is not allowed in an extension');
+  Check(not ValidFileName('file.t"t'), 'the character " is not allowed in an extension');
+  Check(not ValidFileName(TempRoot + 'a/b/we|rd.txt'), 'a bad character is found after a directory that exists');
+  Check(not ValidFileName('no\such\name'), 'a backslash ends the directory, which does not exist');
+
+  Check(ValidFileName('a b;c,d=e+f[g].txt'), 'a space and the characters ; , = + [ ] are allowed');
+  Check(ValidFileName('name.tar.gz'), 'a name with two dots is valid');
+  Check(ValidFileName('.hidden'), 'a name that begins with a dot is valid');
+  Check(ValidFileName('a*b'), 'a wild card is valid');
+  Check(ValidFileName('noext.'), 'a name that ends with a dot is valid');
+  Check(ValidFileName(TempRoot + 'a/b/..'), 'a path that ends with .. is a directory that exists');
+  Check(ValidFileName(TempRoot + 'a/b/.'), 'a path that ends with . is a directory that exists');
+  Check(not ValidFileName(TempRoot + 'zzz/q/..'), 'a path that ends with .. and leads to a missing directory is not valid');
+end;
+
+procedure TestGetCurDir;
+var
+  SavedDir, Expected: string;
+begin
+  SavedDir := GetCurrentDir;
+  Check(SetCurrentDir(TempRoot + 'a/b'), 'the directory a/b of the tests exists');
+  Expected := IncludeTrailingPathDelimiter(GetCurrentDir);
+  Check(GetCurDir = Expected, 'the current directory ends with a separator');
+  Check((Length(Expected) > 1) and (Expected[1] = '/') and (Expected[Length(Expected)] = '/'),
+    'the current directory begins and ends with a separator');
+  Check(GetCurDir(GetDisk) = Expected, 'the current disk gives the current directory');
+  Check(GetCurDir(-1) = Expected, 'the value -1 stands for the current disk');
+  Check(GetCurDir(26) = Expected, 'a value above Z stands for the current disk');
+  Check(GetCurDir(200) = Expected, 'a large value stands for the current disk');
+  Check(GetCurDir(0) = '/', 'a disk that is not the current one gives the root');
+  Check(GetCurDir(25) = '/', 'the disk Z gives the root');
+
+  Check(SetCurrentDir(TempRoot + 'rd'), 'the directory rd of the tests exists');
+  Expected := IncludeTrailingPathDelimiter(GetCurrentDir);
+  Check(GetCurDir = Expected, 'the current directory follows the change of directory');
+  Check(PathValid(GetCurDir), 'the current directory is valid');
+
+  Check(SetCurrentDir('/'), 'the root exists');
+  Check(GetCurDir = '/', 'the root has no separator after the one that it is');
+  SetCurrentDir(SavedDir);
+  Check(GetCurrentDir = SavedDir, 'the directory is restored');
+end;
+
 procedure TestFileCollection;
 var
   Items: TFileProbe;
@@ -390,13 +478,15 @@ begin
   List.SetData(@Probe);
   Check(Probe = 77, 'SetData of a file list changes nothing');
 
-  SortedListBoxNewListHook := nil;
   Spare := TFileCollection.Create(5, 5);
   Spare.Insert(MakeRec('f', 0, 0));
   List.NewList(Spare);
-  Check(List.List = nil, 'NewList of a sorted list box does nothing while there is no hook');
-  TvObject.DestroyObject(Spare);
-  SortedListBoxNewListHook := @OnNewList;
+  Check(List.List = Spare, 'NewList of a sorted list box takes the list');
+  Check((List.Range = 1) and (List.Focused = 0), 'NewList sets the range and focuses the first item');
+
+  Check(List.Shift = 0, 'the shift state of a new sorted list box is 0');
+  Check((List.Cursor.X = 1) and (List.Cursor.Y = 0), 'the cursor of a sorted list box is at 1, 0');
+  Check((List.State and sfCursorVis) <> 0, 'the cursor of a sorted list box is shown');
 
   Key1 := List.Key('abc');
   Check((Key1^.Attr = 0) and (Key1^.Name = 'abc'), 'the key of a name');
@@ -416,6 +506,211 @@ begin
   TvObject.DestroyObject(List);
 end;
 
+{ A key down event of the character Ch, with the control keys State. }
+function CharEvent(Ch: Char; State: Word): TEvent;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  Result.What := evKeyDown;
+  Result.KeyDown.KeyCode := Word(Ord(Ch));
+  Result.KeyDown.ControlKeyState := State;
+end;
+
+{ A broadcast of the command Cmd. }
+function BroadcastEvent(Cmd: Word): TEvent;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  Result.What := evBroadcast;
+  Result.Message.Command := Cmd;
+end;
+
+{ A key down event of a key code. }
+function CodeEvent(Code: Word): TEvent;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  Result.What := evKeyDown;
+  Result.KeyDown.KeyCode := Code;
+end;
+
+{ A list of files whose entries are, in order: a.txt, alpha, beta, betamax, gamma, the directory dir1 and the
+  parent. }
+function MakeSearchList: TFileCollection;
+begin
+  Result := TFileCollection.Create(10, 5);
+  Result.Insert(MakeRec('gamma', 0, 1));
+  Result.Insert(MakeRec('beta', 0, 1));
+  Result.Insert(MakeRec('a.txt', 0, 1));
+  Result.Insert(MakeRec('betamax', 0, 1));
+  Result.Insert(MakeRec('alpha', 0, 1));
+  Result.Insert(MakeRec('..', FA_DIREC, 0));
+  Result.Insert(MakeRec('dir1', FA_DIREC, 0));
+end;
+
+procedure TestSearchOfFileList;
+var
+  List: TListProbe;
+  Probe: TProbeGroup;
+  Ev: TEvent;
+begin
+  Probe := TProbeGroup.Create(Rc);
+  List := TListProbe.Create(Rc, nil);
+  Probe.Insert(List);
+  List.NewList(MakeSearchList);
+  Check((List.Range = 7) and (List.Focused = 0), 'the search list has seven entries and the first is focused');
+  Check(List.List.At(0)^.Name = 'a.txt', 'the entries start with a.txt');
+  Check((List.List.At(4)^.Name = 'gamma') and (List.List.At(5)^.Name = 'dir1') and (List.List.At(6)^.Name = '..'),
+    'the entries end with gamma, dir1 and the parent');
+
+  Ev := CharEvent('b', 0);
+  List.HandleEvent(Ev);
+  Check(Ev.What = evNothing, 'a letter that moves the focus is taken');
+  Check(List.Focused = 2, 'the letter b focuses beta');
+  Check(List.Cursor.X = 2, 'the cursor moves by the length of the text after a change of the focus');
+  Ev := CharEvent('e', 0);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 2), 'the letter e keeps beta focused');
+  Check(List.Cursor.X = 3, 'the cursor moves by one when the focus stays');
+  Ev := CharEvent('t', 0);
+  List.HandleEvent(Ev);
+  Ev := CharEvent('a', 0);
+  List.HandleEvent(Ev);
+  Check((List.Focused = 2) and (List.Cursor.X = 5), 'the letters t and a keep beta focused and move the cursor');
+  Ev := CharEvent('m', 0);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 3), 'the letter m focuses betamax');
+  Check(List.Cursor.X = 10, 'the cursor of a change of the focus moves by the position in the text plus one');
+
+  Ev := CharEvent('z', 0);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 3) and (List.Cursor.X = 10),
+    'a letter with no match is taken and changes nothing');
+  Ev := CharEvent('#', 0);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evKeyDown) and (List.Focused = 3) and (List.Cursor.X = 10),
+    'a character that is not a letter and has no match is left in the event');
+
+  Ev := CodeEvent(kbBack);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 2) and (List.Cursor.X = 14),
+    'Backspace shortens the text and focuses the first entry that begins with it');
+  Ev := CodeEvent(kbBack);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 2) and (List.Cursor.X = 13),
+    'Backspace moves the cursor back by one when the focus stays');
+  Ev := CodeEvent(kbBack);
+  List.HandleEvent(Ev);
+  Ev := CodeEvent(kbBack);
+  List.HandleEvent(Ev);
+  Check((List.Focused = 2) and (List.Cursor.X = 11), 'two more Backspace keys leave the text b');
+  Ev := CodeEvent(kbBack);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 0) and (List.Cursor.X = 11),
+    'the last Backspace gives the empty text, which focuses the first entry');
+  Ev := CodeEvent(kbBack);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evKeyDown) and (List.Focused = 0) and (List.Cursor.X = 11),
+    'Backspace with no text is left in the event');
+
+  Ev := CharEvent('.', 0);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 0) and (List.Cursor.X = 13),
+    'the dot of the text of the focused entry sets the position of the dot');
+  Ev := CharEvent('.', 0);
+  List.HandleEvent(Ev);
+  Check((List.Focused = 0) and (List.Cursor.X = 13) and (Ev.What = evKeyDown),
+    'the dot again finds the same position and is left in the event');
+
+  List.FocusItem(1);
+  Ev := CharEvent('.', 0);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 1) and (List.Cursor.X = 11),
+    'a dot with no dot in the text of the focused entry sets the position -1 and is taken');
+
+  Ev := CharEvent('g', 0);
+  List.HandleEvent(Ev);
+  Check((List.Focused = 4) and (List.Cursor.X = 12), 'the letter g starts a search that focuses gamma');
+  Ev := CodeEvent(kbDown);
+  List.HandleEvent(Ev);
+  Check(List.Focused = 5, 'the key Down moves the focus to the directory');
+  Ev := CharEvent('a', 0);
+  List.HandleEvent(Ev);
+  Check((List.Focused = 0) and (List.Cursor.X = 13), 'a change of the focus ends the search: the next letter starts a new one');
+
+  Ev := BroadcastEvent(cmReleasedFocus);
+  List.HandleEvent(Ev);
+  Check(Ev.What = evBroadcast, 'the message of the released focus is not taken');
+  Ev := CharEvent('b', 0);
+  List.HandleEvent(Ev);
+  Check((List.Focused = 2) and (List.Cursor.X = 14), 'the message of the released focus ends the search');
+
+  List.NewList(MakeSearchList);
+  Check(List.Focused = 0, 'a new list focuses the first entry');
+  Ev := CharEvent('b', 0);
+  List.HandleEvent(Ev);
+  Check((List.Focused = 2) and (List.Cursor.X = 15), 'a new list ends the search');
+
+  List.NewList(MakeSearchList);
+  Ev := CharEvent('d', kbLeftShift);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Focused = 5), 'the letter d with the shift key down looks for a directory');
+  Check(List.Shift = kbLeftShift, 'the first letter of a search takes the shift state of its event');
+  Ev := CodeEvent(kbBack);
+  Ev.KeyDown.ControlKeyState := kbRightShift;
+  List.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (List.Shift = kbRightShift),
+    'Backspace to the empty text takes the shift state of its event');
+  Ev := CharEvent('d', 0);
+  List.HandleEvent(Ev);
+  Check((List.Shift = 0) and (List.Focused = 5), 'the shift state of a search without the shift key is 0');
+
+  TvObject.DestroyObject(Probe);
+
+  List := TListProbe.Create(Rc, nil);
+  Ev := CharEvent('a', 0);
+  List.HandleEvent(Ev);
+  Check((Ev.What = evKeyDown) and (List.Focused = 0), 'a letter given to a list box that has no list is left in the event');
+  TvObject.DestroyObject(List);
+end;
+
+procedure TestSearchOfTexts;
+var
+  Box: TTextBox;
+  Texts: TTextCollection;
+  Ev: TEvent;
+begin
+  Box := TTextBox.Create(Rc, 1, nil);
+  Texts := TTextCollection.Create(5, 5);
+  Texts.Insert(NewStr('date'));
+  Texts.Insert(NewStr('cherry'));
+  Texts.Insert(NewStr('apple'));
+  Texts.Insert(NewStr('Banana'));
+  Box.NewList(Texts);
+  Check((Box.Range = 4) and (Box.Focused = 0) and (Box.List = Texts), 'the list of texts has four entries');
+  Check(Box.GetText(1, 100) = 'Banana', 'the second entry is Banana');
+
+  Ev := CharEvent('c', 0);
+  Box.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (Box.Focused = 2) and (Box.Cursor.X = 2),
+    'the key of the base class is the text: c focuses cherry');
+  Ev := CharEvent('H', 0);
+  Box.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (Box.Focused = 2) and (Box.Cursor.X = 3),
+    'the letters are compared without regard to the case');
+  Ev := CharEvent('x', 0);
+  Box.HandleEvent(Ev);
+  Check((Ev.What = evNothing) and (Box.Focused = 2) and (Box.Cursor.X = 3), 'a letter with no match changes nothing');
+  Check(Box.Shift = 0, 'the shift state of the search is 0');
+
+  Texts := TTextCollection.Create(5, 5);
+  Texts.Insert(NewStr('apple'));
+  Texts.Insert(NewStr('Banana'));
+  Box.NewList(Texts);
+  Ev := CharEvent('B', 0);
+  Box.HandleEvent(Ev);
+  Check((Box.Focused = 1) and (Ev.What = evNothing), 'an upper case letter finds Banana');
+  TvObject.DestroyObject(Box.List);
+  TvObject.DestroyObject(Box);
+end;
+
 procedure TestFileListDirectory;
 var
   List: TListProbe;
@@ -433,10 +728,8 @@ begin
   Probe.Insert(List);
   MessageCount := 0;
   FocusedCount := 0;
-  NewListCalls := 0;
 
   List.ReadDirectory(TempRoot + 'rd/', '*');
-  Check(NewListCalls = 1, 'ReadDirectory gives the new list to NewList once');
   Check((List.List <> nil) and (List.List.GetCount = 6), 'the directory has three files, two directories and ..');
   Check(List.Range = 6, 'the range of the list is the number of entries');
   Names := '';
@@ -480,7 +773,6 @@ begin
   Check((List.List.GetCount = 5) and (List.List.At(0)^.Name = 'a.txt') and (List.List.At(1)^.Name = 'b.txt') and
     (List.List.At(2)^.Name = 'sub1') and (List.List.At(4)^.Name = '..'),
     'a wild card that is given as one text keeps all the directories');
-  Check(NewListCalls = 2, 'the second reading gives a second list');
 
   MessageCount := 0;
   FocusedCount := 0;
@@ -619,20 +911,22 @@ begin
 end;
 
 begin
-  SortedListBoxNewListHook := @OnNewList;
   MakeTree;
 
   TestConstants;
   TestFunctions;
+  TestValidFileName;
+  TestGetCurDir;
   TestFileCollection;
   TestDirEntry;
   TestDirCollection;
   TestFileListBasics;
+  TestSearchOfFileList;
+  TestSearchOfTexts;
   TestFileListDirectory;
   TestDirListBox;
 
   RemoveTree(TempRoot);
-  SortedListBoxNewListHook := nil;
   ChDirButtonDefaultHook := nil;
   Done;
 end.

@@ -1,7 +1,9 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (TFileInputLine, TFileInfoPane, TFileDialog and the option flags fd...),
-  source/tvision/tfildlg.cpp, include/tvision/tv.h, include/tvision/views.h, include/tvision/ttypes.h,
-  include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/tvtext2.cpp
+  source/tvision/stddlg.cpp (TFileInputLine, TFileInfoPane), source/tvision/tfildlg.cpp,
+  source/tvision/tdircoll.cpp, source/tvision/tfillist.cpp, include/tvision/tv.h, include/tvision/views.h,
+  include/tvision/ttypes.h, include/tvision/config.h, include/tvision/util.h, source/tvision/misc.cpp,
+  source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   Test program of the unit TvFileDlg.
@@ -14,7 +16,8 @@
   not wait. The size of the application is changed by the test to give the file dialog the sizes of screen that
   its constructor tells apart.
 
-  The hook of the new list of a sorted list box gives the list to the list box of TvList. The tests that touch
+  The lines of the info pane are read from the buffer of the dialog that owns it: the test gives the dialog a buffer
+  of cells and exposes it, as the other tests of views do for their root. The tests that touch
   files make a directory of their own under the directory of temporary files and remove it at the end. The
   directory rd of the tests has the files a.txt, b.txt and c.dat, the directories sub1 and sub2 and the hidden
   directory .hdir. }
@@ -25,15 +28,10 @@ program t_filedlg;
 {$POINTERMATH ON}
 
 uses
-  cthreads,
-  SysUtils, TvGeom, TvEvents, TvSys, TvColors, TvCell, TvDrawBuf, TvScreen, TvObjs, TvTimer, TvViews, TvWindow,
-  TvDialog, TvInput, TvHist, TvList, TvApp, TvMsgBox, TvPath, TvFiles, TvFileDlg;
+  cthreads, SysUtils, TvGeom, TvObjs, TvPath, TvColors, TvCell, TvEvents, TvTimer, TvSys, TvDrawBuf, TvScreen,
+  TvViews, TvWindow, TvInput, TvList, TvDialog, TvHist, TvApp, TvMsgBox, TvFiles, TvFileDlg;
 
 {$I testlib.inc}
-
-const
-  ScrW = 80;
-  ScrH = 20;
 
 type
   TFakeScreen = class(TScreenBackend)
@@ -103,6 +101,14 @@ type
     function Valid(Command: Word): Boolean; override;
   end;
 
+const
+  { The size of the screen of the second part. }
+  ScrH = 20;
+  ScrW = 4 * ScrH;
+  { The size of a file dialog that has no application. }
+  DlgW = 49;
+  DlgH = 19;
+
 var
   ScreenCells: array[0..80 * 25 - 1] of TScreenCell;
   Fake: TFakeScreen;
@@ -116,23 +122,14 @@ var
   { The directory of the tests and the wild card that points into it. }
   TempRoot, WildText: string;
 
-  { What the hook of the messages saw last. }
+  { What the probe dialog saw last. }
   LastInfo: Pointer;
   LastReceiver: TView;
   LastCommand, LastWhat: Word;
   MessageCount: Integer;
 
-  { What the other hooks of the unit saw. }
-  NewListCalls, CurDirCalls: Integer;
-  ValidNameCalls: Integer;
-  CurDirAnswer, ValidNameLast: string;
-  ValidNameAnswer: Boolean;
-
-  { What the hooks of the input line and of the info pane saw. }
-  HookLineSelf: TFileInputLine;
-  HookPaneDrawSelf, HookPaneEventSelf: TFileInfoPane;
-  HookLineWhat, HookPaneEventWhat: Word;
-  HookLineCalls, HookPaneDrawCalls, HookPaneEventCalls: Integer;
+  { The cells of the buffer of a dialog of 49 by 19 cells, which has no application. }
+  DialogCells: array[0..DlgW * DlgH - 1] of TScreenCell;
 
   Buf: array[0..MaxPath + 31] of AnsiChar;
 
@@ -201,46 +198,7 @@ procedure OnScreenWrite(X, Y: Integer; Cells: PScreenCell; Count: Integer);
 begin
 end;
 
-{ The hooks and the classes of the test }
-
-procedure OnNewList(Box: TSortedListBox; NewItems: TSortedCollection);
-begin
-  Inc(NewListCalls);
-  TListBox(Box).NewList(TCollection(NewItems));
-end;
-
-function TestCurDir: string;
-begin
-  Inc(CurDirCalls);
-  Result := CurDirAnswer;
-end;
-
-function TestValidName(const Name: string): Boolean;
-begin
-  Inc(ValidNameCalls);
-  ValidNameLast := Name;
-  Result := ValidNameAnswer;
-end;
-
-procedure OnLineEvent(Line: TFileInputLine; var Event: TEvent);
-begin
-  Inc(HookLineCalls);
-  HookLineSelf := Line;
-  HookLineWhat := Event.What;
-end;
-
-procedure OnPaneDraw(Pane: TFileInfoPane);
-begin
-  Inc(HookPaneDrawCalls);
-  HookPaneDrawSelf := Pane;
-end;
-
-procedure OnPaneEvent(Pane: TFileInfoPane; var Event: TEvent);
-begin
-  Inc(HookPaneEventCalls);
-  HookPaneEventSelf := Pane;
-  HookPaneEventWhat := Event.What;
-end;
+{ The classes of the test }
 
 function TButtonPeek.CommandOf: Word;
 begin
@@ -362,6 +320,15 @@ begin
   Result := (R.A.X = AX) and (R.A.Y = AY) and (R.B.X = BX) and (R.B.Y = BY);
 end;
 
+{ The number of the entry I of a palette. }
+function PalByte(P: TPalette; I: Integer): Integer;
+var
+  A: TColorAttr;
+begin
+  A := P.Items[I];
+  Result := A.ToBIOS;
+end;
+
 procedure DrainPosted;
 var
   Ev: TEvent;
@@ -414,10 +381,6 @@ begin
   LastWhat := 0;
   LastCommand := 0;
   LastInfo := nil;
-  NewListCalls := 0;
-  CurDirCalls := 0;
-  ValidNameCalls := 0;
-  ValidNameLast := '';
 end;
 
 procedure MakeFile(const Path: string; Bytes: Integer);
@@ -557,10 +520,34 @@ begin
   Check((TFileInfoPane.Months[7] = 'Jul') and (TFileInfoPane.Months[8] = 'Aug') and (TFileInfoPane.Months[9] = 'Sep') and
     (TFileInfoPane.Months[10] = 'Oct') and (TFileInfoPane.Months[11] = 'Nov') and (TFileInfoPane.Months[12] = 'Dec'),
     'months of the second half year are the texts of the C++');
-  Check(not Assigned(FileInputLineEventHook) and not Assigned(FileInfoPaneDrawHook) and
-    not Assigned(FileInfoPaneEventHook), 'the hooks of the input line and of the info pane start as nil');
-  Check(not Assigned(GetCurDirHook) and not Assigned(ValidFileNameHook), 'the hooks of the directory and of the name start as nil');
   Check(TProgram.Application = nil, 'the first part has no application');
+end;
+
+{ A search record with the name Name, the attributes Attr, the size Size and the time DosValue. }
+function MakeEntry(const Name: string; Attr: Byte; Size, DosValue: LongInt): TvFiles.TSearchRec;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  Result.Name := Name;
+  Result.Attr := Attr;
+  Result.Size := Size;
+  Result.Time := DosValue;
+end;
+
+{ The time of DOS: the date in the high word and the time of the day in the low word. }
+function DosTime(Year, Month, Day, Hour, Minute: Cardinal): LongInt;
+var
+  value: Cardinal;
+begin
+  value := ((Year - 1980) shl 25) or (Month shl 21) or (Day shl 16) or (Hour shl 11) or (Minute shl 5);
+  Result := LongInt(value);
+end;
+
+function InfoEvent(Entry: PSearchRec): TEvent;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  Result.What := evBroadcast;
+  Result.Message.Command := cmFileFocused;
+  Result.Message.InfoPtr := Entry;
 end;
 
 procedure TestInputLine;
@@ -572,50 +559,225 @@ begin
   Check(RectIs(line.GetBounds, 3, 3, 31, 4), 'the input line has the bounds that were given');
   Check(line is TInputLine, 'a TFileInputLine is a TInputLine');
   Check(line.Data = '', 'the text of a new input line is empty');
-
-  HookLineCalls := 0;
-  ev := CommandEvent(cmNew);
-  line.HandleEvent(ev);
-  Check(HookLineCalls = 0, 'the event of an input line is not passed to a hook that is nil');
-
-  FileInputLineEventHook := @OnLineEvent;
-  ev := CommandEvent(cmNew);
-  line.HandleEvent(ev);
-  Check((HookLineCalls = 1) and (HookLineSelf = line) and (HookLineWhat = evCommand),
-    'the hook of the input line gets the line and the event');
-  FileInputLineEventHook := nil;
+  Check((line.EventMask and evBroadcast) <> 0, 'an input line of a file dialog takes broadcasts');
   TvObject.DestroyObject(line);
+end;
+
+procedure TestInputLineEvents;
+var
+  dlg: TProbeDialog;
+  line, alone: TFileInputLine;
+  ev: TEvent;
+  fileEntry, dirEntry, longEntry: TvFiles.TSearchRec;
+begin
+  fileEntry := MakeEntry('one.txt', 0, 1, 0);
+  dirEntry := MakeEntry('sub', FA_DIREC, 0, 0);
+  longEntry := MakeEntry('abcdefghijkl', 0, 0, 0);
+  dlg := MakeDialog('*.txt', fdNoLoadDir);
+  line := dlg.FileName;
+  line.State := line.State and not sfSelected;
+  line.Data := 'typed';
+  line.SelStart := 1;
+  line.SelEnd := 3;
+  line.CurPos := 3;
+
+  ev := InfoEvent(@fileEntry);
+  line.HandleEvent(ev);
+  Check(line.Data = 'one.txt', 'the name of a focused file goes into a line that is not selected');
+  Check((line.SelStart = 0) and (line.SelEnd = 0) and (line.CurPos = 0), 'the text is not selected and the cursor is at its start');
+  Check(ev.What = evBroadcast, 'the broadcast of the focused file stays in the event');
+
+  ev := InfoEvent(@dirEntry);
+  line.HandleEvent(ev);
+  Check(line.Data = 'sub/*.txt', 'a directory gets the separator and the wild card of the dialog');
+  dlg.WildCard := '*.dat';
+  ev := InfoEvent(@dirEntry);
+  line.HandleEvent(ev);
+  Check(line.Data = 'sub/*.dat', 'the wild card is the one that the dialog has now');
+
+  line.Data := 'typed';
+  line.State := line.State or sfSelected;
+  ev := InfoEvent(@fileEntry);
+  line.HandleEvent(ev);
+  Check(line.Data = 'typed', 'a line that is selected keeps its text');
+
+  line.State := line.State and not sfSelected;
+  ev := BroadcastEvent(cmFileDoubleClicked);
+  ev.Message.InfoPtr := @fileEntry;
+  line.HandleEvent(ev);
+  Check(line.Data = 'typed', 'another broadcast leaves the text');
+  ev := CommandEvent(cmFileFocused);
+  ev.Message.InfoPtr := @fileEntry;
+  line.HandleEvent(ev);
+  Check(line.Data = 'typed', 'a command of the same number leaves the text');
+
+  DestroyDialog(dlg);
+
+  alone := TFileInputLine.Create(Rc(3, 3, 31, 4), 8);
+  ev := InfoEvent(@longEntry);
+  alone.HandleEvent(ev);
+  Check(alone.Data = 'abcdefg', 'the text is cut to the limit of the line');
+  ev := InfoEvent(@dirEntry);
+  alone.HandleEvent(ev);
+  Check(alone.Data = 'sub/', 'a line with no dialog has no wild card');
+  TvObject.DestroyObject(alone);
 end;
 
 procedure TestInfoPane;
 var
   pane: TFileInfoPane;
   ev: TEvent;
+  entry: TvFiles.TSearchRec;
+  palette: TPalette;
 begin
   pane := TFileInfoPane.Create(Rc(1, 16, 48, 18));
   Check(RectIs(pane.GetBounds, 1, 16, 48, 18), 'the info pane has the bounds that were given');
-  pane.FileBlock.Name := 'abc';
-  pane.FileBlock.Size := 12;
-  Check((pane.FileBlock.Name = 'abc') and (pane.FileBlock.Size = 12), 'the info pane holds an entry');
+  Check((pane.EventMask and evBroadcast) <> 0, 'an info pane takes broadcasts');
+  palette := pane.GetPalette;
+  Check((palette <> nil) and (PalByte(palette, 0) = 1) and (PalByte(palette, 1) = 30),
+    'the palette of the info pane has one entry, which is the entry 30 of its owner');
+  Check(pane.GetPalette = palette, 'the palette of the info pane is one object');
 
-  HookPaneDrawCalls := 0;
-  HookPaneEventCalls := 0;
-  pane.Draw;
-  ev := BroadcastEvent(cmFileFocused);
+  entry := MakeEntry('abc', 0, 12, DosTime(2001, 2, 3, 4, 5));
+  ev := InfoEvent(@entry);
   pane.HandleEvent(ev);
-  Check((HookPaneDrawCalls = 0) and (HookPaneEventCalls = 0), 'an info pane with no hooks calls none');
+  Check((pane.FileBlock.Name = 'abc') and (pane.FileBlock.Size = 12) and (pane.FileBlock.Time = entry.Time) and
+    (pane.FileBlock.Attr = 0), 'a focused file is copied into the info pane');
+  Check(ev.What = evBroadcast, 'the broadcast of the focused file stays in the event');
 
-  FileInfoPaneDrawHook := @OnPaneDraw;
-  FileInfoPaneEventHook := @OnPaneEvent;
-  pane.Draw;
-  Check((HookPaneDrawCalls = 1) and (HookPaneDrawSelf = pane), 'Draw of the info pane calls its hook');
-  ev := BroadcastEvent(cmFileFocused);
+  entry := MakeEntry('def', FA_DIREC, 0, 0);
+  ev := BroadcastEvent(cmFileDoubleClicked);
+  ev.Message.InfoPtr := @entry;
   pane.HandleEvent(ev);
-  Check((HookPaneEventCalls = 1) and (HookPaneEventSelf = pane) and (HookPaneEventWhat = evBroadcast),
-    'HandleEvent of the info pane calls its hook with the event');
-  FileInfoPaneDrawHook := nil;
-  FileInfoPaneEventHook := nil;
+  Check(pane.FileBlock.Name = 'abc', 'another broadcast leaves the entry');
+  ev := CommandEvent(cmFileFocused);
+  ev.Message.InfoPtr := @entry;
+  pane.HandleEvent(ev);
+  Check(pane.FileBlock.Name = 'abc', 'a command of the same number leaves the entry');
   TvObject.DestroyObject(pane);
+end;
+
+{ Gives dlg the buffer DialogCells and exposes it, so that its views write into the cells. }
+procedure ExposeDialog(Dlg: TProbeDialog);
+begin
+  FillChar(DialogCells, SizeOf(DialogCells), 0);
+  Dlg.Options := Dlg.Options and not ofBuffered;
+  Dlg.Buffer := @DialogCells[0];
+  Dlg.SetState(sfExposed, True);
+end;
+
+{ The character in the info pane at the column Col of its row Row; the pane is at 1, 16 in the dialog. }
+function PaneChar(Row, Col: Integer): Char;
+var
+  cellText: string;
+begin
+  cellText := DialogCells[(16 + Row) * DlgW + 1 + Col].Character.GetText;
+  if Length(cellText) > 0 then
+    Result := cellText[1]
+  else
+    Result := #0;
+end;
+
+{ The text of Count characters in the info pane from the column Col of its row Row. }
+function PaneText(Row, Col, Count: Integer): string;
+var
+  position: Integer;
+begin
+  Result := '';
+  for position := 0 to Count - 1 do
+    Result := Result + PaneChar(Row, Col + position);
+end;
+
+procedure TestInfoPaneDraw;
+var
+  dlg: TProbeDialog;
+  pane: TFileInfoPane;
+  ev: TEvent;
+  entry: TvFiles.TSearchRec;
+begin
+  dlg := MakeDialog('*.txt', fdNoLoadDir);
+  dlg.Directory := '/dir/';
+  pane := TFileInfoPane(NthOfClass(dlg, TFileInfoPane, 1));
+  ExposeDialog(dlg);
+
+  pane.DrawView;
+  Check(PaneText(0, 0, 12) = ' /dir/*.txt ', 'the first row shows the expanded directory and wild card');
+  Check(PaneText(0, 12, 35) = StringOfChar(' ', 35), 'the rest of the first row is blank');
+  Check(PaneText(1, 0, 47) = StringOfChar(' ', 47), 'an empty entry shows a blank second row');
+
+  entry := MakeEntry('a.txt', 0, 12345, DosTime(2024, 3, 7, 14, 5));
+  ev := InfoEvent(@entry);
+  pane.HandleEvent(ev);
+  Check(PaneText(0, 0, 12) = ' /dir/*.txt ', 'the first row is the same after an entry is shown');
+  Check(PaneText(1, 0, 7) = ' a.txt ', 'the second row shows the name');
+  Check(PaneText(1, 9, 5) = '12345', 'the size is at the column of the width less 38');
+  Check(PaneText(1, 25, 3) = 'Mar', 'the month is at the column of the width less 22');
+  Check(PaneText(1, 29, 2) = '07', 'a day below ten has a zero before it');
+  Check(PaneChar(1, 31) = ',', 'the comma is at the column of the width less 16');
+  Check(PaneText(1, 32, 4) = '2024', 'the year is at the column of the width less 15');
+  Check(PaneText(1, 38, 2) = '02', 'the hour of 14 is 2 on the clock of 12');
+  Check(PaneChar(1, 40) = ':', 'the colon is at the column of the width less 7');
+  Check(PaneText(1, 41, 2) = '05', 'a minute below ten has a zero before it');
+  Check(PaneChar(1, 43) = 'p', 'the hour 14 is the text of the afternoon');
+  Check(((Cardinal(pane.FileBlock.Time) shr 11) and $1F) = 2, 'the draw writes the hour that it shows into the entry');
+
+  pane.DrawView;
+  Check((PaneText(1, 38, 2) = '02') and (PaneChar(1, 43) = 'a'),
+    'a second draw takes the hour that the first one wrote, which is before noon');
+
+  entry := MakeEntry('b.dat', 0, 0, DosTime(1999, 12, 25, 0, 59));
+  ev := InfoEvent(@entry);
+  pane.HandleEvent(ev);
+  Check((PaneText(1, 25, 3) = 'Dec') and (PaneText(1, 29, 2) = '25') and (PaneText(1, 32, 4) = '1999'),
+    'the month 12, the day 25 and the year 1999');
+  Check((PaneText(1, 38, 2) = '12') and (PaneChar(1, 43) = 'a') and (PaneText(1, 41, 2) = '59'),
+    'the hour 0 is 12 in the morning');
+  Check(PaneText(1, 9, 5) = '0    ', 'the size 0 is one digit');
+
+  entry := MakeEntry('c.dat', 0, 7, DosTime(1980, 1, 15, 12, 0));
+  ev := InfoEvent(@entry);
+  pane.HandleEvent(ev);
+  Check((PaneText(1, 25, 3) = 'Jan') and (PaneText(1, 29, 2) = '15') and (PaneText(1, 32, 4) = '1980'),
+    'the month 1, the day 15 and the year 1980');
+  Check((PaneText(1, 38, 2) = '12') and (PaneChar(1, 43) = 'p') and (PaneText(1, 41, 2) = '00'),
+    'the hour 12 is 12 in the afternoon');
+
+  entry := MakeEntry('d.dat', 0, 7, DosTime(2000, 5, 31, 9, 30));
+  ev := InfoEvent(@entry);
+  pane.HandleEvent(ev);
+  Check((PaneText(1, 38, 2) = '09') and (PaneChar(1, 43) = 'a') and (PaneText(1, 25, 3) = 'May'),
+    'the hour 9 has a zero before it and is in the morning');
+
+  entry := MakeEntry('e.dat', 0, 7, DosTime(2000, 13, 1, 23, 1));
+  ev := InfoEvent(@entry);
+  pane.HandleEvent(ev);
+  Check((PaneText(1, 25, 3) = '   ') and (PaneText(1, 38, 2) = '11') and (PaneChar(1, 43) = 'p'),
+    'a month that has no name shows no name');
+
+  entry := MakeEntry('', 0, 7, DosTime(2000, 5, 31, 9, 30));
+  ev := InfoEvent(@entry);
+  pane.HandleEvent(ev);
+  Check(PaneText(1, 0, 47) = StringOfChar(' ', 47), 'an entry with no name shows a blank second row');
+
+  dlg.Directory := '';
+  dlg.WildCard := 'x*';
+  pane.DrawView;
+  Check(PaneText(0, 1, 2) <> '  ', 'an empty directory still shows a path');
+
+  TFileInfoPane.PmText := 'PM';
+  TFileInfoPane.AmText := 'AM';
+  entry := MakeEntry('f.dat', 0, 7, DosTime(2000, 5, 31, 15, 30));
+  ev := InfoEvent(@entry);
+  pane.HandleEvent(ev);
+  Check(PaneText(1, 43, 2) = 'PM', 'the text of the afternoon is the class variable PmText');
+  entry := MakeEntry('g.dat', 0, 7, DosTime(2000, 5, 31, 5, 30));
+  ev := InfoEvent(@entry);
+  pane.HandleEvent(ev);
+  Check(PaneText(1, 43, 2) = 'AM', 'the text of the morning is the class variable AmText');
+  TFileInfoPane.PmText := 'p';
+  TFileInfoPane.AmText := 'a';
+
+  DestroyDialog(dlg);
 end;
 
 procedure TestConstructionWithoutLoad;
@@ -636,7 +798,7 @@ begin
   Check(dlg.WildCard = WildText, 'the wild card is the text that was given');
   Check(dlg.FileName.Data = WildText, 'the input line starts with the wild card');
   Check(dlg.Directory = '', 'the directory is empty before a directory is read');
-  Check((NewListCalls = 0) and (CurDirCalls = 0), 'fdNoLoadDir reads no directory');
+  Check(dlg.FileList.List = nil, 'fdNoLoadDir reads no directory');
   Check(ViewCount(dlg) = 11, 'the dialog has a frame and ten more views');
   Check(dlg.At(1) is TFileInfoPane, 'the info pane was inserted last');
   Check(dlg.At(11) is TFrame, 'the frame was inserted first');
@@ -715,14 +877,15 @@ end;
 procedure TestLoadingAtConstruction;
 var
   dlg: TProbeDialog;
+  savedDir: string;
 begin
   ResetCounters;
-  GetCurDirHook := @TestCurDir;
-  CurDirAnswer := TempRoot + 'rd/';
+  savedDir := GetCurrentDir;
+  Check(SetCurrentDir(TempRoot + 'rd'), 'the directory rd of the tests exists');
   dlg := MakeDialog(WildText, fdOKButton);
-  Check(CurDirCalls = 1, 'the constructor asks for the current directory once');
-  Check(dlg.Directory = TempRoot + 'rd/', 'the directory is the one that the hook gave');
-  Check(NewListCalls = 1, 'the constructor reads the directory into the file list');
+  Check(dlg.Directory = IncludeTrailingPathDelimiter(GetCurrentDir),
+    'the directory of the dialog is the current directory with a separator at its end');
+  Check(dlg.Directory = GetCurDir, 'the directory of the dialog is the one that GetCurDir gives');
   Check((dlg.FileList.List <> nil) and (dlg.FileList.List.GetCount = 5),
     'the list has two files that match, two directories and the parent');
   Check((dlg.FileList.List.At(0)^.Name = 'a.txt') and (dlg.FileList.List.At(1)^.Name = 'b.txt') and
@@ -732,12 +895,12 @@ begin
   Check(LastReceiver = dlg, 'the announcement goes to the dialog, which owns the list');
   DestroyDialog(dlg);
 
-  ResetCounters;
-  GetCurDirHook := nil;
+  Check(SetCurrentDir(TempRoot), 'the directory of the tests exists');
   dlg := MakeDialog(WildText, fdOKButton);
-  Check(dlg.Directory = '', 'without the hook the directory is empty');
-  Check(NewListCalls = 1, 'the list is read without the hook of the directory');
+  Check(dlg.Directory = IncludeTrailingPathDelimiter(GetCurrentDir), 'the directory follows the current directory');
+  Check(dlg.FileList.Range = 5, 'the list is read from the wild card, which has the whole path');
   DestroyDialog(dlg);
+  SetCurrentDir(savedDir);
 end;
 
 procedure TestGetFileName;
@@ -811,7 +974,7 @@ begin
   Check(ev.What = evNothing, 'the broadcast of the double click is taken');
 
   dlg.PutCount := 0;
-  ev := BroadcastEvent(cmFileFocused);
+  ev := BroadcastEvent(5000);
   dlg.HandleEvent(ev);
   Check((dlg.PutCount = 0) and (ev.What = evBroadcast), 'another broadcast is left alone');
   FillChar(ev, SizeOf(ev), 0);
@@ -919,9 +1082,6 @@ var
   dlg: TProbeDialog;
   bad: TInvalidView;
 begin
-  ValidFileNameHook := @TestValidName;
-  ValidNameAnswer := True;
-  SortedListBoxNewListHook := @OnNewList;
   dlg := MakeDialog(WildText, fdNoLoadDir);
   dlg.Directory := TempRoot;
   ResetCounters;
@@ -929,7 +1089,7 @@ begin
   Check(dlg.Valid(cmValid), 'the command 0 is always valid');
   Check(dlg.Valid(cmCancel), 'cmCancel is valid');
   Check(dlg.Valid(cmFileClear), 'cmFileClear is valid');
-  Check((NewListCalls = 0) and (ValidNameCalls = 0), 'these commands read no directory and check no name');
+  Check((MessageCount = 0) and (dlg.FileList.List = nil), 'these commands read no directory');
 
   bad := TInvalidView.Create(Rc(1, 1, 4, 2));
   dlg.Insert(bad);
@@ -937,7 +1097,7 @@ begin
   Check(dlg.Valid(cmCancel), 'cmCancel is valid with a view that is not');
   Check(not dlg.Valid(cmFileClear), 'cmFileClear is not valid when a view of the dialog is not');
   Check(not dlg.Valid(cmOK), 'cmOK is not valid when a view of the dialog is not');
-  Check((NewListCalls = 0) and (ValidNameCalls = 0), 'a view that is not valid stops the check before the name');
+  Check((dlg.FileList.List = nil) and (dlg.Directory = TempRoot), 'a view that is not valid stops the check before the name');
   dlg.Remove(bad);
   bad.Free;
   DestroyDialog(dlg);
@@ -946,9 +1106,8 @@ end;
 procedure TestValidWildAndDirectory;
 var
   dlg: TProbeDialog;
+  directoryBefore: string;
 begin
-  ValidFileNameHook := @TestValidName;
-  ValidNameAnswer := True;
   dlg := MakeDialog(WildText, fdNoLoadDir);
   dlg.Directory := TempRoot;
   ResetCounters;
@@ -956,14 +1115,14 @@ begin
   dlg.FileName.Select;
   Check(dlg.Current = dlg.FileName, 'the input line is selected');
   dlg.FileName.Data := TempRoot + 'rd/*.dat';
+  Check(dlg.FileList.List = nil, 'the list has no entries before the first directory is read');
   Check(not dlg.Valid(cmOK), 'a wild name is never accepted');
   Check(dlg.Directory = TempRoot + 'rd/', 'the directory of the wild name becomes the directory');
   Check(dlg.WildCard = '*.dat', 'the name and the extension become the wild card');
-  Check(NewListCalls = 1, 'the new directory is read');
+  Check(dlg.FileList.List <> nil, 'the new directory is read');
   Check((dlg.FileList.List.GetCount = 4) and (dlg.FileList.List.At(0)^.Name = 'c.dat'),
     'the list has the file c.dat, two directories and the parent');
   Check(dlg.Current = dlg.FileList, 'the file list is selected after the directory is read');
-  Check(ValidNameCalls = 0, 'a wild name is not given to the check of file names');
 
   dlg.FileName.Select;
   dlg.FileName.Data := TempRoot + 'rd/*.txt';
@@ -983,13 +1142,16 @@ begin
   Check(not dlg.Valid(cmFileInit), 'a directory is not accepted at cmFileInit');
   Check(dlg.Directory = TempRoot + 'rd/sub2/', 'the directory is entered at cmFileInit');
   Check(dlg.Current = dlg.FileName, 'the list is not selected at cmFileInit when a directory is entered');
-  Check(ValidNameCalls = 0, 'a directory is not given to the check of file names');
 
   dlg.FileName.Data := TempRoot + 'rd/a.txt';
-  NewListCalls := 0;
-  Check(dlg.Valid(cmOK), 'a name that the check accepts is valid');
-  Check((ValidNameCalls = 1) and (ValidNameLast = TempRoot + 'rd/a.txt'), 'the check got the expanded name');
-  Check(NewListCalls = 0, 'a valid name reads no directory');
+  directoryBefore := dlg.Directory;
+  Check(dlg.Valid(cmOK), 'the name of a file in a directory that exists is valid');
+  Check(dlg.Directory = directoryBefore, 'a valid name changes no directory');
+  dlg.FileName.Data := TempRoot + 'rd/new file.txt';
+  Check(dlg.Valid(cmOK), 'a new name in a directory that exists is valid');
+  dlg.FileName.Data := 'relative.txt';
+  dlg.Directory := TempRoot + 'rd/';
+  Check(dlg.Valid(cmOK), 'a relative name is expanded from the directory and is valid');
   DestroyDialog(dlg);
 end;
 
@@ -998,30 +1160,25 @@ var
   dlg: TProbeDialog;
   directoryBefore, wildBefore: string;
 begin
-  ValidFileNameHook := @TestValidName;
-  ValidNameAnswer := False;
   dlg := MakeDialog(WildText, fdNoLoadDir);
   dlg.Directory := TempRoot;
   ResetCounters;
 
-  dlg.FileName.Data := TempRoot + 'rd/missing.txt';
+  dlg.FileName.Data := TempRoot + 'rd/bad|name.txt';
   ArmCommand(cmOK);
-  Check(not dlg.Valid(cmOK), 'a name that the check refuses is not valid');
-  Check(ValidNameCalls = 1, 'the check was asked once');
+  Check(not dlg.Valid(cmOK), 'a name with a character that is not allowed is not valid');
   Check(Snap.Taken and (Snap.Title = 'Error'), 'a message box of the class error was shown');
-  Check(Snap.MessageText = 'Invalid file name: ''' + TempRoot + 'rd/missing.txt' + '''',
+  Check(Snap.MessageText = 'Invalid file name: ''' + TempRoot + 'rd/bad|name.txt' + '''',
     'the box tells the text and the name');
 
-  ValidFileNameHook := nil;
+  dlg.FileName.Data := TempRoot + 'nodir/x.txt';
   ArmCommand(cmOK);
-  Check(not dlg.Valid(cmOK), 'no name is valid without the check');
-  Check(Snap.Taken and (Snap.MessageText = 'Invalid file name: ''' + TempRoot + 'rd/missing.txt' + ''''),
-    'the box is shown without the check as well');
-  ValidFileNameHook := @TestValidName;
+  Check(not dlg.Valid(cmOK), 'a name in a directory that does not exist is not valid');
+  Check(Snap.Taken and (Snap.MessageText = 'Invalid file name: ''' + TempRoot + 'nodir/x.txt' + ''''),
+    'the box tells the name in the missing directory');
 
   directoryBefore := dlg.Directory;
   wildBefore := dlg.WildCard;
-  NewListCalls := 0;
   dlg.FileList.Select;
   Check(dlg.Current = dlg.FileList, 'the list is selected before the directory error');
   dlg.FileName.Data := TempRoot + 'nodir/*.txt';
@@ -1031,7 +1188,7 @@ begin
   Check(Snap.MessageText = 'Invalid drive or directory: ''' + TempRoot + 'nodir/' + '''',
     'the box tells the text and the directory');
   Check(dlg.Current = dlg.FileName, 'the input line is selected after the directory error');
-  Check((dlg.Directory = directoryBefore) and (dlg.WildCard = wildBefore) and (NewListCalls = 0),
+  Check((dlg.Directory = directoryBefore) and (dlg.WildCard = wildBefore) and (dlg.FileList.List = nil),
     'the directory, the wild card and the list stay');
   DestroyDialog(dlg);
 end;
@@ -1040,8 +1197,6 @@ procedure TestSetData;
 var
   dlg: TProbeDialog;
 begin
-  ValidFileNameHook := @TestValidName;
-  ValidNameAnswer := True;
   dlg := MakeDialog(WildText, fdNoLoadDir);
   dlg.Directory := TempRoot;
   ResetCounters;
@@ -1050,19 +1205,25 @@ begin
   dlg.FileList.Select;
   dlg.SetData(@Buf[0]);
   Check(dlg.FileName.Data = '', 'SetData gives the empty text to the input line');
-  Check((NewListCalls = 0) and (dlg.Current = dlg.FileList), 'an empty text reads no directory');
+  Check((dlg.FileList.List = nil) and (dlg.Current = dlg.FileList), 'an empty text reads no directory');
 
   FillBuffer('plain.txt');
   dlg.SetData(@Buf[0]);
   Check(dlg.FileName.Data = 'plain.txt', 'SetData gives the text to the input line');
-  Check((NewListCalls = 0) and (dlg.Current = dlg.FileList), 'a text that is not wild reads no directory');
+  Check((dlg.FileList.List = nil) and (dlg.Current = dlg.FileList), 'a text that is not wild reads no directory');
 
   FillBuffer(TempRoot + 'rd/*.dat');
   dlg.SetData(@Buf[0]);
-  Check(dlg.FileName.Data = TempRoot + 'rd/*.dat', 'the wild text is the text of the input line');
+  Check(dlg.FileName.Data = 'c.dat',
+    'the first file of the new directory is shown in the input line while the list is the selected view');
   Check((dlg.Directory = TempRoot + 'rd/') and (dlg.WildCard = '*.dat'), 'a wild text sets the directory and the wild card');
-  Check((NewListCalls = 1) and (dlg.FileList.List.GetCount = 4), 'a wild text reads the directory');
+  Check((dlg.FileList.List <> nil) and (dlg.FileList.List.GetCount = 4), 'a wild text reads the directory');
   Check(dlg.Current = dlg.FileName, 'a wild text selects the input line');
+
+  FillBuffer(TempRoot + 'rd/*.txt');
+  dlg.SetData(@Buf[0]);
+  Check(dlg.FileName.Data = TempRoot + 'rd/*.txt', 'the input line that is selected keeps the wild text');
+  Check((dlg.WildCard = '*.txt') and (dlg.FileList.List.GetCount = 5), 'the second wild text reads its directory');
   DestroyDialog(dlg);
 end;
 
@@ -1072,13 +1233,16 @@ begin
 end;
 
 begin
-  SortedListBoxNewListHook := @OnNewList;
   MakeTree;
   ResetCounters;
+  CaretPositionHook := @OnCaret;
+  ScreenWriteHook := @OnScreenWrite;
 
   TestConstants;
   TestInputLine;
+  TestInputLineEvents;
   TestInfoPane;
+  TestInfoPaneDraw;
   TestConstructionWithoutLoad;
   TestButtonRows;
   TestLoadingAtConstruction;
@@ -1119,8 +1283,5 @@ begin
   Fake.Free;
 
   RemoveTree(TempRoot);
-  SortedListBoxNewListHook := nil;
-  GetCurDirHook := nil;
-  ValidFileNameHook := nil;
   Done;
 end.

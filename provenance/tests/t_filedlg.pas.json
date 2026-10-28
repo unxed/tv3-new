@@ -61,6 +61,24 @@
       "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
       "file": "source/tvision/tvtext2.cpp",
       "lines": "1-227"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/stddlg.cpp",
+      "lines": "1-324"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tdircoll.cpp",
+      "lines": "1-171"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/tfillist.cpp",
+      "lines": "1-443"
     }
   ],
   "inputs": [
@@ -219,9 +237,21 @@
     {
       "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvtext2.cpp",
       "sha256": "3b09041411da28340e66fc764cc7c6e04f82145220eb954f348b0277f663b6a6"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/stddlg.cpp",
+      "sha256": "e18f896ff4521de0b5f9f413dfe2729ffc27a87dee8b8cdc30eea6d1290fdfd9"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tdircoll.cpp",
+      "sha256": "b714ba82428b8b51378bb809845664db0b8c957ec2ab1ef63ccf82fede5ba0b6"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tfillist.cpp",
+      "sha256": "d3e1102e3739803f3e7fd680fcf15ce9a1d5479818faf4a2cffd48ce210b0439"
     }
   ],
-  "implementer": "implementer 50, implementer 52, implementer 53",
+  "implementer": "implementer 50, implementer 52, implementer 53, implementer 54",
   "proofs": [],
   "versions": [
     {
@@ -238,6 +268,12 @@
     },
     {
       "blob": "f73bc70731a9929128f2c7f34843a7d24bc5dbfc",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "65d846730566e659bb07ce7402e10750af024b5c",
       "commit": null,
       "pr": null,
       "audit_run": null

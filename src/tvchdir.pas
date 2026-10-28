@@ -1,6 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (the options cdNormal, cdNoLoadDir and cdHelpButton, the commands cmChangeDir
-  and cmRevert, TChDirDialog), source/tvision/tchdrdlg.cpp, include/tvision/ttypes.h (EOS),
+  and cmRevert, TChDirDialog), source/tvision/tchdrdlg.cpp, source/tvision/tdircoll.cpp (the call of getCurDir),
+  include/tvision/ttypes.h (EOS),
   source/tvision/tvtext1.cpp (the text of the drives), include/tvision/util.h, source/tvision/misc.cpp (strnzcpy),
   source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
@@ -10,8 +11,9 @@
   unit.
 
   Parts of the C++ that have no unit yet:
-    - getCurDir, which getCurrentDir of tchdrdlg.cpp calls, is defined in a file that is not among the sources of
-      this unit; GetCurDirHook stands for it, and while it is nil the current directory is empty.
+    - getCurDir, which getCurrentDir of tchdrdlg.cpp calls, is GetCurDir of TvFiles. It gives the directory without
+      the characters of a drive, so the removal of the drive letter that getCurrentDir makes for a Unix target has
+      nothing to remove, and CurrentDirText is the call of GetCurDir.
     - The functions of the compatibility headers (fexpand, chdir) are made with TvPath and SysUtils, as TvFiles makes
       them. setdisk is left out, because the target has no drives: the path that changeDir of tchdrdlg.cpp gets
       never has a drive letter before a colon that selects a disk.
@@ -54,10 +56,6 @@ const
   MaxPathLength = 257;
 
 type
-  { Stands for getCurDir: the current directory, as the C++ function writes it with the two characters of a drive
-    before the path. }
-  TGetCurDirFunc = function: string;
-
   { A dialog that shows the tree of directories and changes the current directory. }
   TChDirDialog = class(TDialog)
   private
@@ -88,10 +86,6 @@ type
     procedure SizeLimits(var Smallest, Largest: TPoint); override;
   end;
 
-var
-  { Stands for getCurDir; nil gives an empty directory. }
-  GetCurDirHook: TGetCurDirFunc;
-
 { Makes the button of the dialog that owns Box the default button, or stops it from being so. This is what
   ChDirButtonDefaultHook of TvFiles is given when the unit starts. }
 procedure MakeChDirButtonDefault(Box: TDirListBox; Enable: Boolean);
@@ -102,8 +96,6 @@ uses
   SysUtils, TvHist, TvMsgbox, TvPath, TvUtil;
 
 const
-  { The characters of a drive that getCurDir writes and that getCurrentDir removes. }
-  DriveTextLength = 2;
   { The shortest path whose last separator is cut off. }
   ShortestTrimmedPath = 4;
 
@@ -129,16 +121,10 @@ begin
     SetLength(Result, pathLength - 1);
 end;
 
-{ The current directory without the characters of a drive. }
+{ The current directory, which has no characters of a drive. }
 function CurrentDirText: string;
-var
-  withDrive: string;
 begin
-  Result := '';
-  if not Assigned(GetCurDirHook) then
-    Exit;
-  withDrive := GetCurDirHook();
-  Result := Copy(withDrive, DriveTextLength + 1, Length(withDrive));
+  Result := GetCurDir;
 end;
 
 { Makes Path the current directory and tells whether it worked. }
