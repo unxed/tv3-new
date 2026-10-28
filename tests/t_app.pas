@@ -1,7 +1,8 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/app.h, include/tvision/views.h, source/tvision/tprogram.cpp,
   source/tvision/tapplica.cpp, source/tvision/tbkgrnd.cpp, source/tvision/tdesktop.cpp, source/tvision/syserr.cpp,
-  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/tvtext2.cpp,
+  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/new.cpp,
+  source/tvision/tvtext2.cpp,
   include/tvision/system.h (TMouse), source/tvision/tmouse.cpp (TMouse::hide, TMouse::show)
   See COPYRIGHT.magiblot.
 
@@ -23,7 +24,7 @@ program t_app;
 uses
   cthreads,
   Classes, SysUtils, TvGeom, TvKeys, TvEvents, TvSys, TvColors, TvCell, TvDrawBuf, TvScreen, TvObjs, TvTimer,
-  TvViews, TvWindow, TvMenus, TvApp;
+  TvViews, TvWindow, TvMenus, TvApp, TvMem;
 
 {$I testlib.inc}
 
@@ -156,7 +157,6 @@ var
 
   { Switches and counters of the test classes }
   WakeFlag: LongInt;
-  LowMemFlag: Boolean;
   InitialTimeout: Integer;
   WinDestroyCount: Integer;
   DataSetCalls, DataGetCalls: Integer;
@@ -266,11 +266,6 @@ end;
 procedure OnDoneHistory;
 begin
   Note('hd');
-end;
-
-function OnLowMemory: Boolean;
-begin
-  Result := LowMemFlag;
 end;
 
 function Now64: Int64;
@@ -1332,20 +1327,20 @@ begin
   Check(WinDestroyCount = Before + 1, 'a view that is not valid is destroyed');
   Check(App.OutOfMemoryCount = 0, 'a view that is not valid is no out of memory');
 
-  LowMemoryHook := @OnLowMemory;
-  LowMemFlag := False;
+  Check(not LowMemory, 'the memory is not low while the safety pool exists');
   Before := WinDestroyCount;
   W := TTestWin.Create(Rc(2, 2, 30, 10), 'One', 1);
   Check(App.ValidView(W) = W, 'ValidView with the memory not low returns the view');
   TvObject.DestroyObject(W);
-  LowMemFlag := True;
+  TVMemMgr.ClearSafetyPool;
+  Check(LowMemory, 'the memory is low when the safety pool is exhausted');
   Before := WinDestroyCount;
   W := TTestWin.Create(Rc(2, 2, 30, 10), 'One', 1);
   Check(App.ValidView(W) = nil, 'ValidView with low memory is nil');
   Check(WinDestroyCount = Before + 1, 'ValidView with low memory destroys the view');
   Check(App.OutOfMemoryCount = 1, 'ValidView with low memory calls OutOfMemory');
-  LowMemFlag := False;
-  LowMemoryHook := nil;
+  TVMemMgr.ResizeSafetyPool;
+  Check(not LowMemory, 'the memory is not low once the safety pool is made again');
   FreeApp(App);
 end;
 

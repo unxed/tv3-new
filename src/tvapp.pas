@@ -1,7 +1,8 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/app.h, include/tvision/views.h, source/tvision/tprogram.cpp,
   source/tvision/tapplica.cpp, source/tvision/tbkgrnd.cpp, source/tvision/tdesktop.cpp, source/tvision/syserr.cpp,
-  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp (message),
+  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp (message, lowMemory),
+  source/tvision/new.cpp (TVMemMgr, TBufListEntry),
   include/tvision/system.h (TMouse), source/tvision/tmouse.cpp (TMouse::hide, TMouse::show),
   source/tvision/tvtext2.cpp (exitText, defaultBkgrnd)
   See COPYRIGHT.magiblot.
@@ -19,11 +20,11 @@
   the critical error handler, Int11trap, the DPMI set-up) are left out. The members of TEvent that read events
   (getMouseEvent, getKeyEvent) are the class procedures of TEventQueue of TvSys, which TProgram calls.
 
-  message() sends a message to a view; it is Message of TvViews.
+  message() sends a message to a view; it is Message of TvViews. lowMemory(), which ValidView asks whether the
+  safety pool is exhausted, is LowMemory of TvMem.
 
   Parts of the C++ that have no unit yet, or that no input defines, are reached through hooks, which do nothing
   while they are nil:
-    - lowMemory() is LowMemoryHook; while it is nil, memory is never low;
     - initHistory and doneHistory are InitHistoryHook and DoneHistoryHook;
     - THardwareInfo::setCtrlBrkHandler is SetCtrlBrkHandlerHook;
     - TProgram::application is given to TvMenus through its ApplicationHook when this unit starts.
@@ -92,7 +93,6 @@ type
 
   { A procedure or a function without arguments, for the hooks. }
   TVoidProc = procedure;
-  TLowMemoryFunc = function: Boolean;
   { Switches the handler of Ctrl-Break on (Install is True) or off. }
   TSetCtrlBrkHandlerProc = procedure(Install: Boolean);
 
@@ -245,7 +245,6 @@ type
   end;
 
 var
-  LowMemoryHook: TLowMemoryFunc;
   InitHistoryHook: TVoidProc;
   DoneHistoryHook: TVoidProc;
   SetCtrlBrkHandlerHook: TSetCtrlBrkHandlerProc;
@@ -264,7 +263,7 @@ implementation
 
 uses
   {$IFDEF MSWINDOWS}SysUtils,{$ELSE}BaseUnix,{$ENDIF}
-  TvObjs, TvColors, TvDrawBuf, TvKeys, TvUtil, TvMouse;
+  TvObjs, TvColors, TvDrawBuf, TvKeys, TvUtil, TvMouse, TvMem;
 
 const
   { The three palettes of the application, two hexadecimal digits for each entry. }
@@ -346,14 +345,6 @@ var
 begin
   Entries := DecodeHex(LowPart) + DecodeHex(HighPart);
   Result := TPalette.Create(Entries, Length(Entries));
-end;
-
-function MemoryIsLow: Boolean;
-begin
-  if Assigned(LowMemoryHook) then
-    Result := LowMemoryHook()
-  else
-    Result := False;
 end;
 
 function ApplicationRoot: TGroup;
@@ -960,7 +951,7 @@ begin
   Result := nil;
   if P = nil then
     Exit;
-  if MemoryIsLow then
+  if LowMemory then
   begin
     TvObject.DestroyObject(P);
     OutOfMemory;
