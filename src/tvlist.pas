@@ -2,7 +2,7 @@
   C++ sources: include/tvision/views.h (TListViewer), include/tvision/dialogs.h (TListBox, TListBoxRec),
   include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h, include/tvision/util.h,
   source/tvision/tlstview.cpp, source/tvision/tlistbox.cpp, source/tvision/tvtext1.cpp (specialChars),
-  source/tvision/misc.cpp (message)
+  source/tvision/misc.cpp (message), source/tvision/tvtext2.cpp (emptyText)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -15,8 +15,8 @@
   the length that the C++ takes; MaxLen is the largest length of the text. The items of a TListBox are blocks of
   characters with a terminating zero, as the C++ keeps them.
 
-  The static member emptyText of TListViewer is defined in a file that is not among the sources of the unit, so it is
-  the class variable EmptyText, which starts as an empty text and which the program sets. The array specialChars,
+  The static member emptyText of TListViewer is the class variable EmptyText, which holds the text of the C++ when
+  the unit starts. The array specialChars,
   which tvtext1.cpp defines, is kept inside the unit as the table of the markers; the palette of the list viewer is
   made when the unit starts and released when it ends. }
 unit TvList;
@@ -629,6 +629,7 @@ begin
 end;
 
 initialization
+  TListViewer.EmptyText := '<empty>';
   ListViewerPalette := TPalette.Create(cpListViewer, Length(cpListViewer));
 
 finalization
