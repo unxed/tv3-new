@@ -1,7 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/app.h, include/tvision/views.h, source/tvision/tprogram.cpp,
   source/tvision/tapplica.cpp, source/tvision/tbkgrnd.cpp, source/tvision/tdesktop.cpp, source/tvision/syserr.cpp,
-  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp
+  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp, source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   The display is a screen of 60 by 20 cells in memory that can grow to 70 by 22; the input is a backend that takes
@@ -639,6 +639,12 @@ begin
   TSystemError.Suspend;
   Check(Journal = '', 'resume and suspend do nothing while the hook is nil');
   SetCtrlBrkHandlerHook := @OnCtrlBrk;
+end;
+
+procedure TestTexts;
+begin
+  Check(TProgram.ExitText = '~Alt-X~ Exit', 'exitText is the text of the C++');
+  Check(TDeskTop.DefaultBkgrnd = #$B0, 'defaultBkgrnd is the character of the C++');
 end;
 
 procedure TestConstants;
@@ -1590,6 +1596,8 @@ begin
   ScreenWriteHook := @OnScreenWrite;
   MouseHideHook := @OnMouseHide;
   MouseShowHook := @OnMouseShow;
+  TestTexts;
+  { The checks of the drawing below read a plain character and a short exit text. }
   TDeskTop.DefaultBkgrnd := '.';
   TProgram.ExitText := '~Q~uit';
 
