@@ -1,0 +1,38 @@
+{
+  "path": "tests/t_pty.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/pty.h",
+      "lines": "1-66"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "source/tvterm-core/pty.cc",
+      "lines": "1-513"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/pty.h",
+      "sha256": "63ec95e297af2e37f6fc95592cf7d805919f084a6942979c1ab15be34db502be"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:source/tvterm-core/pty.cc",
+      "sha256": "908b8fd363f304150a6c267bf3b08f3dcb294d466e5f2e031bdae23e999e7bb2"
+    }
+  ],
+  "implementer": "implementer 62",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "d0f7ae5529b40739532e6ad3ac2094f1aa7ce4ff",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}

@@ -905,3 +905,34 @@ ESC O and a letter, a key of the application keypad that ncurses decodes with it
 TermCap::getDisplayCapabilities gives is DetectTermCap, which reads TERM and COLORTERM. EnterRawMode and LeaveRawMode stand for the
 terminal mode that raw, noecho and nonl set and that endwin restores; PTermiosRec is the pointer to the record of the saved mode.
 SmallerOf and LargerOf are min and max.
+
+## Added by the translation of TvPty
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TPtyErrorProc
+added: TPtyTermios
+added: TPtyWinSize
+added: RunClient
+added: SayOnStderr
+added: LibcErrno
+
+The unit is the Unix branch of pty.h and pty.cc of magiblot/tvterm; the branch of the Windows pseudo console is not
+translated. PtyDescriptor and EnvironmentVar keep their names and are records, with the fields MasterFd and ClientPid
+and the fields Name and Value (blocks of characters with a terminating zero, PAnsiChar). PtyMaster keeps its name; its
+member d is the private field D, and its constructor is Create. The functions createPty, readFromClient, writeToClient,
+resizeClient and disconnect are CreatePty, ReadFromClient, WriteToClient, ResizeClient and Disconnect. The first
+parameter of CreatePty is ADescriptor.
+
+A TSpan has no unit, so a span is an open array: TSpan<const EnvironmentVar> is a const array of EnvironmentVar,
+TSpan<char> is a var array of Char and TSpan<const char> is a const array of Char, and the size of the span is the
+length of the array. The parameter bytesRead of readFromClient is an out parameter of type SizeUInt (size_t). The
+reference to a function void (&)(const char *) is TPtyErrorProc, a procedure type with a PAnsiChar. The functions
+createTermios and createWinsize are CreateTermios and CreateWinsize inside the unit; TPtyTermios and TPtyWinSize are the
+records struct termios and struct winsize with the layout and the flag values of the Linux system, so the unit is built
+for Linux only. forkpty, signal, setenv, getenv, execvp, _exit, strerror, cfsetispeed, cfsetospeed and __errno_location are
+external functions of the C library (forkpty of libutil, except on Darwin), declared inside the unit, and LibcErrno reads
+the errno of the C library. The part of createPty that runs in the child process is RunClient, and SayOnStderr writes a
+block of characters to the descriptor 2, as fprintf to stderr does, without allocating memory. The message of the failed
+program is written with SayOnStderr from its parts, with the same text, and the message of the failed fork is built as a
+string before it is passed to the callback.
