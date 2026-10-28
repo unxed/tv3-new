@@ -1238,3 +1238,153 @@ background of the pen and the default foreground.
 A cell that stands for an erased cell has no code point, and ConvCell gives the screen cell of it the text of one NUL
 byte without calling the text routines, because CharWidth of TvUtf8 is -1 for the code point 0. A history line that is
 shorter than the surface is completed with such cells, as the C++ completes it with the default cell.
+
+## Added by the translation of TvVt
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: VtMaxParams
+added: TVtParseState
+added: TVtGraphicSet
+added: TVtGraphicSets
+added: TVtModeId
+added: TVtSavedCursor
+added: VTermEmulatorFactory.Make
+added: VTermEmulator.Screen
+added: VTermEmulator.Reply
+added: VTermEmulator.ResetParser
+added: VTermEmulator.ResetCsi
+added: VTermEmulator.ResetPersonality
+added: VTermEmulator.ResetPenState
+added: VTermEmulator.ResetTabStops
+added: VTermEmulator.HandleMouse
+added: VTermEmulator.FeedBytes
+added: VTermEmulator.FeedByte
+added: VTermEmulator.StartMulti
+added: VTermEmulator.FeedCode
+added: VTermEmulator.GroundCode
+added: VTermEmulator.EscapeCode
+added: VTermEmulator.CsiCode
+added: VTermEmulator.StringCode
+added: VTermEmulator.StartEscape
+added: VTermEmulator.CancelSequence
+added: VTermEmulator.HandleC1
+added: VTermEmulator.BeginString
+added: VTermEmulator.EndString
+added: VTermEmulator.RunOsc
+added: VTermEmulator.RunDcs
+added: VTermEmulator.DecrqssAnswer
+added: VTermEmulator.FlushRun
+added: VTermEmulator.Control
+added: VTermEmulator.LineFeedMode
+added: VTermEmulator.NextLine
+added: VTermEmulator.Print
+added: VTermEmulator.PrintMapped
+added: VTermEmulator.MapCharset
+added: VTermEmulator.RepeatGraphic
+added: VTermEmulator.EscDispatch
+added: VTermEmulator.EscPlain
+added: VTermEmulator.DesignateSet
+added: VTermEmulator.AlignmentPattern
+added: VTermEmulator.CommitParam
+added: VTermEmulator.NextParam
+added: VTermEmulator.AddDigit
+added: VTermEmulator.ParamAt
+added: VTermEmulator.Positive
+added: VTermEmulator.RowTarget
+added: VTermEmulator.CsiDispatch
+added: VTermEmulator.CsiPlain
+added: VTermEmulator.CsiOther
+added: VTermEmulator.CsiPlace
+added: VTermEmulator.CsiEdit
+added: VTermEmulator.CsiErase
+added: VTermEmulator.CursorStep
+added: VTermEmulator.CursorReport
+added: VTermEmulator.StatusReport
+added: VTermEmulator.PrivateStatus
+added: VTermEmulator.WindowReport
+added: VTermEmulator.TabClear
+added: VTermEmulator.SetMargins
+added: VTermEmulator.CursorStyle
+added: VTermEmulator.ApplySgr
+added: VTermEmulator.ApplySgrCode
+added: VTermEmulator.ReadExtendedColor
+added: VTermEmulator.ColonColor
+added: VTermEmulator.SemicolonColor
+added: VTermEmulator.CsiModes
+added: VTermEmulator.AskMode
+added: VTermEmulator.ApplyMode
+added: VTermEmulator.FlagOf
+added: VTermEmulator.ModeIsSet
+added: VTermEmulator.SetMouseEncoding
+added: VTermEmulator.SwitchScreen
+added: VTermEmulator.SaveState
+added: VTermEmulator.RestoreState
+added: VTermEmulator.SoftReset
+added: VTermEmulator.FullReset
+added: Utf8Of
+added: GraphicsCode
+added: LookupMode
+added: Channel
+added: ColorSgr
+added: FitClipboard
+added: CustomEnvironment
+added: PrivateNumbers
+added: PrivateModes
+added: AttrCodes
+added: AttrOffCodes
+added: GraphicsHex
+added: CsiIntro
+added: DcsIntro
+added: StringEnd
+added: PrimaryAnswer
+added: OscLimit
+added: DcsLimit
+
+The classes VTermEmulator and VTermEmulatorFactory keep their names, and the members handleEvent, updateState and
+getCustomEnvironment are HandleEvent, UpdateState and GetCustomEnvironment. The function create of the factory is Make,
+as in TerminalEmulatorFactory, and it gives the emulator for the size and the writer of its arguments. The constructor
+takes the same two arguments; a size below 1 in either direction is 1. The members of the C++ that the emulation
+library calls back (damage, movecursor, settermprop, sb_pushline4 and the others) and the library itself have no
+counterpart: the grid, the history, the damage of the rows and the transfer to the state are the class TVtScreen of
+TvVtScreen, and the conversion of the input events is TvVtKeys. The members vt, vtState and vtScreen are the private
+field FScreen, which Screen gives; clientDataWriter is the field FOut, and writeOutput is Reply, which turns the bytes
+of a string into the array of characters that Writer takes. The title of settermprop is the pair of private fields FTitle
+and FTitleChanged: UpdateState puts it into the state once, as the C++ moves it, and the bytes of the title are the
+UTF-8 text that the parser read. The properties of the cursor (visible, blink), the mouse and the alternate screen are
+set by the parser through TVtScreen, and the flags mouseEnabled and altScreenEnabled of the C++ are MouseEnabled and
+AltScreen of TVtScreen.
+
+HandleEvent follows the cases of the C++. A key goes to the client as ProcessKey gives it and the scrollback follows the
+terminal. A mouse event is reported by ProcessMouse while the client has asked for the mouse; otherwise a wheel step on
+the alternate screen is WheelToArrow, and a wheel step on the main screen is the scrollback wheel of TVtScreen. The data
+of the client go to the parser, a resize goes to TVtScreen (which keeps the size at 1 x 1 or more), a change of focus is
+ProcessFocus, the offset of the scrollback is set, and the copy of a selection gives the text of TVtScreen to TClipboard.
+The text that TClipboard takes is a string of 255 bytes at most, so FitClipboard cuts a longer text at the boundary of a
+character.
+
+The parser is a state machine over code points. FeedByte decodes UTF-8 (a byte that cannot be part of a sequence, a
+cut sequence, an overlong form, a surrogate and a value above U+10FFFF give U+FFFD), FeedCode is the state machine, and
+the states are TVtParseState: ground, escape, escape with intermediates, CSI, CSI that is skipped up to the final
+character, and a string (OSC, DCS, SOS, PM or APC; FKind tells which). The code points U+0080 to U+009F are the
+controls of the 8-bit set and act as ESC and the character 64 above them (HandleC1). CAN and SUB cancel a sequence,
+ESC starts a new one, and a control of the first set acts inside a sequence without ending it. The parameters of CSI
+are FValues with the flags FSubFlags of the values that follow a colon; a missing value is -1, a value is at most
+99999 and at most VtMaxParams values are kept. Printable text is collected in FRun and given to PutText of TVtScreen
+before any other action, so that one call writes a run of characters. The character sets G0 to G3 are FSets, FGl is
+the one that is shifted in, and GraphicsHex holds the code points of DEC special graphics for the characters $5F to
+$7E, four hexadecimal digits for each.
+
+SM, RM, DECSET and DECRST work on TVtModeId. LookupMode gives the mode of a number with PrivateNumbers and PrivateModes,
+FlagOf gives the Boolean that holds a mode that is only a flag, and ApplyMode and ModeIsSet change and read the others;
+AskMode is DECRQM and gives 0 for a mode that is not known and 4 for DECCOLM, which is ignored. The modes DECSCNM (5),
+LNM, IRM and DECOM are held by the parser (FReverse, FNewLine, FInsert, FOrigin): TVtScreen has no reverse video, so
+mode 5 only changes what DECRQM reports. The pen of SGR is FFg, FBg and FAttrs, which ApplySgr gives to TVtScreen;
+AttrCodes and AttrOffCodes are the parameters that set and clear the seven attributes, and ReadExtendedColor reads 38
+and 48 in the forms with colons (ColonColor) and with semicolons (SemicolonColor). SaveState and RestoreState are DECSC
+and DECRC and keep the character sets, the origin mode and the pen beside the cursor of TVtScreen. SoftReset is DECSTR,
+and FullReset is RIS, which keeps the history and the title.
+
+The answers are written with Reply. PrimaryAnswer is the reply to DA1; the other replies are built at the place of the
+request, with CsiIntro, DcsIntro and StringEnd as the introducers and the terminator. OscLimit and DcsLimit are the
+longest strings that are kept (4096 and 64 bytes). The titles of OSC 0, 1 and 2 are all taken as the title.
