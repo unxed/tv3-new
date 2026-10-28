@@ -1,0 +1,90 @@
+{
+  "path": "src/tvcp.inc",
+  "kind": "standard",
+  "sources": [
+    {
+      "document": "Character set mapping table CP437.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT"
+    },
+    {
+      "document": "Character set mapping table CP737.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP737.TXT"
+    },
+    {
+      "document": "Character set mapping table CP775.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP775.TXT"
+    },
+    {
+      "document": "Character set mapping table CP850.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP850.TXT"
+    },
+    {
+      "document": "Character set mapping table CP852.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP852.TXT"
+    },
+    {
+      "document": "Character set mapping table CP855.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP855.TXT"
+    },
+    {
+      "document": "Character set mapping table CP857.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP857.TXT"
+    },
+    {
+      "document": "Character set mapping table ibm-858_P100-1997.ucm",
+      "url": "https://raw.githubusercontent.com/unicode-org/icu-data/bae5ca647fa41703393dbf00240ec1b807a9c353/charset/data/ucm/ibm-858_P100-1997.ucm"
+    },
+    {
+      "document": "Character set mapping table CP860.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP860.TXT"
+    },
+    {
+      "document": "Character set mapping table CP861.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP861.TXT"
+    },
+    {
+      "document": "Character set mapping table CP862.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP862.TXT"
+    },
+    {
+      "document": "Character set mapping table CP863.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP863.TXT"
+    },
+    {
+      "document": "Character set mapping table CP864.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP864.TXT"
+    },
+    {
+      "document": "Character set mapping table CP865.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP865.TXT"
+    },
+    {
+      "document": "Character set mapping table CP866.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP866.TXT"
+    },
+    {
+      "document": "Character set mapping table CP869.TXT",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP869.TXT"
+    },
+    {
+      "document": "Character set mapping table ibm-1125_P100-1997.ucm",
+      "url": "https://raw.githubusercontent.com/unicode-org/icu-data/bae5ca647fa41703393dbf00240ec1b807a9c353/charset/data/ucm/ibm-1125_P100-1997.ucm"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "repository:tools/gen_tables.py",
+      "sha256": "36c893afe7c24d6eb612ea71cc568167315831a00a771eba8fc179211d2f9bbb"
+    }
+  ],
+  "implementer": "implementer 73",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "2d3d79ddfa5a1f2fc4993c63aca6ffb50c2c1907",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
