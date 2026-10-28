@@ -28,6 +28,7 @@
 | `src/tvdrawbuf.pas` | translation | magiblot/tvision:include/tvision/drawbuf.h:1-82; magiblot/tvision:source/tvision/drivers.cpp:1-395 | 2 | 2 | 0 |
 | `src/tvevents.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/platform/win32con.cpp:1-694; magiblot/tvision:include/tvision/internal/win32con.h:1-111; magiblot/tvision:source/platform/termio.cpp:1-1004; magiblot/tvision:include/tvision/internal/termio.h:1-171; magiblot/tvision:source/platform/far2l.cpp:1-258 | 2 | 2 | 4 |
 | `src/tvformat.pas` | specification | specification:tvformat | 2 | 2 | 0 |
+| `src/tvgadgets.pas` | specification | specification:tvgadgets | 2 | 2 | 0 |
 | `src/tvgeom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 2 | 2 | 0 |
 | `src/tvini.pas` | specification | specification:tvini | 2 | 2 | 0 |
 | `src/tvkeyname.pas` | specification | specification:tvkeyname | 2 | 2 | 0 |
@@ -71,6 +72,7 @@
 | `tests/t_events.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/platform/win32con.cpp:1-694; magiblot/tvision:include/tvision/internal/win32con.h:1-111; magiblot/tvision:source/platform/termio.cpp:1-1004; magiblot/tvision:include/tvision/internal/termio.h:1-171; magiblot/tvision:source/platform/far2l.cpp:1-258 | 1 | 1 | 0 |
 | `tests/t_evqueue.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301 | 1 | 1 | 0 |
 | `tests/t_format.pas` | specification | specification:tvformat | 1 | 1 | 0 |
+| `tests/t_gadgets.pas` | specification | specification:tvgadgets | 1 | 1 | 0 |
 | `tests/t_geom.pas` | translation | magiblot/tvision:include/tvision/objects.h:23-207 | 1 | 1 | 0 |
 | `tests/t_ini.pas` | specification | specification:tvini | 1 | 1 | 0 |
 | `tests/t_keyname.pas` | specification | specification:tvkeyname | 1 | 1 | 0 |
