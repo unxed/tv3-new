@@ -1,0 +1,97 @@
+{
+  "path": "tests/t_vtext.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvvtext"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvvtext",
+      "sha256": "f5cf25c7a52e349c41b863774e7ee4646eab49d63ff90023c92e62d67dde2eb9"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "36b8589aa7136bef2842bab58dc5abd556e8982e5e1923e49ed2e60ea4861bf6"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvappdir.pas",
+      "sha256": "f9cab4d091036492c0de716a579e9f582caee1f8ab4098ee956af8775d0fc29c"
+    },
+    {
+      "origin": "repository:src/tvpath.pas",
+      "sha256": "c0e691cb281ac17505924082f4a25b751d890dcd74ad56e9ca961cc0fdd78816"
+    },
+    {
+      "origin": "repository:src/tvclip.pas",
+      "sha256": "672e3edc41a22f243f3ff4f06ca3f7c7768757bc892c6db291e3eb560335a203"
+    },
+    {
+      "origin": "repository:src/tvevents.pas",
+      "sha256": "a24fb07f4e2d82e2c244fdd66f3e766cc1ee88becdb1ac4a2af47fcacff07cb4"
+    },
+    {
+      "origin": "repository:src/tvgeom.pas",
+      "sha256": "4c3f83cc5e6e59e830e188ec1e28fe0ce36c8850089b164fb5e18d9fa6598de6"
+    },
+    {
+      "origin": "repository:src/tvkeys.pas",
+      "sha256": "848d6f19d94f0dde035810006d5999f0f0b6224fd6df0fdfd1495aa1730e1de5"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    },
+    {
+      "origin": "repository:src/tvsys.pas",
+      "sha256": "35e0d038925ed8f9a7189e6ce63cf482a44bae68328a2fa404ed9c543eaa0179"
+    },
+    {
+      "origin": "repository:src/tvfar2l.pas",
+      "sha256": "c419af61215b5608b415158ee5a67ca93588c244a3df94e131691db53dcd48f5"
+    },
+    {
+      "origin": "repository:src/tvtermio.pas",
+      "sha256": "10453532d1e1f60144f1e78b21fc6571c6fddd5ee44be8223455bf7a311af2ed"
+    },
+    {
+      "origin": "repository:src/tvcodepg.pas",
+      "sha256": "9339eab3f2d09b83bbcf72cde454db96290731072051de5f82ff65c9070117a2"
+    },
+    {
+      "origin": "repository:src/tvtext.pas",
+      "sha256": "4b54630ae6cec87f74565c01ce9af1d049dd553e843938c804fb27043b9ec3b2"
+    },
+    {
+      "origin": "repository:src/tvcell.pas",
+      "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"
+    },
+    {
+      "origin": "repository:src/tvcolors.pas",
+      "sha256": "9fda94548caec8f5fb349c444977016783f51b8800d264539cb2f3f60a597037"
+    },
+    {
+      "origin": "repository:src/tvtermos.pas",
+      "sha256": "c6161a040dfef4f599dd3dcb36fb50d25d0639112411962b3d268cc8308d5ab0"
+    },
+    {
+      "origin": "repository:src/tvvtext.pas",
+      "sha256": "4599c55225317d160f12cc761ac00c903ba335f43f300432ad5dda3248508597"
+    }
+  ],
+  "implementer": "implementer 80",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "68f8043508a141d956c34e93271e7f61c4090588",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
