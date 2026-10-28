@@ -1,15 +1,16 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/views.h (TFrame, TScrollBar, TScroller, TWindowInit, TWindow), source/tvision/tframe.cpp,
-  source/tvision/framelin.cpp, source/tvision/tscrlbar.cpp, source/tvision/tscrolle.cpp, source/tvision/twindow.cpp
+  source/tvision/framelin.cpp, source/tvision/tscrlbar.cpp, source/tvision/tscrolle.cpp, source/tvision/twindow.cpp,
+  include/tvision/util.h, source/tvision/misc.cpp
   See COPYRIGHT.magiblot.
 
   The display is a screen of 40 by 20 cells in memory; the root of the views is a group that writes into it. The
   root reads its events from a script, and from the posted events of the event queue when the script asks for it.
   The tables of TFrame and TScrollBar are checked against their values in the C++ and then set here to values that make each cell of the
   screen tell which mask or which character was used: the entry k of the masks of the lines is the character
-  number k, and the character of the mask m is the letter number m after the letter A. The hook of the messages
-  delivers a message to the receiver as an event, and counts the messages of the scroll bars. The colors of the
-  root are the BIOS attributes $41 and above: the entry k of its palette is $40 + k. }
+  number k, and the character of the mask m is the letter number m after the letter A. The root and the windows
+  count the messages of the scroll bars that they get. The colors of the root are the BIOS attributes $41 and
+  above: the entry k of its palette is $40 + k. }
 program t_window;
 
 {$mode objfpc}
@@ -52,6 +53,7 @@ type
     ErrorCount: Integer;
     procedure AddEvent(const Ev: TEvent);
     procedure GetEvent(var Event: TEvent); override;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure PutEvent(var Event: TEvent); override;
     procedure EventError(var Event: TEvent); override;
     function GetPalette: TPalette; override;
@@ -67,6 +69,7 @@ type
   public
     RejectClose: Boolean;
     destructor Destroy; override;
+    procedure HandleEvent(var Event: TEvent); override;
     function Valid(Command: Word): Boolean; override;
   end;
 
@@ -145,31 +148,18 @@ procedure OnScreenWrite(X, Y: Integer; Buf: PScreenCell; Count: Integer);
 begin
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
-var
-  Ev: TEvent;
+{ Counts the messages of the scroll bars that an event brings: the changes, and the clicks. }
+procedure CountMessage(const Event: TEvent);
 begin
-  Result := nil;
-  if What = evBroadcast then
+  if Event.What <> evBroadcast then
+    Exit;
+  if Event.Message.Command = cmScrollBarChanged then
   begin
-    if Command = cmScrollBarChanged then
-    begin
-      Inc(ChangedCount);
-      LastInfo := InfoPtr;
-    end
-    else if Command = cmScrollBarClicked then
-      Inc(ClickedCount);
-  end;
-  if Receiver <> nil then
-  begin
-    FillChar(Ev, SizeOf(Ev), 0);
-    Ev.What := What;
-    Ev.Message.Command := Command;
-    Ev.Message.InfoPtr := InfoPtr;
-    Receiver.HandleEvent(Ev);
-    if Ev.What = evNothing then
-      Result := Ev.Message.InfoPtr;
-  end;
+    Inc(ChangedCount);
+    LastInfo := Event.Message.InfoPtr;
+  end
+  else if Event.Message.Command = cmScrollBarClicked then
+    Inc(ClickedCount);
 end;
 
 function Now64: Int64;
@@ -287,6 +277,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TTestWin.HandleEvent(var Event: TEvent);
+begin
+  CountMessage(Event);
+  inherited HandleEvent(Event);
+end;
+
 function TTestWin.Valid(Command: Word): Boolean;
 begin
   if (Command = cmClose) and RejectClose then
@@ -395,6 +391,12 @@ begin
     Event := CmdEv(cmCancel)
   else
     TEventQueue.WaitForEvents(Guard);
+end;
+
+procedure TRoot.HandleEvent(var Event: TEvent);
+begin
+  CountMessage(Event);
+  inherited HandleEvent(Event);
 end;
 
 procedure TRoot.PutEvent(var Event: TEvent);
@@ -1141,8 +1143,12 @@ end;
 procedure TestScrollBarValues;
 var
   B, Hb: TScrollBar;
+  Holder: TTestWin;
 begin
+  { The bar is in a window without a frame, which gets its messages. }
+  Holder := TTestWin.Create(Rc(0, 0, 20, 12), 'x', wnNoNumber, nil);
   B := TScrollBar.Create(Rc(0, 0, 1, 12));
+  Holder.Insert(B);
   Check((B.Value = 0) and (B.MinVal = 0) and (B.MaxVal = 0) and (B.PgStep = 1) and (B.ArStep = 1),
     'the values of a new scroll bar');
   Check(B.GetSize = 12, 'the size of a vertical bar is its height');
@@ -1204,7 +1210,7 @@ begin
   ResetMessages;
   B.ScrollDraw;
   Check((ChangedCount = 1) and (LastInfo = Pointer(B)), 'ScrollDraw sends cmScrollBarChanged');
-  B.Free;
+  TvObject.DestroyObject(Holder);
 end;
 
 procedure TestScrollBarDraw;
@@ -1618,7 +1624,6 @@ begin
   TScreen.CursorLines := 20;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
   EventBackend := TEventBackend.Create;
   TEventQueue.Backend := EventBackend;
   Queue := TEventQueue.Create;
@@ -1642,7 +1647,6 @@ begin
   Queue.Free;
   TEventQueue.Backend := nil;
   EventBackend.Free;
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TScreen.ScreenBuffer := nil;

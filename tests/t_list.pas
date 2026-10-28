@@ -1,15 +1,16 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/views.h (TListViewer), include/tvision/dialogs.h (TListBox, TListBoxRec),
-  include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h, source/tvision/tlstview.cpp,
-  source/tvision/tlistbox.cpp, source/tvision/tvtext1.cpp (specialChars)
+  include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h, include/tvision/util.h,
+  source/tvision/tlstview.cpp, source/tvision/tlistbox.cpp, source/tvision/tvtext1.cpp (specialChars),
+  source/tvision/misc.cpp
   See COPYRIGHT.magiblot.
 
   The display is a screen of 40 by 20 cells in memory; the root of the views is a group that writes into it and
   reads its events from a script. The colors of the root are the BIOS attributes $41 and above: the entry k of its
   palette is $40 + k, so the entries 26 to 29 of the palette of a list viewer give the attributes $5A (normal),
-  $5B (focused), $5C (selected) and $5D (divider). The hook of the messages delivers a message to its receiver as an
-  event, and counts and remembers the messages that a list viewer sends when an item is selected. The text of an
-  item of the test list viewer is a prefix and the number of the item. }
+  $5B (focused), $5C (selected) and $5D (divider). The root counts and remembers the messages that a list viewer
+  sends when an item is selected. The text of an item of the test list viewer is a prefix and the number of the
+  item. }
 program t_list;
 
 {$mode objfpc}
@@ -44,6 +45,7 @@ type
     ScriptPos: Integer;
     procedure AddEvent(const Ev: TEvent);
     procedure GetEvent(var Event: TEvent); override;
+    procedure HandleEvent(var Event: TEvent); override;
     function GetPalette: TPalette; override;
   end;
 
@@ -103,28 +105,6 @@ end;
 
 procedure OnScreenWrite(X, Y: Integer; Buf: PScreenCell; Count: Integer);
 begin
-end;
-
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
-var
-  Ev: TEvent;
-begin
-  Result := nil;
-  if (What = evBroadcast) and (Command = cmListItemSelected) then
-  begin
-    Inc(SelectCount);
-    LastSelectInfo := InfoPtr;
-    LastSelectReceiver := Receiver;
-  end;
-  if Receiver = nil then
-    Exit;
-  FillChar(Ev, SizeOf(Ev), 0);
-  Ev.What := What;
-  Ev.Message.Command := Command;
-  Ev.Message.InfoPtr := InfoPtr;
-  Receiver.HandleEvent(Ev);
-  if Ev.What = evNothing then
-    Result := Ev.Message.InfoPtr;
 end;
 
 { Small helpers. }
@@ -265,6 +245,20 @@ begin
     Event := Script[ScriptPos];
     Inc(ScriptPos);
   end;
+end;
+
+procedure TRoot.HandleEvent(var Event: TEvent);
+begin
+  if Event.What = evBroadcast then
+    case Event.Message.Command of
+      cmListItemSelected:
+        begin
+          SelectCount := SelectCount + 1;
+          LastSelectReceiver := Self;
+          LastSelectInfo := Event.Message.InfoPtr;
+        end;
+    end;
+  inherited HandleEvent(Event);
 end;
 
 function TRoot.GetPalette: TPalette;
@@ -879,24 +873,29 @@ begin
   TvObject.DestroyObject(VB2);
 end;
 
-procedure TestSelectWithoutHook;
+procedure TestSelectOwner;
 var
+  Root: TRoot;
+  G: TGroup;
   V: TListViewer;
-  Before: Integer;
-  Saved: TMessageFunc;
 begin
   V := TListViewer.Create(Rc(0, 0, 10, 5), 1, nil, nil);
   ResetMessages;
   V.SelectItem(3);
-  Check((SelectCount = 1) and (LastSelectInfo = Pointer(V)) and (LastSelectReceiver = nil),
-    'SelectItem sends the message to the owner, which is none');
-  Saved := MessageHook;
-  MessageHook := nil;
-  Before := SelectCount;
-  V.SelectItem(3);
-  Check(SelectCount = Before, 'SelectItem does nothing while there is no hook of messages');
-  MessageHook := Saved;
+  Check(SelectCount = 0, 'SelectItem of a list viewer that has no owner sends nothing');
   TvObject.DestroyObject(V);
+
+  { The owner of the list viewer is a group inside the root: the root does not get the message. }
+  Root := NewRoot;
+  G := TGroup.Create(Rc(0, 0, 20, 10));
+  Root.Insert(G);
+  V := TListViewer.Create(Rc(0, 0, 10, 5), 1, nil, nil);
+  G.Insert(V);
+  V.SetRange(5);
+  ResetMessages;
+  V.SelectItem(3);
+  Check(SelectCount = 0, 'SelectItem sends the message to the owner of the list viewer and to no other view');
+  FreeRoot(Root);
 end;
 
 procedure TestListBox;
@@ -990,7 +989,6 @@ begin
   TScreen.CursorLines := 20;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
 
   TestPalette;
   TestConstruction;
@@ -1002,10 +1000,9 @@ begin
   TestBroadcast;
   TestState;
   TestChangeBounds;
-  TestSelectWithoutHook;
+  TestSelectOwner;
   TestListBox;
 
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TScreen.ScreenBuffer := nil;

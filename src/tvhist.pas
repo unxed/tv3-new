@@ -2,7 +2,7 @@
   C++ sources: include/tvision/dialogs.h (THistoryViewer, THistInit, THistoryWindow, THistory),
   include/tvision/views.h, include/tvision/ttypes.h, include/tvision/tv.h, include/tvision/config.h,
   source/tvision/histlist.cpp, source/tvision/thistory.cpp, source/tvision/thistwin.cpp, source/tvision/thstview.cpp,
-  source/tvision/tvtext1.cpp (the icon of THistory)
+  source/tvision/tvtext1.cpp (the icon of THistory), include/tvision/util.h, source/tvision/misc.cpp (strnzcpy)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -13,10 +13,8 @@
   length, the text and a zero, and the records of all lists follow one another in the order in which they were
   added. A record is known by its offset in the block, and the offset -1 stands for the null pointer.
 
-  Parts of the C++ that have no unit yet:
-    - strnzcpy, which THistory uses to put the chosen text into the line, is not defined by the sources of this
-      unit; StrNZCopyHook stands for it, and while it is nil the line keeps its text.
-    - strwidth is the width of TText of TvUtf8, and ctrlToArrow is the function of TvKeys.
+  strnzcpy, which THistory uses to put the chosen text into the line, is Strnzcpy of TvUtil. strwidth is the width of
+  TText of TvUtf8, and ctrlToArrow is the function of TvKeys.
 
   When the unit starts it gives InitHistory and DoneHistory to InitHistoryHook and DoneHistoryHook of TvApp, which
   stand for initHistory and doneHistory in the constructor and the destructor of TApplication. }
@@ -43,10 +41,6 @@ const
   cpHistoryWindow = #19#19#21#24#23#19#20;
 
 type
-  { Copies Source into a buffer of BufferSize bytes that ends with a zero, and gives the text that the buffer
-    holds. }
-  TStrNZCopyFunc = function(const Source: string; BufferSize: Integer): string;
-
   { The function that makes the list viewer of a history window. }
   TCreateListViewerFunc = function(Area: TRect; Win: TWindow; HistoryId: Word): TListViewer;
 
@@ -106,7 +100,6 @@ type
 var
   { The size in bytes of the block of the history lists, which InitHistory allocates. }
   HistorySize: Word = 1024;
-  StrNZCopyHook: TStrNZCopyFunc = nil;
 
 { The number of entries of the list ListId. }
 function HistoryCount(ListId: Byte): Word;
@@ -123,7 +116,7 @@ procedure DoneHistory;
 implementation
 
 uses
-  TvObjs, TvKeys, TvDialog, TvUtf8, TvApp;
+  TvObjs, TvKeys, TvDialog, TvUtf8, TvUtil, TvApp;
 
 const
   { The offset that stands for no record. }
@@ -517,8 +510,7 @@ var
   chosenText: string;
 begin
   chosenText := Popup.GetSelection;
-  if Assigned(StrNZCopyHook) then
-    Link.Data := StrNZCopyHook(chosenText, Link.MaxLen + 1);
+  Strnzcpy(Link.Data, chosenText, Link.MaxLen + 1);
   Link.SelectAll(True);
   Link.DrawView;
 end;

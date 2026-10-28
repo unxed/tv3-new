@@ -2,15 +2,17 @@
   C++ sources: include/tvision/dialogs.h (the button flags, TDialog, TButton, TStaticText, TParamText, TLabel),
   include/tvision/ttypes.h (specialChars), source/tvision/tdialog.cpp, source/tvision/tbutton.cpp,
   source/tvision/tstatict.cpp, source/tvision/tparamte.cpp, source/tvision/tlabel.cpp,
-  source/tvision/tvtext1.cpp (specialChars and the tables of TButton)
+  source/tvision/tvtext1.cpp (specialChars and the tables of TButton), include/tvision/util.h,
+  source/tvision/misc.cpp (message)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
   read, write, build and streamableName of the classes, and the constructors with StreamableInit, belong to a later
   unit. The classes of dialogs.h that are not named above belong to other units.
 
+  message() sends a message to a view; it is Message of TvViews.
+
   Parts of the C++ that have no unit yet:
-    - message() sends a message to a view; MessageHook of TvViews stands for it and does nothing while it is nil;
     - hotKey() returns the letter that a label or a button of a text marks with tildes; HotKeyHook stands for it. While
       it is nil no text has a hot key, so a label and a button answer to no letter.
 
@@ -185,14 +187,6 @@ var
 function AnyBit(Bits, Mask: Word): Boolean;
 begin
   Result := (Bits and Mask) <> 0;
-end;
-
-{ Sends a message through the hook; nothing happens while there is none. }
-procedure Notify(Target: TView; Kind, Code: Word; Payload: Pointer);
-begin
-  if MessageHook = nil then
-    Exit;
-  MessageHook(Target, Kind, Code, Payload);
 end;
 
 { The hot key of the text at Source; #0 while there is no hook or no text. }
@@ -831,7 +825,7 @@ begin
     messageCode := cmGrabDefault
   else
     messageCode := cmReleaseDefault;
-  Notify(Owner, evBroadcast, messageCode, Self);
+  Message(Owner, evBroadcast, messageCode, Self);
   AmDefault := Enable;
   DrawView;
 end;
@@ -847,19 +841,21 @@ end;
 
 procedure TButton.Press;
 var
-  commandEvent: TEvent;
+  pressed: TEvent;
+  historyOwner: TView;
 begin
-  Notify(Owner, evBroadcast, cmRecordHistory, nil);
+  historyOwner := Owner;
+  Message(historyOwner, evBroadcast, cmRecordHistory, nil);
   if AnyBit(Flags, bfBroadcast) then
+    Message(historyOwner, evBroadcast, Command, Self)
+  else
   begin
-    Notify(Owner, evBroadcast, Command, Self);
-    Exit;
+    pressed := Default(TEvent);
+    pressed.What := evCommand;
+    pressed.Message.InfoPtr := Self;
+    pressed.Message.Command := Command;
+    PutEvent(pressed);
   end;
-  FillChar(commandEvent, SizeOf(commandEvent), 0);
-  commandEvent.What := evCommand;
-  commandEvent.Message.Command := Command;
-  commandEvent.Message.InfoPtr := Self;
-  PutEvent(commandEvent);
 end;
 
 initialization

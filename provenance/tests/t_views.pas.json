@@ -79,42 +79,160 @@
       "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
       "file": "source/tvision/tgrmv.cpp",
       "lines": "1-35"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/tvision/misc.cpp",
+      "lines": "1-79"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/util.h",
+      "lines": "1-121"
     }
   ],
   "inputs": [
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/views.h", "sha256": "1632378ede0aab57713b810dc00ea20627b7328d442c4164ed853ac40043a8c0"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/ttypes.h", "sha256": "35d54dac4675e12a8db8c298fde3225d05c019aba0585b27051613a8b6e44b0d"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/tv.h", "sha256": "1b683ecee17f382c9599eb04e06876998766db0351f9a4e02b6ba733fef802fb"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/config.h", "sha256": "b6174d5d24dfd8fbf1a084bfc5b9196084246bd51a4a871d0de967a364a80ba7"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/tstrview.h", "sha256": "953c51fdf52a360c2ff2a1d57b4c0554b4fa13691a6afe20cbbf8c4f37410973"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/tspan.h", "sha256": "5fa8e0772d04e95bbfe724c9357628f051d38cd6c164408ba8037871814f9a21"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tview.cpp", "sha256": "76ad7e3c0774f882a39e354057db4815bb65f603ad5739f231a35dd41e3cb817"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tgroup.cpp", "sha256": "370c7004905b47f6a48849cc55e9aaa1a051381759d4a7e429ded2a249f2cfad"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tcmdset.cpp", "sha256": "5bd81ffe7c79520adce8e8c238803b6cf2f67cafd165dade3355a16cdcc4af90"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvwrite.cpp", "sha256": "ea9ccfd583a322c444133e1d6568cf613283b49e1ab4fbedc36127c479cf3dea"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvexposd.cpp", "sha256": "f4cec86d7e65a0ab8f0da28863c01b13b6264d42edde7729d40ffe006b78fe44"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvcursor.cpp", "sha256": "50bd852f0eaabcf5b3fd21488ae82cb5517b8b0a93fbdeae774ce4083cd4f3c4"},
-    {"origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tgrmv.cpp", "sha256": "66aed64d5fdece839e07a20ecaa0213ee161f434d64aca7fa01ce7a64966ffdd"},
-    {"origin": "repository:docs/API-NAMES.md", "sha256": "44ef500439ae50dcddcbc0cfd0c33ba7bdb8c196468a879ae2237fefc6abece7"},
-    {"origin": "repository:docs/ASYNC.md", "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"},
-    {"origin": "repository:src/tvgeom.pas", "sha256": "4c3f83cc5e6e59e830e188ec1e28fe0ce36c8850089b164fb5e18d9fa6598de6"},
-    {"origin": "repository:src/tvkeys.pas", "sha256": "848d6f19d94f0dde035810006d5999f0f0b6224fd6df0fdfd1495aa1730e1de5"},
-    {"origin": "repository:src/tvutf8.pas", "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"},
-    {"origin": "repository:src/tvevents.pas", "sha256": "a24fb07f4e2d82e2c244fdd66f3e766cc1ee88becdb1ac4a2af47fcacff07cb4"},
-    {"origin": "repository:src/tvsys.pas", "sha256": "5cc8894b6d166144aeb295a6445c0144041a43e103d360f2d5215317ddf967ac"},
-    {"origin": "repository:src/tvtimer.pas", "sha256": "220c50e7d99eb23ef8badecda4b385b778bf61dc254fb7b0c2ba902a59f63e2f"},
-    {"origin": "repository:src/tvcolors.pas", "sha256": "9fda94548caec8f5fb349c444977016783f51b8800d264539cb2f3f60a597037"},
-    {"origin": "repository:src/tvcell.pas", "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"},
-    {"origin": "repository:src/tvtext.pas", "sha256": "4b54630ae6cec87f74565c01ce9af1d049dd553e843938c804fb27043b9ec3b2"},
-    {"origin": "repository:src/tvdrawbuf.pas", "sha256": "5b15c1b4ca87f7d3db0ad2170f9e804ff497287b3163ef11f945288153fcb51d"},
-    {"origin": "repository:src/tvscreen.pas", "sha256": "f2873e429b57760fcc8e877f1c8e755f88251f7e37911ce6050959b193e67e3a"},
-    {"origin": "repository:src/tvobjs.pas", "sha256": "15936ba3a0283b4e064afd6d7e3a17bc374e9a71d73b1058a27d6683b225ea4d"},
-    {"origin": "repository:src/tvviews.pas", "sha256": "3c26f46bf04fe01af80b902acc3fc30c99e286b19a4c1b70af328f0094ce1717"},
-    {"origin": "repository:tests/testlib.inc", "sha256": "096b4f4c541c4ef4716079c3d1eeb67cdd02bb36a3711cf15f7aec58114afb3a"}
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/views.h",
+      "sha256": "1632378ede0aab57713b810dc00ea20627b7328d442c4164ed853ac40043a8c0"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/ttypes.h",
+      "sha256": "35d54dac4675e12a8db8c298fde3225d05c019aba0585b27051613a8b6e44b0d"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/tv.h",
+      "sha256": "1b683ecee17f382c9599eb04e06876998766db0351f9a4e02b6ba733fef802fb"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/config.h",
+      "sha256": "b6174d5d24dfd8fbf1a084bfc5b9196084246bd51a4a871d0de967a364a80ba7"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/tstrview.h",
+      "sha256": "953c51fdf52a360c2ff2a1d57b4c0554b4fa13691a6afe20cbbf8c4f37410973"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/tspan.h",
+      "sha256": "5fa8e0772d04e95bbfe724c9357628f051d38cd6c164408ba8037871814f9a21"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tview.cpp",
+      "sha256": "76ad7e3c0774f882a39e354057db4815bb65f603ad5739f231a35dd41e3cb817"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tgroup.cpp",
+      "sha256": "370c7004905b47f6a48849cc55e9aaa1a051381759d4a7e429ded2a249f2cfad"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tcmdset.cpp",
+      "sha256": "5bd81ffe7c79520adce8e8c238803b6cf2f67cafd165dade3355a16cdcc4af90"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvwrite.cpp",
+      "sha256": "ea9ccfd583a322c444133e1d6568cf613283b49e1ab4fbedc36127c479cf3dea"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvexposd.cpp",
+      "sha256": "f4cec86d7e65a0ab8f0da28863c01b13b6264d42edde7729d40ffe006b78fe44"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tvcursor.cpp",
+      "sha256": "50bd852f0eaabcf5b3fd21488ae82cb5517b8b0a93fbdeae774ce4083cd4f3c4"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/tgrmv.cpp",
+      "sha256": "66aed64d5fdece839e07a20ecaa0213ee161f434d64aca7fa01ce7a64966ffdd"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "44ef500439ae50dcddcbc0cfd0c33ba7bdb8c196468a879ae2237fefc6abece7"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvgeom.pas",
+      "sha256": "4c3f83cc5e6e59e830e188ec1e28fe0ce36c8850089b164fb5e18d9fa6598de6"
+    },
+    {
+      "origin": "repository:src/tvkeys.pas",
+      "sha256": "848d6f19d94f0dde035810006d5999f0f0b6224fd6df0fdfd1495aa1730e1de5"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    },
+    {
+      "origin": "repository:src/tvevents.pas",
+      "sha256": "a24fb07f4e2d82e2c244fdd66f3e766cc1ee88becdb1ac4a2af47fcacff07cb4"
+    },
+    {
+      "origin": "repository:src/tvsys.pas",
+      "sha256": "5cc8894b6d166144aeb295a6445c0144041a43e103d360f2d5215317ddf967ac"
+    },
+    {
+      "origin": "repository:src/tvtimer.pas",
+      "sha256": "220c50e7d99eb23ef8badecda4b385b778bf61dc254fb7b0c2ba902a59f63e2f"
+    },
+    {
+      "origin": "repository:src/tvcolors.pas",
+      "sha256": "9fda94548caec8f5fb349c444977016783f51b8800d264539cb2f3f60a597037"
+    },
+    {
+      "origin": "repository:src/tvcell.pas",
+      "sha256": "a1af8d97cb3e2f1c04a3a7bcfeee7556272bc28bf8f22ecd6e5c2363445d9b91"
+    },
+    {
+      "origin": "repository:src/tvtext.pas",
+      "sha256": "4b54630ae6cec87f74565c01ce9af1d049dd553e843938c804fb27043b9ec3b2"
+    },
+    {
+      "origin": "repository:src/tvdrawbuf.pas",
+      "sha256": "5b15c1b4ca87f7d3db0ad2170f9e804ff497287b3163ef11f945288153fcb51d"
+    },
+    {
+      "origin": "repository:src/tvscreen.pas",
+      "sha256": "f2873e429b57760fcc8e877f1c8e755f88251f7e37911ce6050959b193e67e3a"
+    },
+    {
+      "origin": "repository:src/tvobjs.pas",
+      "sha256": "15936ba3a0283b4e064afd6d7e3a17bc374e9a71d73b1058a27d6683b225ea4d"
+    },
+    {
+      "origin": "repository:src/tvviews.pas",
+      "sha256": "3c26f46bf04fe01af80b902acc3fc30c99e286b19a4c1b70af328f0094ce1717"
+    },
+    {
+      "origin": "repository:tests/testlib.inc",
+      "sha256": "096b4f4c541c4ef4716079c3d1eeb67cdd02bb36a3711cf15f7aec58114afb3a"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/tvision/misc.cpp",
+      "sha256": "e18716cd91a58086009962c30451e551b1aeeee7e19cdcbe4bb8ecd2bc625ec5"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/util.h",
+      "sha256": "26f7193298c61cb7ec2713832f3bdbdbe8f1c4113a0b5b1240966fb44d436085"
+    }
   ],
-  "implementer": "implementer 32",
+  "implementer": "implementer 32, implementer 52",
   "proofs": [],
   "versions": [
-    {"blob": "7f9048d2e9a96b1349ccb6938806202c99e49e8e", "commit": null, "pr": null, "audit_run": null}
+    {
+      "blob": "7f9048d2e9a96b1349ccb6938806202c99e49e8e",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "28d91b48a16f8d3231123e298057042cdfa54fc5",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
   ]
 }

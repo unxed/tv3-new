@@ -3,13 +3,13 @@
   TSortedListBox, TFileList, TDirEntry, TDirCollection, TDirListBox), source/tvision/tfilecol.cpp,
   source/tvision/tfillist.cpp, source/tvision/tdircoll.cpp, source/tvision/tdirlist.cpp, source/tvision/tvtext1.cpp
   (the tables of TDirListBox), include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h,
-  include/tvision/views.h
+  include/tvision/views.h, include/tvision/util.h, source/tvision/misc.cpp
   See COPYRIGHT.magiblot.
 
   Test program of the unit TvFiles.
 
-  The views have no owner and no screen: a message that a view sends to its owner goes through the hook of the
-  messages, which counts the messages and remembers the last one. The hook of the new list of a sorted list box gives
+  The views have no screen. A view whose messages a test looks at is in a group that counts the events that it gets
+  and remembers the last one. The hook of the new list of a sorted list box gives
   the list to the list box of TvList. The tests that touch files make a directory of their own under the directory of
   temporary files and remove it at the end. The directory of the tests has the files a.txt (5 bytes), b.txt, c.dat
   (3 bytes), the directories sub1 and sub2 and the hidden directory .hdir. }
@@ -46,6 +46,12 @@ type
   public
     procedure SetShift(Value: Byte);
     function Key(const Text: string): PSearchRec;
+  end;
+
+  { A group that counts the events that it gets, and remembers the last one: the messages of the views that it holds. }
+  TProbeGroup = class(TGroup)
+  public
+    procedure HandleEvent(var Event: TEvent); override;
   end;
 
 var
@@ -90,16 +96,16 @@ begin
   Result := PSearchRec(GetKey(Text));
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
+procedure TProbeGroup.HandleEvent(var Event: TEvent);
 begin
   Inc(MessageCount);
-  if Command = cmFileFocused then
+  if Event.Message.Command = cmFileFocused then
     Inc(FocusedCount);
-  LastReceiver := Receiver;
-  LastWhat := What;
-  LastCommand := Command;
-  LastInfo := InfoPtr;
-  Result := nil;
+  LastReceiver := Self;
+  LastWhat := Event.What;
+  LastCommand := Event.Message.Command;
+  LastInfo := Event.Message.InfoPtr;
+  inherited HandleEvent(Event);
 end;
 
 procedure OnNewList(Box: TSortedListBox; NewItems: TSortedCollection);
@@ -413,6 +419,7 @@ end;
 procedure TestFileListDirectory;
 var
   List: TListProbe;
+  Probe: TProbeGroup;
   Counted: TCountedFiles;
   Index: ccIndex;
   Found: Boolean;
@@ -421,7 +428,9 @@ var
   I: Integer;
   Info: PSearchRec;
 begin
+  Probe := TProbeGroup.Create(Rc);
   List := TListProbe.Create(Rc, nil);
+  Probe.Insert(List);
   MessageCount := 0;
   FocusedCount := 0;
   NewListCalls := 0;
@@ -443,7 +452,7 @@ begin
   Check(FocusedCount = 2, 'the first entry is focused by NewList and announced again by ReadDirectory');
   Check((LastWhat = evBroadcast) and (LastCommand = cmFileFocused) and (LastInfo = Pointer(List.List.At(0))),
     'the last message announces the first entry');
-  Check(LastReceiver = nil, 'the message goes to the owner, which is none');
+  Check(LastReceiver = TView(Probe), 'the message goes to the owner of the list');
 
   List.FocusItem(2);
   Check((List.Focused = 2) and (LastCommand = cmFileFocused) and (LastInfo = Pointer(List.List.At(2))) and
@@ -489,6 +498,7 @@ begin
   Check(LastInfo = Pointer(Info), 'the entry .. is announced');
 
   TvObject.DestroyObject(List);
+  TvObject.DestroyObject(Probe);
 
   FilesDestroyed := 0;
   List := TListProbe.Create(Rc, nil);
@@ -504,14 +514,17 @@ end;
 procedure TestDirListBox;
 var
   Box: TDirListBox;
+  Probe: TProbeGroup;
   Dirs: TCountedDirs;
   Marker: string;
   Count, Seps, Index, SecondSep: Integer;
   Indent, Name1, Name2: string;
 begin
   DirsDestroyed := 0;
-  MessageCount := 0;
+  Probe := TProbeGroup.Create(Rc);
   Box := TDirListBox.Create(Rc, nil);
+  Probe.Insert(Box);
+  MessageCount := 0;
   Check(Box.NumCols = 1, 'a directory list box has one column');
   Check(Box.IsSelected(0), 'the entry 0 is selected in a new list box');
   Check(not Box.IsSelected(1), 'the entry 1 is not selected in a new list box');
@@ -525,7 +538,7 @@ begin
   Check(Box.GetText(1, 0) = '', 'the text with the length 0');
   Box.SelectItem(1);
   Check((LastWhat = evCommand) and (LastCommand = cmChangeDir) and (LastInfo = Pointer(Box.List.At(1))) and
-    (LastReceiver = nil), 'SelectItem sends cmChangeDir with the entry to the owner');
+    (LastReceiver = TView(Probe)), 'SelectItem sends cmChangeDir with the entry to the owner');
   Check(MessageCount = 1, 'SelectItem sends one message');
 
   Box.NewDirectory('Drives');
@@ -594,6 +607,7 @@ begin
   Check(DefaultCalls = 2, 'there is no call while there is no hook');
 
   TvObject.DestroyObject(Box);
+  TvObject.DestroyObject(Probe);
 
   DirsDestroyed := 0;
   Box := TDirListBox.Create(Rc, nil);
@@ -605,7 +619,6 @@ begin
 end;
 
 begin
-  MessageHook := @OnMessage;
   SortedListBoxNewListHook := @OnNewList;
   MakeTree;
 
@@ -619,7 +632,6 @@ begin
   TestDirListBox;
 
   RemoveTree(TempRoot);
-  MessageHook := nil;
   SortedListBoxNewListHook := nil;
   ChDirButtonDefaultHook := nil;
   Done;

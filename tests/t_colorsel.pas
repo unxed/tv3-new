@@ -1,13 +1,13 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/colorsel.h, source/tvision/colorsel.cpp, source/tvision/tvtext1.cpp (the texts and the
   tables of TColorSelector, TMonoSelector and TColorDialog), include/tvision/views.h, include/tvision/ttypes.h,
-  include/tvision/config.h, include/tvision/tv.h
+  include/tvision/config.h, include/tvision/tv.h, include/tvision/util.h, source/tvision/misc.cpp
   See COPYRIGHT.magiblot.
 
   The display is a screen of 80 by 25 cells in memory; the root of the views is a group that writes into it and reads
-  its events from a script. The colors of the root are the BIOS attributes 1 to 127. The hook of the messages
-  records the messages of the six commands of the unit (command, receiver and information) and, when asked, delivers
-  every message to its receiver as an event. The palette of the dialog is 8 entries: $07, $1E, $2F, $70, $4C, $5D,
+  its events from a script. The colors of the root are the BIOS attributes 1 to 127. The root and the dialog record
+  the broadcasts of the six commands of the unit that they get (command, receiver and information), which are the
+  messages that their views send to them. The palette of the dialog is 8 entries: $07, $1E, $2F, $70, $4C, $5D,
   $6E and $7F. }
 program t_colorsel;
 
@@ -42,6 +42,7 @@ type
     ScriptPos: Integer;
     procedure AddEvent(const Ev: TEvent);
     procedure GetEvent(var Event: TEvent); override;
+    procedure HandleEvent(var Event: TEvent); override;
     function GetPalette: TPalette; override;
   end;
 
@@ -76,6 +77,7 @@ type
 
   TTestDialog = class(TColorDialog)
   public
+    procedure HandleEvent(var Event: TEvent); override;
     function GetGroupIndexValue: Byte;
     function GetGroupList: TColorGroupList;
     function ForSelVisible: Boolean;
@@ -105,7 +107,6 @@ var
   MsgCmd: array[0..MaxMsgs - 1] of Word;
   MsgInfo: array[0..MaxMsgs - 1] of PtrUInt;
   MsgTarget: array[0..MaxMsgs - 1] of TView;
-  Deliver: Boolean;
   ItemsFreed: Integer;
   GroupsFreed: Integer;
 
@@ -129,30 +130,23 @@ procedure OnScreenWrite(X, Y: Integer; Buf: PScreenCell; Count: Integer);
 begin
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
+{ Records the event that the view Receiver gets when it is a broadcast of one of the six commands of the unit. }
+procedure RecordMessage(Receiver: TView; const Event: TEvent);
 var
-  Ev: TEvent;
+  Cmd: Word;
 begin
-  Result := nil;
-  if (What = evBroadcast) and (Command >= cmColorForegroundChanged) and (Command <= cmSaveColorIndex) then
-  begin
-    if MsgCount < MaxMsgs then
-    begin
-      MsgCmd[MsgCount] := Command;
-      MsgInfo[MsgCount] := PtrUInt(InfoPtr);
-      MsgTarget[MsgCount] := Receiver;
-    end;
-    Inc(MsgCount);
-  end;
-  if (not Deliver) or (Receiver = nil) then
+  if Event.What <> evBroadcast then
     Exit;
-  FillChar(Ev, SizeOf(Ev), 0);
-  Ev.What := What;
-  Ev.Message.Command := Command;
-  Ev.Message.InfoPtr := InfoPtr;
-  Receiver.HandleEvent(Ev);
-  if Ev.What = evNothing then
-    Result := Ev.Message.InfoPtr;
+  Cmd := Event.Message.Command;
+  if (Cmd < cmColorForegroundChanged) or (Cmd > cmSaveColorIndex) then
+    Exit;
+  if MsgCount < MaxMsgs then
+  begin
+    MsgCmd[MsgCount] := Cmd;
+    MsgInfo[MsgCount] := PtrUInt(Event.Message.InfoPtr);
+    MsgTarget[MsgCount] := Receiver;
+  end;
+  Inc(MsgCount);
 end;
 
 { Small helpers. }
@@ -316,6 +310,12 @@ begin
   Result := Items;
 end;
 
+procedure TTestDialog.HandleEvent(var Event: TEvent);
+begin
+  RecordMessage(Self, Event);
+  inherited HandleEvent(Event);
+end;
+
 function TTestDialog.GetGroupIndexValue: Byte;
 begin
   Result := GroupIndex;
@@ -388,6 +388,12 @@ begin
     Event := Script[ScriptPos];
     Inc(ScriptPos);
   end;
+end;
+
+procedure TRoot.HandleEvent(var Event: TEvent);
+begin
+  RecordMessage(Self, Event);
+  inherited HandleEvent(Event);
 end;
 
 function TRoot.GetPalette: TPalette;
@@ -867,12 +873,15 @@ var
   SB: TScrollBar;
   L: TTestGroupList;
   Ev: TEvent;
+  Root: TRoot;
 begin
   ItemsFreed := 0;
   GroupsFreed := 0;
   MakeGroups(G1, G2, G3, A1, A2, A3, B1, B2);
+  Root := NewRoot;
   SB := TScrollBar.Create(Rc(15, 0, 16, 5));
   L := TTestGroupList.Create(Rc(0, 0, 15, 5), SB, G1);
+  Root.Insert(L);
   Check(L.GroupsHead = G1, 'the list holds the groups');
   Check(L.Range = 3, 'the range is the number of groups');
   Check(L.NumCols = 1, 'the list has one column');
@@ -902,7 +911,7 @@ begin
   ResetMessages;
   L.FocusItem(1);
   Check(L.Focused = 1, 'FocusItem moves the focus');
-  Check((MsgCount = 1) and (MsgCmd[0] = cmNewColorItem) and (MsgInfo[0] = PtrUInt(G2)),
+  Check((MsgCount = 1) and (MsgCmd[0] = cmNewColorItem) and (MsgInfo[0] = PtrUInt(G2)) and (MsgTarget[0] = Root),
     'FocusItem sends the group to the owner');
   ResetMessages;
   L.FocusItem(7);
@@ -919,8 +928,10 @@ begin
   L.HandleEvent(Ev);
   Check((G2.Index = 0) and (G1.Index = 1), 'cmSaveColorIndex changes the focused group only');
 
+  Root.Remove(L);
   L.Free;
   SB.Free;
+  FreeRoot(Root);
   Check(GroupsFreed = 3, 'the list frees its groups');
   Check(ItemsFreed = 5, 'the list frees the items of its groups');
 end;
@@ -932,10 +943,13 @@ var
   SB: TScrollBar;
   L: TTestItemList;
   Ev: TEvent;
+  Root: TRoot;
 begin
   MakeGroups(G1, G2, G3, A1, A2, A3, B1, B2);
+  Root := NewRoot;
   SB := TScrollBar.Create(Rc(15, 0, 16, 5));
   L := TTestItemList.Create(Rc(0, 0, 15, 5), SB, A1);
+  Root.Insert(L);
   Check(L.ItemsHead = A1, 'the list holds the items');
   Check(L.Range = 3, 'the range is the number of items');
   Check((L.EventMask and evBroadcast) <> 0, 'the item list receives broadcasts');
@@ -975,8 +989,10 @@ begin
   Check((L.Range = 0) and (L.ItemsHead = nil), 'a group without items gives an empty list');
   Check((MsgCount = 1) and (MsgCmd[0] = cmSaveColorIndex) and (MsgInfo[0] = 0), 'only the position is saved');
 
+  Root.Remove(L);
   L.Free;
   SB.Free;
+  FreeRoot(Root);
   G1.Free;
   G2.Free;
   G3.Free;
@@ -994,7 +1010,6 @@ var
   Idx: PColorIndex;
   FirstSet, LastSet, K: Integer;
 begin
-  Deliver := True;
   ItemsFreed := 0;
   GroupsFreed := 0;
   Source := DialogPalette;
@@ -1086,14 +1101,12 @@ begin
     (not Dlg.BakLabelVisible), 'with the markers on the selectors and their labels are hidden');
   Check(Dlg.MonoSelVisible and Dlg.MonoLabelVisible, 'with the markers on the mono selector and its label are shown');
 
-  Deliver := False;
   TvObject.DestroyObject(Dlg);
   Check(ItemsFreed = 6, 'the dialog frees the items of its groups');
   Check(GroupsFreed = 2, 'the dialog frees its groups');
   Source.Free;
   Copy1.Free;
   NewPal.Free;
-  Deliver := False;
 end;
 
 procedure TestDialogWithoutPalette;
@@ -1101,7 +1114,6 @@ var
   Dlg: TTestDialog;
   NewPal: TPalette;
 begin
-  Deliver := False;
   ResetMessages;
   Dlg := TTestDialog.Create(nil, MakeDialogGroups);
   Check(Dlg.Pal = nil, 'a dialog made without a palette has none');
@@ -1133,7 +1145,6 @@ begin
   TScreen.CursorLines := 20;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
 
   TestConstantsAndTexts;
   TestChains;
@@ -1149,7 +1160,6 @@ begin
   TestDialog;
   TestDialogWithoutPalette;
 
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TScreen.ScreenBuffer := nil;

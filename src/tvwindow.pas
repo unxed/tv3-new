@@ -2,15 +2,14 @@
   C++ sources: include/tvision/views.h (TFrame, TScrollBar, TScroller, TWindowInit, TWindow and the palettes of the
   windows), source/tvision/tframe.cpp, source/tvision/framelin.cpp, source/tvision/tscrlbar.cpp,
   source/tvision/tscrolle.cpp, source/tvision/twindow.cpp, source/tvision/tvtext1.cpp (the tables of TFrame and
-  TScrollBar)
+  TScrollBar), include/tvision/util.h, source/tvision/misc.cpp (message)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
   read, write, build and streamableName of the classes, and the constructors with StreamableInit, belong to a later
   unit.
 
-  Parts of the C++ that have no unit yet:
-    - message() sends a message to a view; MessageHook of TvViews stands for it and does nothing while it is nil.
+  message() sends a message to a view; it is Message of TvViews.
 
   The tables of TFrame (initFrame, frameChars and the five icons) and of TScrollBar (vChars, hChars) are class
   variables, InitFrame, FrameChars, CloseIcon, ZoomIcon, UnZoomIcon, DragIcon and DragLeftIcon of TFrame and VChars and
@@ -208,14 +207,6 @@ begin
   Result := Amount div 2;
   if (Amount < 0) and Odd(Amount) then
     Dec(Result);
-end;
-
-{ Sends a message through the hook; nothing happens while there is none. }
-procedure Notify(Target: TView; Kind, Code: Word; Payload: Pointer);
-begin
-  if MessageHook = nil then
-    Exit;
-  MessageHook(Target, Kind, Code, Payload);
 end;
 
 { Turns Event into a command for Target, puts it back to the owners of Sender and clears it. }
@@ -651,7 +642,7 @@ begin
     end;
   if stepSize = 0 then
     Exit;
-  Notify(Bar.Owner, evBroadcast, cmScrollBarClicked, Bar);
+  Message(Bar.Owner, evBroadcast, cmScrollBarClicked, Bar);
   Bar.SetValue(Bar.Value + 3 * stepSize);
   Bar.ClearEvent(Event);
 end;
@@ -662,7 +653,7 @@ var
   pressedPart, pointerAt, travel: Integer;
   scaled: Int64;
 begin
-  Notify(Bar.Owner, evBroadcast, cmScrollBarClicked, Bar);
+  Message(Bar.Owner, evBroadcast, cmScrollBarClicked, Bar);
   PressedAt := Bar.MakeLocal(Event.Mouse.Where);
   PressArea := Bar.GetExtent;
   PressArea.Grow(1, 1);
@@ -770,7 +761,7 @@ begin
           Exit;
         if not BarKey(Self, Event.KeyDown.KeyCode, keyPart, keyTarget) then
           Exit;
-        Notify(Owner, evBroadcast, cmScrollBarClicked, Self);
+        Message(Owner, evBroadcast, cmScrollBarClicked, Self);
         if keyPart <> sbIndicator then
           keyTarget := Value + ScrollStep(keyPart);
         SetValue(keyTarget);
@@ -781,7 +772,7 @@ end;
 
 procedure TScrollBar.ScrollDraw;
 begin
-  Notify(Owner, evBroadcast, cmScrollBarChanged, Self);
+  Message(Owner, evBroadcast, cmScrollBarChanged, Self);
 end;
 
 function TScrollBar.ScrollStep(PartCode: Integer): Integer;

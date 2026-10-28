@@ -1,15 +1,15 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/app.h, include/tvision/views.h, source/tvision/tprogram.cpp,
   source/tvision/tapplica.cpp, source/tvision/tbkgrnd.cpp, source/tvision/tdesktop.cpp, source/tvision/syserr.cpp,
-  source/tvision/tevent.cpp
+  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp
   See COPYRIGHT.magiblot.
 
   The display is a screen of 60 by 20 cells in memory that can grow to 70 by 22; the input is a backend that takes
   its events from Feed and from the posted events of the event queue. Both backends write a journal of the calls
   that the tests look at (a short word for each, ended with a semicolon). The application is a TApplication that
   counts its idle calls, can put an event when a time limit passes or when another thread asks for it, and uses a
-  desktop that counts the calls of TileError. The hook of the messages delivers a message to the receiver as an
-  event and records it. The window numbers, sizes and colors are chosen so that the expected values can be worked
+  desktop that counts the calls of TileError. The application and the desktop record the messages that they get.
+  The window numbers, sizes and colors are chosen so that the expected values can be worked
   out from the C++: the screen is 60 by 20, the menu bar is the row 0, the desktop the rows 1 to 18 and the status
   line the row 19. The color palette of the application gives the attribute $71 to the background, $70 to the
   normal text of the status line and the menu bar and $74 to the shortcut text of the status line. }
@@ -59,6 +59,7 @@ type
   TTestDesk = class(TDeskTop)
   public
     ErrorCount: Integer;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure TileError; override;
     procedure SetColumnsFirst(Value: Boolean);
     function GetColumnsFirst: Boolean;
@@ -80,6 +81,7 @@ type
     TileRectSet: Boolean;
     TileRectValue: TRect;
     constructor Create; reintroduce;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure Idle; override;
     procedure OutOfMemory; override;
     function GetTileRect: TRect; override;
@@ -145,7 +147,7 @@ var
 
   { The record of what the hooks saw }
   Journal: string;
-  MsgCount, SelMsgCount, CmdSetMsgCount, TimerMsgCount: Integer;
+  SelMsgCount, CmdSetMsgCount, TimerMsgCount: Integer;
   SelMsgInfo, CmdSetInfo, LastTimerInfo: Pointer;
   SelMsgTo, CmdSetTo, LastTimerTo: TView;
 
@@ -268,42 +270,6 @@ begin
   Result := LowMemFlag;
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
-var
-  Ev: TEvent;
-begin
-  Result := nil;
-  Inc(MsgCount);
-  if (What = evBroadcast) and (Command = cmSelectWindowNum) then
-  begin
-    Inc(SelMsgCount);
-    SelMsgInfo := InfoPtr;
-    SelMsgTo := Receiver;
-  end;
-  if (What = evBroadcast) and (Command = cmTimerExpired) then
-  begin
-    Inc(TimerMsgCount);
-    LastTimerInfo := InfoPtr;
-    LastTimerTo := Receiver;
-  end;
-  if (What = evBroadcast) and (Command = cmCommandSetChanged) then
-  begin
-    Inc(CmdSetMsgCount);
-    CmdSetTo := Receiver;
-    CmdSetInfo := InfoPtr;
-  end;
-  if Receiver <> nil then
-  begin
-    FillChar(Ev, SizeOf(Ev), 0);
-    Ev.What := What;
-    Ev.Message.Command := Command;
-    Ev.Message.InfoPtr := InfoPtr;
-    Receiver.HandleEvent(Ev);
-    if Ev.What = evNothing then
-      Result := Ev.Message.InfoPtr;
-  end;
-end;
-
 function Now64: Int64;
 begin
   Result := Int64(GetTickCount64);
@@ -391,7 +357,6 @@ end;
 
 procedure ResetMessages;
 begin
-  MsgCount := 0;
   SelMsgCount := 0;
   SelMsgInfo := nil;
   SelMsgTo := nil;
@@ -404,6 +369,20 @@ begin
 end;
 
 { The classes of the tests }
+
+procedure TTestDesk.HandleEvent(var Event: TEvent);
+begin
+  if Event.What = evBroadcast then
+    case Event.Message.Command of
+      cmSelectWindowNum:
+        begin
+          SelMsgCount := SelMsgCount + 1;
+          SelMsgTo := Self;
+          SelMsgInfo := Event.Message.InfoPtr;
+        end;
+    end;
+  inherited HandleEvent(Event);
+end;
 
 procedure TTestDesk.TileError;
 begin
@@ -446,6 +425,26 @@ constructor TTestApp.Create;
 begin
   inherited Create(@TProgram.InitStatusLine, @TProgram.InitMenuBar, @MakeTestDesk);
   DeadlineCmd := cmCancel;
+end;
+
+procedure TTestApp.HandleEvent(var Event: TEvent);
+begin
+  if Event.What = evBroadcast then
+  begin
+    if Event.Message.Command = cmTimerExpired then
+    begin
+      Inc(TimerMsgCount);
+      LastTimerInfo := Event.Message.InfoPtr;
+      LastTimerTo := Self;
+    end
+    else if Event.Message.Command = cmCommandSetChanged then
+    begin
+      Inc(CmdSetMsgCount);
+      CmdSetTo := Self;
+      CmdSetInfo := Event.Message.InfoPtr;
+    end;
+  end;
+  inherited HandleEvent(Event);
 end;
 
 procedure TTestApp.Idle;
@@ -1589,7 +1588,6 @@ begin
   TEventQueue.Backend := FakeEvents;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
   MouseHideHook := @OnMouseHide;
   MouseShowHook := @OnMouseShow;
   TDeskTop.DefaultBkgrnd := '.';
@@ -1623,7 +1621,6 @@ begin
   MouseHideHook := nil;
   MouseShowHook := nil;
   SetCtrlBrkHandlerHook := nil;
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TEventQueue.Backend := SavedEvents;

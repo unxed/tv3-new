@@ -4,7 +4,7 @@
   its events from a script. The colors of the root are the BIOS attributes 1 to 127: the entry k of its palette is k,
   so the characters of a table have the attribute 13 and the cell under the cursor has the attribute 14. The window
   is at the origin of the root, so the table starts at the screen cell 1, 1 and the report is on the screen row 10.
-  The hook of the messages delivers a message to the receiver as an event and counts the messages of the unit. }
+  The root and the chart count the focus messages of the unit that they get. }
 program t_ascii;
 
 {$mode objfpc}
@@ -42,6 +42,7 @@ type
     ErrorCount: Integer;
     procedure AddEvent(const Ev: TEvent);
     procedure GetEvent(var Event: TEvent); override;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure EventError(var Event: TEvent); override;
     function GetPalette: TPalette; override;
   end;
@@ -97,22 +98,13 @@ procedure OnScreenWrite(X, Y: Integer; Buf: PScreenCell; Count: Integer);
 begin
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
-var
-  Ev: TEvent;
+{ Counts the focus broadcasts of the unit that an event brings. }
+procedure CountFocus(const Event: TEvent);
 begin
-  Result := nil;
-  if (What = evBroadcast) and (Command = Word(AsciiCommandBase + acFocused)) then
-    Inc(FocusCount);
-  if Receiver = nil then
+  if Event.What <> evBroadcast then
     Exit;
-  FillChar(Ev, SizeOf(Ev), 0);
-  Ev.What := What;
-  Ev.Message.Command := Command;
-  Ev.Message.InfoPtr := InfoPtr;
-  Receiver.HandleEvent(Ev);
-  if Ev.What = evNothing then
-    Result := Ev.Message.InfoPtr;
+  if Event.Message.Command = Word(AsciiCommandBase + acFocused) then
+    Inc(FocusCount);
 end;
 
 function Pt(X, Y: Integer): TPoint;
@@ -215,6 +207,12 @@ begin
   end;
 end;
 
+procedure TRoot.HandleEvent(var Event: TEvent);
+begin
+  CountFocus(Event);
+  inherited HandleEvent(Event);
+end;
+
 procedure TRoot.EventError(var Event: TEvent);
 begin
   Inc(ErrorCount);
@@ -242,7 +240,8 @@ end;
 
 procedure TTestChart.HandleEvent(var Event: TEvent);
 begin
-  if (Event.What = evCommand) and (Event.Message.Command = Word(AsciiCommandBase + acPicked)) then
+  CountFocus(Event);
+  if (Event.What = evCommand) and (Word(Event.Message.Command - AsciiCommandBase) = acPicked) then
   begin
     Inc(PickedCommands);
     LastCommandInfo := PtrInt(Event.Message.InfoPtr);
@@ -925,7 +924,6 @@ begin
   TScreen.CursorLines := 20;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
   Sink := TPickSink.Create;
 
   TestConstants;
@@ -941,7 +939,6 @@ begin
   TestUnicode;
 
   Sink.Free;
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TScreen.ScreenBuffer := nil;

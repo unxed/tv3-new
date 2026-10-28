@@ -139,11 +139,6 @@ procedure OnScreenWrite(X, Y: Integer; Buf: PScreenCell; Count: Integer);
 begin
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
-begin
-  Result := nil;
-end;
-
 { The shortcut of a name is the character between a pair of tildes. }
 function TestHotKeyStr(const Name: string): string;
 var
@@ -1652,7 +1647,6 @@ begin
   TScreen.CursorLines := 20;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
   HotKeyStrHook := @TestHotKeyStr;
   EqualsIgnoreCaseHook := @TestEquals;
   ApplicationHook := @TestApp;
@@ -1686,7 +1680,6 @@ begin
   HotKeyStrHook := nil;
   EqualsIgnoreCaseHook := nil;
   ApplicationHook := nil;
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TScreen.ScreenBuffer := nil;

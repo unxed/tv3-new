@@ -57,8 +57,6 @@ are protected, so that a class of another unit can override them.
 
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
 
-added: MessageHook
-added: TMessageFunc
 added: CaretPositionHook
 added: TCaretPositionProc
 added: ScreenWriteHook
@@ -70,9 +68,9 @@ added: TPhaseType
 added: TSelectMode
 added: PColorAttr
 
-TMessageFunc, TCaretPositionProc and TScreenWriteProc are the procedural types of the hooks that stand for parts of
-the C++ that have no unit yet. MessageHook stands for the function message, CaretPositionHook for
-THardwareInfo::setCaretPosition and ScreenWriteHook for THardwareInfo::screenWrite. EventTimeoutMs is
+TCaretPositionProc and TScreenWriteProc are the procedural types of the hooks that stand for parts of the C++ that
+have no unit yet. CaretPositionHook stands for THardwareInfo::setCaretPosition and ScreenWriteHook for
+THardwareInfo::screenWrite. EventTimeoutMs is
 TProgram::eventTimeoutMs, which the members of TView read and set. TForEachFunc and TFirstThatFunc are the types of
 the function pointers that TGroup.ForEach and TGroup.FirstThat take. TPhaseType and TSelectMode are the enumerations
 phaseType and selectMode that are nested in TView, and PColorAttr is the pointer to a TColorAttr that a TPalette
@@ -173,7 +171,6 @@ added: TAppInit.SharedQueue
 added: TAppInit.SharedSysErr
 added: TAppInit.Shutdown
 added: TApplication.Subsystems
-added: PassMessage
 added: MemoryIsLow
 added: ApplicationRoot
 added: HexDigitValue
@@ -197,8 +194,8 @@ whether the memory is low; MouseHideHook and MouseShowHook stand for TMouse::hid
 setScreenMode calls; InitHistoryHook and DoneHistoryHook stand for initHistory and doneHistory, which the constructor
 and the destructor of TApplication call; SetCtrlBrkHandlerHook stands for THardwareInfo::setCtrlBrkHandler, which
 TSystemError.Resume and TSystemError.Suspend call with True and False. While a hook is nil it does nothing, and while
-LowMemoryHook is nil the memory is never low. MessageHook of TvViews stands for message, as before. TvApp gives
-TProgram.Application to the ApplicationHook of TvMenus when the unit starts. EventTimeoutMs of TvViews, which is
+LowMemoryHook is nil the memory is never low. TvApp gives TProgram.Application to the ApplicationHook of TvMenus when
+the unit starts. EventTimeoutMs of TvViews, which is
 TProgram::eventTimeoutMs, is set to its value 20 when the unit starts.
 
 A Pascal class has one parent, so the classes that the C++ inherits virtually beside TGroup are classes between TGroup
@@ -254,18 +251,16 @@ added: TListViewer.HandleMouseDown
 added: TListViewer.HandleKeyDown
 added: TListViewer.HandleBroadcast
 added: LowAttr
-added: Notify
 added: AnyBit
 
 PListBoxRec is the pointer to a TListBoxRec, which GetData and SetData of TListBox take from the untyped pointer of
-their argument. The names ListViewerPalette, ListMarkers, DividerCode, AutosPerStep, LowAttr, Notify and AnyBit are
+their argument. The names ListViewerPalette, ListMarkers, DividerCode, AutosPerStep, LowAttr and AnyBit are
 inside the unit and are not visible outside it. ListViewerPalette is the palette that the static variable of
 getPalette of tlstview.cpp holds, made from cpListViewer when the unit starts and released when it ends. ListMarkers
 is the table specialChars of tvtext1.cpp, which TvDialog keeps for its own use. DividerCode is the character '\xB3'
 that draw writes between two columns, and AutosPerStep is the local mouseAutosToSkip of handleEvent. LowAttr gives the
-attribute that a conversion of the result of getColor to a TColorAttr gives, which is the low one of the pair. Notify
-sends a message through MessageHook, as the function message does in the C++, and does nothing while the hook is nil.
-AnyBit tells whether a flag of a mask is set, as the tests with & of the C++ do.
+attribute that a conversion of the result of getColor to a TColorAttr gives, which is the low one of the pair. AnyBit
+tells whether a flag of a mask is set, as the tests with & of the C++ do.
 
 The members of TListViewer that handleEvent of the C++ holds in one body are split in three, one for each kind of
 event: HandleMouseDown, HandleKeyDown and HandleBroadcast. DragTarget is the part of the mouse loop that gives the
@@ -386,8 +381,6 @@ maxCharSize of config.h.
 
 The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
 
-added: TStrNZCopyFunc
-added: StrNZCopyHook
 added: TCreateListViewerFunc
 added: THistory.OpenHistoryList
 added: THistory.TakeChoice
@@ -411,11 +404,8 @@ added: HistoryPalette
 added: HistoryViewerPalette
 added: HistoryWindowPalette
 
-TStrNZCopyFunc is the procedural type of the hook that stands for a part of the C++ that no unit has yet and no input
-defines. StrNZCopyHook stands for the function strnzcpy, which THistory calls to put the chosen text into the line
-with the limit maxLen + 1; it takes the text and that limit and gives the text that the buffer holds, and while it is
-nil the line keeps its text (the line is still selected and drawn). The function strwidth is the width of TText of
-TvUtf8, and ctrlToArrow is the function of TvKeys.
+THistory calls strnzcpy, which is Strnzcpy of TvUtil, to put the chosen text into the line with the limit
+maxLen + 1. The function strwidth is the width of TText of TvUtf8, and ctrlToArrow is the function of TvKeys.
 
 The record HistRec of histlist.cpp is not a type: the lists are one block of bytes, and a record is known by its
 offset in the block, where the offset NoRecord (-1) stands for the null pointer. RecordId, RecordLength and
@@ -458,7 +448,6 @@ added: SortedListBoxNewListHook
 added: TMakeDefaultProc
 added: ChDirButtonDefaultHook
 added: GetDisk
-added: SendNotice
 added: CompareNames
 added: FindSeparator
 added: FindLastSeparator
@@ -493,8 +482,8 @@ The tables of TDirListBox (pathDir, firstDir, middleDir, lastDir, drives and gra
 PathDir, FirstDir, MiddleDir, LastDir, Drives and Graphics, which get the values of tvtext1.cpp, in code page 437,
 when the unit starts. The paths that TDirListBox reads and builds use PathSep of TvPath as their separator, the
 texts of the drives keep the backslash, and a search of a directory uses PathAllFiles for the mask "*.*". GetDisk
-stands for getdisk and gives the disk C. SendNotice is the call of MessageHook, CompareNames is strcmp, FindSeparator
-and FindLastSeparator are strchr and strrchr for the separator, BeginsWithDot is the test of the first character of
+stands for getdisk and gives the disk C. CompareNames is strcmp, FindSeparator and FindLastSeparator are strchr and
+strrchr for the separator, BeginsWithDot is the test of the first character of
 a name, FindCode is strchr of a character in a block, NewSearchRecord is the operator new of DirSearchRec and
 CopyFoundEntry is its member readFf_blk. SearchKey is the static record of getKey, NoFileRecord is the static record
 noFile of readDirectory, and CurrentDisk, IndentStep and DefaultParentTime are the values 'C', 2 and 0x210000 that the
@@ -520,18 +509,16 @@ added: TFileDialog.AddButton
 added: TFileDialog.FitToScreen
 added: TFileDialog.FinishWithFileCommand
 added: TFileDialog.TurnDoubleClickIntoOK
-added: CopyThrough
 added: TrimName
 added: SplitPath
 added: MergePath
 
 MaxPath stands for MAXPATH, which a header outside the translated sources defines; it is the size that strnzcpy is
-given for the wild card and for the text of the input line. StrNZCopyHook of TvHist stands for strnzcpy, as it does
-for THistory: while it is nil a text is not copied and its target keeps its text. GetCurDirHook, with the type
-TCurDirFunc, stands for getCurDir and gives the current directory; while it is nil the directory of a file dialog
-becomes the empty text. ValidFileNameHook, with the type TValidFileNameFunc, stands for validFileName; while it is nil
-no name is a valid file name, so Valid of a dialog shows the message of invalidFileText. Both functions are defined in
-files that are not among the translated sources. fexpand is PathExpandFrom of TvPath, and fnsplit and fnmerge are
+given for the wild card and for the text of the input line. GetCurDirHook, with the type TCurDirFunc, stands for
+getCurDir and gives the current directory; while it is nil the directory of a file dialog becomes the empty text.
+ValidFileNameHook, with the type TValidFileNameFunc, stands for validFileName; while it is nil no name is a valid file
+name, so Valid of a dialog shows the message of invalidFileText. Both functions are defined in files that are not
+among the translated sources. fexpand is PathExpandFrom of TvPath, and fnsplit and fnmerge are
 SplitPath and MergePath, made with PathDrive and PathSplit of TvPath: the drive is the drive of the path, the
 directory is what PathSplit gives after the drive, and the merge puts the four parts one after the other. The
 function trim of tfildlg.cpp is TrimName, because Trim belongs to SysUtils; it is the branch for a flat memory model,
@@ -560,3 +547,11 @@ which gives the button the grow mode gfGrowLoX or gfGrowHiX and moves the rectan
 HandleEvent is split by the kind of event: FinishWithFileCommand is the case of evCommand that ends the dialog at
 cmFileOpen, cmFileReplace and cmFileClear, and TurnDoubleClickIntoOK is the case of evBroadcast that turns
 cmFileDoubleClicked into a cmOK command that is put back. Both are private.
+
+## The functions of misc.cpp
+
+The function message is Message of TvViews. Its parameter infoPtr is a Pointer, as the member InfoPtr of
+TMessageEvent in TvEvents is, and so is its result: the Pointer that the receiver leaves in the event when it clears
+the event, or nil. The functions strnzcpy and strnzcat are Strnzcpy and Strnzcat of TvUtil. The buffer dst of dstSize
+characters is the var parameter Dst, a string whose length stays below DstSize, and the length of the string is what
+the two functions return. The function lowMemory is LowMemoryHook of TvApp.

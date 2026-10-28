@@ -1,7 +1,7 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/app.h, include/tvision/views.h, source/tvision/tprogram.cpp,
   source/tvision/tapplica.cpp, source/tvision/tbkgrnd.cpp, source/tvision/tdesktop.cpp, source/tvision/syserr.cpp,
-  source/tvision/tevent.cpp
+  source/tvision/tevent.cpp, include/tvision/util.h, source/tvision/misc.cpp (message)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only. The thread-safe surface of the program is the
@@ -17,9 +17,10 @@
   the critical error handler, Int11trap, the DPMI set-up) are left out. The members of TEvent that read events
   (getMouseEvent, getKeyEvent) are the class procedures of TEventQueue of TvSys, which TProgram calls.
 
+  message() sends a message to a view; it is Message of TvViews.
+
   Parts of the C++ that have no unit yet, or that no input defines, are reached through hooks, which do nothing
   while they are nil:
-    - message() sends a message to a view; MessageHook of TvViews stands for it;
     - lowMemory() is LowMemoryHook; while it is nil, memory is never low;
     - TMouse::hide and TMouse::show are MouseHideHook and MouseShowHook;
     - initHistory and doneHistory are InitHistoryHook and DoneHistoryHook;
@@ -349,14 +350,6 @@ begin
   Result := TPalette.Create(Entries, Length(Entries));
 end;
 
-function PassMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
-begin
-  if Assigned(MessageHook) then
-    Result := MessageHook(Receiver, What, Command, InfoPtr)
-  else
-    Result := nil;
-end;
-
 function MemoryIsLow: Boolean;
 begin
   if Assigned(LowMemoryHook) then
@@ -671,7 +664,7 @@ end;
 
 procedure DeliverTimerExpired(Id: TTimerId; Args: Pointer);
 begin
-  PassMessage(TProgram(Args), evBroadcast, cmTimerExpired, Id);
+  Message(TProgram(Args), evBroadcast, cmTimerExpired, Id);
 end;
 
 constructor TProgram.Create;
@@ -839,7 +832,7 @@ begin
     Exit;
   end;
   WindowNumber := PtrUInt(Ord(AltKey) - Ord('0'));
-  Answer := PassMessage(DeskTop, evBroadcast, cmSelectWindowNum, Pointer(WindowNumber));
+  Answer := Message(DeskTop, evBroadcast, cmSelectWindowNum, Pointer(WindowNumber));
   if Answer <> nil then
     ClearEvent(Event);
 end;
@@ -866,7 +859,7 @@ begin
 
   if TView.CommandSetChanged then
   begin
-    PassMessage(Self, evBroadcast, cmCommandSetChanged, nil);
+    Message(Self, evBroadcast, cmCommandSetChanged, nil);
     TView.CommandSetChanged := False;
   end;
 

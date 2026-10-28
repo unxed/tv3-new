@@ -3,15 +3,16 @@
   TSortedListBox, TFileList, TDirEntry, TDirCollection, TDirListBox), source/tvision/tfilecol.cpp,
   source/tvision/tfillist.cpp, source/tvision/tdircoll.cpp, source/tvision/tdirlist.cpp, source/tvision/tvtext1.cpp
   (the tables of TDirListBox), include/tvision/ttypes.h, include/tvision/config.h, include/tvision/tv.h,
-  include/tvision/views.h
+  include/tvision/views.h, include/tvision/util.h, source/tvision/misc.cpp (message)
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
   read, write, build and streamableName of the classes, and the constructors with StreamableInit, belong to a later
   unit.
 
+  message() sends a message to a view; it is Message of TvViews.
+
   Parts of the C++ that have no unit yet, or no source among the files above:
-    - message() sends a message to a view; MessageHook of TvViews stands for it and does nothing while it is nil.
     - TSortedListBox: its source file is not among the inputs. The class is declared as the header gives it, with
       the member that the header defines (List) and the constructor, which only calls the one of TListBox. Its
       NewList is SortedListBoxNewListHook and does nothing while that is nil; its handleEvent is not translated, so
@@ -219,14 +220,6 @@ var
   SearchKey: TSearchRec;
   { The entry that is sent when a directory has no file. }
   NoFileRecord: TSearchRec;
-
-{ Sends a message through the hook; nothing happens while there is none. }
-procedure SendNotice(Receiver: TView; What, Command: Word; Info: Pointer);
-begin
-  if not Assigned(MessageHook) then
-    Exit;
-  MessageHook(Receiver, What, Command, Info);
-end;
 
 { Orders two names byte by byte, as strcmp does: a name that begins another one is the smaller. }
 function CompareNames(const FirstName, SecondName: ShortString): Integer;
@@ -489,12 +482,12 @@ end;
 procedure TFileList.FocusItem(ItemIndex: SmallInt);
 begin
   inherited FocusItem(ItemIndex);
-  SendNotice(Owner, evBroadcast, cmFileFocused, List.At(ItemIndex));
+  Message(Owner, evBroadcast, cmFileFocused, List.At(ItemIndex));
 end;
 
 procedure TFileList.SelectItem(ItemIndex: SmallInt);
 begin
-  SendNotice(Owner, evBroadcast, cmFileDoubleClicked, List.At(ItemIndex));
+  Message(Owner, evBroadcast, cmFileDoubleClicked, List.At(ItemIndex));
 end;
 
 function TFileList.DataSize: Word;
@@ -635,9 +628,9 @@ begin
 
   hasEntries := (List <> nil) and (List.GetCount > 0);
   if hasEntries then
-    SendNotice(Owner, evBroadcast, cmFileFocused, List.At(0))
+    Message(Owner, evBroadcast, cmFileFocused, List.At(0))
   else
-    SendNotice(Owner, evBroadcast, cmFileFocused, @NoFileRecord);
+    Message(Owner, evBroadcast, cmFileFocused, @NoFileRecord);
 end;
 
 { TDirEntry }
@@ -718,7 +711,7 @@ end;
 
 procedure TDirListBox.SelectItem(ItemIndex: SmallInt);
 begin
-  SendNotice(Owner, evCommand, cmChangeDir, List.At(ItemIndex));
+  Message(Owner, evCommand, cmChangeDir, List.At(ItemIndex));
 end;
 
 function TDirListBox.IsSelected(ItemIndex: SmallInt): Boolean;

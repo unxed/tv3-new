@@ -1,11 +1,16 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/util.h, source/tvision/drivers2.cpp (cstrlen, strwidth),
   source/tvision/tvtext2.cpp (getAltChar, getAltCharStr, getAltCode, getCtrlChar, getCtrlCharStr, getCtrlCode),
-  source/tvision/newstr.cpp, source/tvision/fmtstr.cpp
+  source/tvision/newstr.cpp, source/tvision/fmtstr.cpp, source/tvision/misc.cpp (strnzcpy, strnzcat)
   See COPYRIGHT.magiblot.
 
-  The functions of util.h whose bodies are in these files. ctrlToArrow is in TvKeys. The other declarations of
-  util.h have no body among the sources or need a type that has no unit, and are not translated.
+  The functions of util.h whose bodies are in these files. ctrlToArrow is in TvKeys and message is Message of
+  TvViews. The other declarations of util.h have no body among the sources or need a type that has no unit, and
+  are not translated.
+
+  A char buffer of dstSize characters, which strnzcpy and strnzcat fill, is a string that is passed as a var
+  parameter and whose length stays below DstSize: the terminating zero of the buffer is the end of the string. The
+  two functions return the length of the string, as they return the length of the buffer.
 
   A TStringView is a string. A TStringView that returns a character of a table (getAltCharStr, getCtrlCharStr) is
   a string of one character, and an empty TStringView is an empty string. The C++ char is a Char, uchar is a Byte
@@ -70,6 +75,19 @@ function NewStr(const S: string): PAnsiChar; overload;
 { Returns AFormat with its specifiers replaced by Args. When the formatting fails, returns AFormat. }
 function FormatStr(const AFormat: string; const Args: array of const): string;
 function VFormatStr(const AFormat: string; const Args: array of const): string;
+
+{ Puts Src into Dst, which stands for a buffer of DstSize characters, where the last character is kept for the
+  terminating zero: at most DstSize - 1 characters of Src are copied. Returns the length of Dst. When DstSize is 0
+  Dst is not changed and the result is 0. Src and Dst must not be the same string. }
+function Strnzcpy(var Dst: string; const Src: string; DstSize: SizeInt): SizeInt;
+
+{ Appends Src to Dst, which stands for a buffer of DstSize characters, where the last character is kept for the
+  terminating zero: Dst is never longer than DstSize - 1 characters. The length of Dst is the number of characters
+  before its first zero character, or its whole length when it has none, and what follows that zero character is
+  dropped. A Dst that is already longer than DstSize - 1 characters is cut to that length, and nothing is appended,
+  where the C++ writes beyond the buffer. Returns the length of Dst. When DstSize is 0 Dst is not changed and the
+  result is 0. Src and Dst must not be the same string. }
+function Strnzcat(var Dst: string; const Src: string; DstSize: SizeInt): SizeInt;
 
 implementation
 
@@ -290,6 +308,43 @@ begin
     on EConvertError do
       Result := AFormat;
   end;
+end;
+
+function Strnzcpy(var Dst: string; const Src: string; DstSize: SizeInt): SizeInt;
+var
+  CopyLen: SizeInt;
+begin
+  Result := 0;
+  if DstSize <= 0 then
+    Exit;
+
+  CopyLen := Length(Src);
+  if CopyLen > DstSize - 1 then
+    CopyLen := DstSize - 1;
+  Dst := Copy(Src, 1, CopyLen);
+  Result := CopyLen;
+end;
+
+function Strnzcat(var Dst: string; const Src: string; DstSize: SizeInt): SizeInt;
+var
+  DstLen, CopyLen, ZeroPos: SizeInt;
+begin
+  Result := 0;
+  if DstSize <= 0 then
+    Exit;
+
+  DstLen := Length(Dst);
+  ZeroPos := Pos(#0, Dst);
+  if ZeroPos > 0 then
+    DstLen := ZeroPos - 1;
+  if DstLen > DstSize - 1 then
+    DstLen := DstSize - 1;
+
+  CopyLen := Length(Src);
+  if CopyLen > DstSize - 1 - DstLen then
+    CopyLen := DstSize - 1 - DstLen;
+  Dst := Copy(Dst, 1, DstLen) + Copy(Src, 1, CopyLen);
+  Result := DstLen + CopyLen;
 end;
 
 end.

@@ -1,16 +1,15 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (the options cdNormal, cdNoLoadDir and cdHelpButton, the commands cmChangeDir
   and cmRevert, TChDirDialog), source/tvision/tchdrdlg.cpp, include/tvision/ttypes.h (EOS),
-  source/tvision/tvtext1.cpp (the text of the drives)
+  source/tvision/tvtext1.cpp (the text of the drives), include/tvision/util.h, source/tvision/misc.cpp
   See COPYRIGHT.magiblot.
 
   Test program of the unit TvChDir.
 
-  The display is a screen of 60 by 20 cells in memory and the application has only a desktop. The hook of the messages
-  delivers a message to its receiver as an event and counts the expired timers, so that a command that a list box
-  sends to its owner reaches the dialog. The hook that stands for getCurDir gives a directory that does not exist, so
-  that the lists of directories hold only the path to it; the hook that stands for strnzcpy cuts a text to the size
-  of the buffer less one. The texts of the dialog are set to short words after a check that they start empty. The
+  The display is a screen of 60 by 20 cells in memory and the application has only a desktop. The application counts
+  the expired timers that it gets. A command that a list box sends to its owner reaches the dialog. The hook that
+  stands for getCurDir gives a directory that does not exist, so that the lists of directories hold only the path to
+  it. The texts of the dialog are set to short words after a check that they start empty. The
   application puts the command cmOK from its Idle when a flag is set, which closes a message box, and takes a copy of
   the text and the title of the box that is on top when the loop first asks for an event. The posted event and the
   wake-up of the threads reach the loop of ExecView on the desktop. }
@@ -69,6 +68,7 @@ type
     CapturedText: string;
     CapturedTitle: string;
     constructor Create; reintroduce;
+    procedure HandleEvent(var Event: TEvent); override;
     procedure Idle; override;
     procedure GetEvent(var Event: TEvent); override;
   private
@@ -188,32 +188,9 @@ procedure OnScreenWrite(X, Y: Integer; Cells: PScreenCell; Count: Integer);
 begin
 end;
 
-function OnMessage(Receiver: TView; What, Command: Word; InfoPtr: Pointer): Pointer;
-var
-  delivered: TEvent;
-begin
-  Result := nil;
-  if (What = evBroadcast) and (Command = cmTimerExpired) then
-    Inc(TimerMsgCount);
-  if Receiver = nil then
-    Exit;
-  FillChar(delivered, SizeOf(delivered), 0);
-  delivered.What := What;
-  delivered.Message.Command := Command;
-  delivered.Message.InfoPtr := InfoPtr;
-  Receiver.HandleEvent(delivered);
-  if delivered.What = evNothing then
-    Result := delivered.Message.InfoPtr;
-end;
-
 function FakeCurDir: string;
 begin
   Result := 'C:' + FakeDir;
-end;
-
-function CopyForTest(const Source: string; BufferSize: Integer): string;
-begin
-  Result := Copy(Source, 1, BufferSize - 1);
 end;
 
 function MakeDesk(R: TRect): TDeskTop;
@@ -350,6 +327,16 @@ constructor TTestApp.Create;
 begin
   inherited Create(nil, nil, @MakeDesk);
   DeadlineCmd := cmCancel;
+end;
+
+procedure TTestApp.HandleEvent(var Event: TEvent);
+begin
+  if Event.What = evBroadcast then
+    case Event.Message.Command of
+      cmTimerExpired:
+        TimerMsgCount := TimerMsgCount + 1;
+    end;
+  inherited HandleEvent(Event);
 end;
 
 procedure TTestApp.Idle;
@@ -580,14 +567,6 @@ begin
   dlg := TPeekDialog.Create(cdNormal, 1);
   Check(dlg.InputOf.Data = '/ab', 'a path of four characters loses its separator');
   TvObject.DestroyObject(dlg);
-
-  FakeDir := DeepDir;
-  StrNZCopyHook := nil;
-  dlg := TPeekDialog.Create(cdNormal, 1);
-  Check((dlg.InputOf.Data = '') and (dlg.ListOf.List.GetCount = 4),
-    'without the hook of strnzcpy the line keeps its text and the list is loaded');
-  TvObject.DestroyObject(dlg);
-  StrNZCopyHook := @CopyForTest;
 end;
 
 procedure TestRevert;
@@ -864,7 +843,6 @@ begin
   TEventQueue.Backend := FakeEvents;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  MessageHook := @OnMessage;
   TDeskTop.DefaultBkgrnd := '.';
 
   TestConstants;
@@ -879,7 +857,6 @@ begin
   TChDirDialog.DrivesText := 'Drives';
   TChDirDialog.InvalidText := 'Bad dir';
   GetCurDirHook := @FakeCurDir;
-  StrNZCopyHook := @CopyForTest;
 
   DrainPosted;
   EventTimeoutMs := 20;
@@ -898,8 +875,6 @@ begin
   TvObject.DestroyObject(App);
   TAppInit.Shutdown;
   GetCurDirHook := nil;
-  StrNZCopyHook := nil;
-  MessageHook := nil;
   ScreenWriteHook := nil;
   CaretPositionHook := nil;
   TEventQueue.Backend := SavedEvents;
