@@ -81,6 +81,8 @@ class StandardTests(unittest.TestCase):
             fh.write("# table\n0x80\t0x00C7\t#CAPITAL C\n0x81\t0x00FC\t#SMALL U\n")
         with open(os.path.join(facts, "T.ucm"), "w") as fh:
             fh.write("CHARMAP\n<U20AC> \\xD5 |0\nEND CHARMAP\n")
+        with open(os.path.join(facts, "IBMGRAPH.TXT"), "w") as fh:
+            fh.write("# graphics\n263A\t01\t01\t#\tWHITE SMILING FACE\n2302\t--\t7F\t#\tHOUSE\n")
         self.allowed = prove.Allowed(None, os.path.join(self.tmp.name, "facts"))
 
     def tearDown(self):
@@ -113,6 +115,15 @@ class StandardTests(unittest.TestCase):
         toks = [("l", "n199"), ("l", "n8364"), ("l", "n213")]
         self.assertTrue(self.check(toks, "standard charsets/CP1.TXT,charsets/T.ucm")[0])
         self.assertFalse(self.check(toks)[0])
+
+    def test_ibmgraph_hexadecimal_values(self):
+        proof = "standard charsets/IBMGRAPH.TXT"
+        toks = [("l", "n9786"), ("p", ","), ("l", "n1"), ("l", "n8962"), ("l", "n127")]
+        ok, why = self.check(toks, proof)
+        self.assertTrue(ok, why)
+        ok, why = self.check([("l", "n9786"), ("l", "n9787")], proof)
+        self.assertFalse(ok)
+        self.assertIn("n9787", why)
 
 
 class ApiTests(unittest.TestCase):

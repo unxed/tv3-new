@@ -69,6 +69,10 @@
     {
       "document": "Character set mapping table ibm-1125_P100-1997.ucm",
       "url": "https://raw.githubusercontent.com/unicode-org/icu-data/bae5ca647fa41703393dbf00240ec1b807a9c353/charset/data/ucm/ibm-1125_P100-1997.ucm"
+    },
+    {
+      "document": "IBM PC memory-mapped video graphics to Unicode (IBMGRAPH.TXT)",
+      "url": "https://unicode.org/Public/MAPPINGS/VENDORS/MISC/IBMGRAPH.TXT"
     }
   ],
   "inputs": [
