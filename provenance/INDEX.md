@@ -2,7 +2,7 @@
 
 | file | kind | sources | versions | pending versions | proofs |
 | --- | --- | --- | --- | --- | --- |
-| `.github/workflows/ci.yml` | specification | specification:infra-requirements | 5 | 5 | 0 |
+| `.github/workflows/ci.yml` | specification | specification:infra-requirements | 6 | 6 | 0 |
 | `.gitignore` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `CLAUDE.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `COPYRIGHT.magiblot` | verbatim | magiblot/tvision:COPYRIGHT@a200eae | 1 | 1 | 0 |
@@ -204,10 +204,12 @@
 | `tools/audit/run.sh` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/tokens.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/audit/verdict.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
+| `tools/gen_tables.py` | new | - | 1 | 1 | 0 |
 | `tools/gen_width.py` | standard | Unicode 15.0.0 EastAsianWidth.txt; Unicode 15.0.0 DerivedGeneralCategory.txt | 1 | 1 | 0 |
 | `tools/test.sh` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_audit.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_corpora.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
+| `tools/tests/test_gen_tables.py` | new | - | 1 | 1 | 0 |
 | `tools/tests/test_prove.py` | specification | specification:infra-requirements | 2 | 2 | 0 |
 | `tools/tests/test_provenance_lint.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_text_lint.py` | specification | specification:infra-requirements | 3 | 3 | 0 |

@@ -1,0 +1,16 @@
+{
+  "path": "tools/gen_tables.py",
+  "kind": "new",
+  "sources": [],
+  "inputs": [],
+  "implementer": "implementer 73",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "3053b5154e3924acf9d6ef54874beece3d72d7ef",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
