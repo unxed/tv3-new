@@ -41,6 +41,7 @@ provenance check: pending version docs/API-NAMES.md 05f3ceee3c46a5fa72b4ff668c23
 provenance check: pending version docs/API-NAMES.md c3b8dafef5375379352e599842d4edbb7eeecc7c
 provenance check: pending version docs/API-NAMES.md 25f35b3ff9ef8c44fad092a384bfa9cf2bab74a3
 provenance check: pending version docs/API-NAMES.md b11ef95fbab2eb1420faadacb6594bc36de7ee42
+provenance check: pending version docs/API-NAMES.md feb195cd66c08c677df0298da01de164e4dd75ab
 provenance check: pending version docs/ASYNC.md 24ad567bf8fa7b1f4f74affb5d6e8c05b4640d93
 provenance check: pending version docs/CLEANROOM.md 9385dcae81d3162489c202e25f4544338a222da6
 provenance check: pending version src/tvactions.pas 959a5bd05279e29dbc23beb3e1d04d6306ece9a1
@@ -85,6 +86,7 @@ provenance check: pending version src/tvcstr.pas 576882bc971cf2070d8c3d1574ff997
 provenance check: pending version src/tvdialog.pas e77cbadd817a99f4c7c4d42a993299956e2a770c
 provenance check: pending version src/tvdialog.pas 66567b4c292f022cd97ec814df5932c09d0251f0
 provenance check: pending version src/tvdialog.pas 4ae8585859c27a5ac8972db3372be2a46847a704
+provenance check: pending version src/tvdispbuf.pas 32171b119261ffde4348c6c47dddb651e5ac7998
 provenance check: pending version src/tvdrawbuf.pas a2cf9e8129d91d6553fe749da8d12adfe978a36f
 provenance check: pending version src/tvdrawbuf.pas 4bc3fc63454f870f2997ffebfabe1e5efb1dc1cd
 provenance check: pending version src/tvevents.pas eb4fac08162c48739f86e28dedb1b3ccfd1b9eb3
@@ -198,6 +200,7 @@ provenance check: pending version tests/t_crc.pas 402c1c8f77a9db939b45e016448fbd
 provenance check: pending version tests/t_cstr.pas b7ce3547efe01b5916b02a4efea99f8c4113b550
 provenance check: pending version tests/t_dialog.pas 7a4e2639fecfe9bd5e8accea7a5a3a3c42e9bdf4
 provenance check: pending version tests/t_dialog.pas 2ff7710833c6f3323747c9e06f07d6e1c30c4003
+provenance check: pending version tests/t_dispbuf.pas bea7ce684bb115181afb22e825134a6a79ac0481
 provenance check: pending version tests/t_drawbuf.pas 039a55e3e66665f7ab0decb4f57c20fb56e75141
 provenance check: pending version tests/t_events.pas 9c022f8e25dddd634a3ec065c1b13ba8f4109723
 provenance check: pending version tests/t_evqueue.pas fc3da252b87a36c917c1a2e23a4782d6573c57b2
