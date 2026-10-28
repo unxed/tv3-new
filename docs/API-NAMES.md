@@ -778,3 +778,130 @@ CF_TEXT is the value 1 of the clipboard format of plain text. The routines of Tv
 takes a string; BridgeToConsole is that procedure, BridgeCon is the thread variable that holds the ConsoleCtl it writes to
 while a member of TTermIO runs, and RunWithConsole sets it and calls a routine of TvEvents with BridgeToConsole as the
 writer. SendText writes a text with the member Write of ConsoleCtl.
+
+## Added by the translation of TvUnix
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TNcursesKeys
+added: TUnixEventBackend
+added: TUnixScreenBackend
+added: TUnixClipboardBackend
+added: UnixScreenWrite
+added: UnixCaretPosition
+added: Platform.DestroyInstance
+added: Platform.IsSetUp
+added: SigwinchHandler.Make
+added: SignalHandler.HandledSignal
+added: UnixConsoleAdapter.Make
+added: UnixClipboard.Enabled
+added: UnixClipboard.ExecutableExists
+added: UnixClipboard.ReadSubprocess
+added: UnixClipboard.WriteSubprocess
+added: NcursesInputGetter.TimeoutMs
+added: NcursesInputGetter.WaitReadable
+added: NcursesInput.EnterRawMode
+added: NcursesInput.LeaveRawMode
+added: NcursesInput.TryLegacyKey
+added: NcursesDisplay.Send
+added: StderrRedirector.Redirect
+added: StderrRedirector.CloseAll
+added: SmallerOf
+added: LargerOf
+added: WriteAll
+added: IsTerminal
+added: SetActionHandler
+added: ActionHandler
+added: SlotOf
+added: SignalCode
+added: IsSynchronousSignal
+added: DetectTermCap
+added: ControlKeyEvent
+added: IsLetterCode
+added: MakeCommand
+added: CopyCommandCount
+added: CopyCommandAt
+added: PasteCommandCount
+added: PasteCommandAt
+added: IsExecutableFile
+added: AppendText
+added: BuildEnvironment
+added: WritePipe
+added: TArgList
+added: TPtrList
+added: TPrepareKind
+added: TClipCommand
+added: TProcessInfo
+added: TSignalSlot
+added: TSimpleSignalProc
+added: TInfoSignalProc
+added: PTermiosRec
+added: DefaultColumns
+added: DefaultRows
+added: ScreenChangedCommand
+added: ErrInterrupted
+added: ErrWouldBlock
+added: HandlerDefault
+added: HandlerIgnore
+added: DefaultSearchPath
+added: ChunkSize
+added: FdCloseOnExec
+
+TUnixEventBackend, TUnixScreenBackend and TUnixClipboardBackend are the descendants of TEventBackend, TScreenBackend and
+TClipboardBackend that stand for THardwareInfo on a terminal of a Unix system; all three call the singleton Platform.
+UnixScreenWrite and UnixCaretPosition stand for THardwareInfo::screenWrite and THardwareInfo::setCaretPosition, and are
+the values for ScreenWriteHook and CaretPositionHook of TvViews. The member eventQ of THardwareInfo, with eventCount and
+the enumerator eventQSize, is EventQ, EventCount and eventQSize of TUnixEventBackend; getPendingEvent and readEvents are
+GetPendingEvent and ReadEvents, and the static insertState is InsertState, which starts as True. THardwareInfo::getMouseEvent
+and getKeyEvent are GetMouseEvent and GetKeyEvent, and THardwareInfo::clearPendingEvent does nothing, as it does in the C++
+for the platform of a Unix system.
+
+The classes InputAdapter, ConsoleAdapter, StderrRedirector, SigwinchHandler, SignalHandler, NcursesDisplay, NcursesInputGetter,
+NcursesInput, UnixClipboard, UnixConsoleAdapter and Platform keep their names. NcursesDisplay and NcursesInput work on the
+descriptors of ConsoleCtl with the sequences of TvAnsi, TvTermIo and TvEvents, and use no curses library. The members display
+and sources of ConsoleAdapter are the public fields Display and Sources, an array of TEventSource. The text parameters of
+setClipboardText of ConsoleAdapter, UnixConsoleAdapter, UnixClipboard and Platform are AnsiString, and the parameter of
+requestClipboardText is a TTextProc. The static functions create of SigwinchHandler and of UnixConsoleAdapter are Make, because
+Create is the constructor; the constructor of NcursesDisplay is the static function create with its private constructor
+joined, and the constructor of NcursesInput does not use its display. The static member handledSignals of SignalHandler is the
+function HandledSignal, which gives the signal at an index below the constant HandledSignalCount, and SignalHandlerCallback is the
+procedure type of the callback. The data member pendingCount of NcursesInputGetter is the function PendingCount, which counts the
+bytes that were given back with Unget and the bytes that were read from the descriptor and not taken. The input getter waits
+for TimeoutMs milliseconds for a byte, the time that wtimeout sets in the C++, and NcursesInput.GetChNb sets it to 0 for one
+read. The private members that Platform has for the console (setUpConsole, restoreConsole, checkConsole, createConsole and
+signalCallback) keep their names, and the two forms of setUpConsole and of restoreConsole are overloaded. The platform is
+a singleton that the C++ never frees; DestroyInstance gives the console back and frees it, and IsSetUp tells whether a console
+other than the dummy one is in use. The members of Platform that the C++ declares for a Windows console (sizeChanged) and the
+character operations (charOps, initLocale, initCharOps, initCharWidth and initCharToLower) are not translated.
+
+The macros of the signal handling are not used: the actions of the signals are SigActionRec of BaseUnix, the handler of an action is
+its first field, and a set of signals is a row of bits. The functions makeDefaultAction, makeHandlerAction, the comparison of two
+actions, isCustomHandler, invokeHandlerOrDefault and invokeDefault of sighandl.cpp are DefaultAction, HandlerAction, SameAction,
+IsCustomHandler, InvokeHandlerOrDefault and InvokeDefault inside the unit, and handleSignal is HandleSignal; the flags that SameAction
+compares are SA_SIGINFO and SA_RESTART. The information of a signal is a Pointer, and SignalCode reads the code of it. The signal is
+raised again with fpKill on the process. The members of SignalHandler::HandlerInfo are the record TSignalSlot, the array Slots holds
+one for each signal of the list, and SlotOf gives its index. The handler of SIGWINCH is SigwinchEntry and the callback that gives
+the command cmScreenChanged is EmitScreenChangedEvent; ScreenChangedCommand is the value of cmScreenChanged of TvViews.
+
+The functions isSameFile, writeFile and dumpPipe of errredir.cpp are SameFile, WriteAll and DumpPipe. The pipe is emptied by reading it
+without blocking until nothing is left, where the C++ reads the number of bytes that FIONREAD gives. IsTerminal stands for isatty.
+Redirect holds the chain of calls of the constructor of StderrRedirector, with the same order, and CloseAll closes the descriptors
+that are open.
+
+The tables copyCommands and pasteCommands of unixclip.cpp are the functions CopyCommandAt and PasteCommandAt with CopyCommandCount and
+PasteCommandCount; the type Command is TClipCommand, the function pointer prepare is the enumeration TPrepareKind, and the argument
+vectors are dynamic arrays (TArgList), with the pointers that exec takes in TPtrList. The functions wslCopyPrepare and wslPastePrepare
+are the cases pkWslCopy and pkWslPaste, with Utf16LeToUtf8 for the second; WslPasteScript is the text wslPasteCmd, which gets the
+process number at the place of the placeholder when it is made. commandIsAvailable is CommandIsAvailable, executable_exists is
+FindExecutable (which gives the path) and ExecutableExists, run_subprocess is RunSubprocess with TProcessInfo, close_subprocess is
+CloseSubprocess, read_pipe and write_pipe are ReadPipe and WritePipe, and read_subprocess and write_subprocess are the class
+functions ReadSubprocess and WriteSubprocess. The program is searched along PATH by FindExecutable and started with fpExecVE, with the
+environment of the process and the variables of the command, which BuildEnvironment makes before the fork; AppendText adds a text to
+a TArgList. The file that executable_exists finds is a regular file with the permission of others to execute it, as IsExecutableFile
+tests. Enabled is a class variable that switches the programs off, which has no counterpart.
+
+The keys of ncursinp.cpp that a control character gives (fromNonPrintableAscii) are made by ControlKeyEvent, and TryLegacyKey decodes
+ESC O and a letter, a key of the application keypad that ncurses decodes with its terminal database. The number of colors that
+TermCap::getDisplayCapabilities gives is DetectTermCap, which reads TERM and COLORTERM. EnterRawMode and LeaveRawMode stand for the
+terminal mode that raw, noecho and nonl set and that endwin restores; PTermiosRec is the pointer to the record of the saved mode.
+SmallerOf and LargerOf are min and max.

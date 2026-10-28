@@ -9,7 +9,7 @@
 | `COPYRIGHT.tvterm` | verbatim | magiblot/tvterm:COPYRIGHT@f591b9c | 1 | 1 | 0 |
 | `LICENSE` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `README.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `docs/API-NAMES.md` | specification | specification:infra-requirements | 32 | 32 | 0 |
+| `docs/API-NAMES.md` | specification | specification:infra-requirements | 33 | 33 | 0 |
 | `docs/ASYNC.md` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `docs/CLEANROOM.md` | specification | specification:protocol | 1 | 1 | 0 |
 | `src/tvactions.pas` | specification | specification:tvactions | 2 | 2 | 0 |
@@ -58,6 +58,7 @@
 | `src/tvtermosbase.pas` | specification | specification:tvtermosbase | 2 | 2 | 0 |
 | `src/tvtext.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
 | `src/tvtimer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 2 | 2 | 0 |
+| `src/tvunix.pas` | translation | magiblot/tvision:include/tvision/internal/platform.h:1-147; magiblot/tvision:source/platform/platform.cpp:1-148; magiblot/tvision:include/tvision/internal/unixcon.h:1-50; magiblot/tvision:source/platform/unixcon.cpp:1-73; magiblot/tvision:include/tvision/internal/sigwinch.h:1-36; magiblot/tvision:source/platform/sigwinch.cpp:1-63; magiblot/tvision:include/tvision/internal/sighandl.h:1-81; magiblot/tvision:source/platform/sighandl.cpp:1-157; magiblot/tvision:include/tvision/internal/errredir.h:1-26; magiblot/tvision:source/platform/errredir.cpp:1-101; magiblot/tvision:include/tvision/internal/ncurdisp.h:1-60; magiblot/tvision:source/platform/ncurdisp.cpp:1-106; magiblot/tvision:include/tvision/internal/ncursinp.h:1-59; magiblot/tvision:source/platform/ncursinp.cpp:1-475; magiblot/tvision:include/tvision/internal/unixclip.h:1-24; magiblot/tvision:source/platform/unixclip.cpp:1-409; magiblot/tvision:source/platform/hardware.cpp:1-138; magiblot/tvision:include/tvision/hardware.h:1-327 | 1 | 1 | 0 |
 | `src/tvustr.pas` | specification | specification:tvustr | 2 | 2 | 0 |
 | `src/tvutf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 3 | 3 | 1 |
 | `src/tvutil.pas` | translation | magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/drivers2.cpp:1-118; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/newstr.cpp:1-48; magiblot/tvision:source/tvision/fmtstr.cpp:1-61; magiblot/tvision:source/tvision/misc.cpp:1-79 | 3 | 3 | 0 |
@@ -114,6 +115,7 @@
 | `tests/t_termosbase.pas` | specification | specification:tvtermosbase | 1 | 1 | 0 |
 | `tests/t_text.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 1 | 1 | 0 |
 | `tests/t_timer.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/ttimerqu.cpp:1-140 | 1 | 1 | 0 |
+| `tests/t_unix.pas` | translation | magiblot/tvision:include/tvision/internal/platform.h:1-147; magiblot/tvision:source/platform/platform.cpp:1-148; magiblot/tvision:include/tvision/internal/unixcon.h:1-50; magiblot/tvision:source/platform/unixcon.cpp:1-73; magiblot/tvision:include/tvision/internal/sigwinch.h:1-36; magiblot/tvision:source/platform/sigwinch.cpp:1-63; magiblot/tvision:include/tvision/internal/sighandl.h:1-81; magiblot/tvision:source/platform/sighandl.cpp:1-157; magiblot/tvision:include/tvision/internal/errredir.h:1-26; magiblot/tvision:source/platform/errredir.cpp:1-101; magiblot/tvision:include/tvision/internal/ncurdisp.h:1-60; magiblot/tvision:source/platform/ncurdisp.cpp:1-106; magiblot/tvision:include/tvision/internal/ncursinp.h:1-59; magiblot/tvision:source/platform/ncursinp.cpp:1-475; magiblot/tvision:include/tvision/internal/unixclip.h:1-24; magiblot/tvision:source/platform/unixclip.cpp:1-409; magiblot/tvision:source/platform/hardware.cpp:1-138; magiblot/tvision:include/tvision/hardware.h:1-327 | 1 | 1 | 0 |
 | `tests/t_ustr.pas` | specification | specification:tvustr | 1 | 1 | 0 |
 | `tests/t_utf8.pas` | translation | magiblot/tvision:include/tvision/internal/utf8.h:1-112; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/ttext.h:1-524 | 2 | 2 | 0 |
 | `tests/t_util.pas` | translation | magiblot/tvision:include/tvision/util.h:1-121; magiblot/tvision:source/tvision/drivers2.cpp:1-118; magiblot/tvision:source/tvision/tvtext2.cpp:1-227; magiblot/tvision:source/tvision/newstr.cpp:1-48; magiblot/tvision:source/tvision/fmtstr.cpp:1-61; magiblot/tvision:source/tvision/misc.cpp:1-79 | 2 | 2 | 0 |
