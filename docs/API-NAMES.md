@@ -680,3 +680,55 @@ ASelected. A THelpTopic that is asked for a cross reference whose offset lies be
 length 0 and the number of the reference, and a length that reaches beyond its paragraph is cut at the end of the
 paragraph, where the C++ reads beyond the block. A negative number is not an entry of THelpIndex, and SetCrossRef ignores
 a number below 0 as it ignores a number beyond the list. The bars of THelpWindow are made one after the other, the horizontal bar first.
+
+## Added by the translation of TvTermIo
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TWriterCall
+added: BridgeCon
+added: BridgeToConsole
+added: RunWithConsole
+added: SendText
+added: ByteAt
+added: PutSextet
+added: StoreByte
+added: SextetOf
+added: Base64Alphabet
+added: Base64EncodeText
+added: Base64DecodeText
+added: CodePageCharOf
+added: PrintableCodePageCharOf
+added: LittleEndian32
+added: FrameFar2lRequest
+added: MakeClientId
+added: Far2lOpenRequest
+added: Far2lCloseRequest
+
+The namespace TermIO is the class TTermIO, whose members are class functions and class procedures. The parameter con of
+the members that write is a ConsoleCtl of TvTermOs. The types InputState, GetChBuf, CSIData, InputGetter and
+ParseResult are TInputState, TGetChBuf, TCSIData, TInputGetter and TParseResult of TvEvents, which holds the parsers
+and the key tables; the members of TTermIO that parse, and normalizeKey, call the routines of TvEvents of the same name.
+The function getenv of keyModsOn is the lookup of TvEvents.KeyModsOn. The function readUntilBelOrSt returns a string
+where the C++ returns a block of characters that is null on failure, and the text ends at its first zero character. The
+function pointer parameter of requestClipboardText is a TTextProc, and the text parameters of setClipboardText and of the
+clipboard routines are AnsiString, so that a text is not cut at 255 bytes.
+
+The functions encodeBase64 and decodeBase64 are EncodeBase64 and DecodeBase64, in the forms that take and return a
+string; the forms that write into a given block have no counterpart. The decoder gives the value 128 to a character that
+is not in the alphabet and uses it in the same sums as the table of the C++ does. The table b64e is Base64Alphabet and
+the table b64d is the function SextetOf; ByteAt, PutSextet and StoreByte read and write one byte or one group of six bits
+of a text. Base64EncodeText and Base64DecodeText are the conversions that the variables Base64Encode and Base64Decode of
+TvEvents hold, and CodePageCharOf and PrintableCodePageCharOf are the ones that CpFromUtf8 and CpPrintableFromUtf8
+hold, made with fromUtf8 and printableFromUtf8 of CpTranslator. The initialization of the unit sets these four variables
+and Far2lEnableSeq and Far2lDisableSeq of TvEvents.
+
+The functions setFar2lClipboard and requestFar2lClipboard are SetFar2lClipboard and RequestFar2lClipboard, and the
+functions setOsc52Clipboard and requestOsc52Clipboard are inside the unit. The template concat and the function
+pushFar2lRequest are LittleEndian32 and FrameFar2lRequest, with the sequences of the three requests built by the
+functions Far2lOpenRequest and Far2lCloseRequest and inside the two clipboard routines. The text f2lClientId is
+the variable of the unit that MakeClientId fills with the time as 32 decimal digits when the unit starts. The constant
+CF_TEXT is the value 1 of the clipboard format of plain text. The routines of TvEvents write through a procedure that
+takes a string; BridgeToConsole is that procedure, BridgeCon is the thread variable that holds the ConsoleCtl it writes to
+while a member of TTermIO runs, and RunWithConsole sets it and calls a routine of TvEvents with BridgeToConsole as the
+writer. SendText writes a text with the member Write of ConsoleCtl.

@@ -1,0 +1,88 @@
+{
+  "path": "tests/t_termio.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/internal/termio.h",
+      "lines": "1-171"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/platform/termio.cpp",
+      "lines": "1-1004"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/internal/far2l.h",
+      "lines": "1-20"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/platform/far2l.cpp",
+      "lines": "1-258"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/internal/base64.h",
+      "lines": "1-36"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/platform/base64.cpp",
+      "lines": "1-99"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/internal/codepage.h",
+      "lines": "1-43"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/termio.h",
+      "sha256": "d0925837666bed6ffd55f58bfb3bc326b8ddda52c7e0eb3f02aaee8d9b812255"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/termio.cpp",
+      "sha256": "049e30c939f02e115ebff0236bf7a469dae4d5b1bd4dba70b387d7a0e559d786"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/far2l.h",
+      "sha256": "562093258137d4f4c24b48518870edc816179b67205add26c52c6739883116a6"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/far2l.cpp",
+      "sha256": "78bb269ed6003a7513bbc51bc7de432af5fdddd37dc09431933227a4dbd3302b"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/base64.h",
+      "sha256": "095f91b5c06d514311015057bdad545366ff104581823545007dd1a7f2554d3c"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/base64.cpp",
+      "sha256": "ac6f68027a7f36e6dd0407f7a7cb32902a3d19b24d2ad2e9bf74abae24c62920"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/codepage.h",
+      "sha256": "1b7711d980066490098a1c7b0fbf8e03a2fbc0632dda9bbda3d5d018c34b5041"
+    }
+  ],
+  "implementer": "implementer 59",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "aa4540c7806e59dd1891d3714721cceeab1f16d4",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
