@@ -1116,3 +1116,125 @@ gives the held button of the lowest number. A release in ProcessMouse, whose eve
 button of the lowest number. ProcessPaste is the text of a paste with the brackets of mode 2004 when it is set,
 ProcessFocus is the report of focus in and out when mode 1004 is set, and ProcessKeypad is a character of the numeric
 keypad, which is the SS3 sequence of the character in application mode; KeypadLetter gives its final character.
+
+## Added by the translation of TvVtScreen
+
+The names below have no counterpart in the C++ and are listed one per line, as "added: <name>".
+
+added: TVtScreen
+added: TVtScreen.SetPenColors
+added: TVtScreen.SetPenAttrs
+added: TVtScreen.ResetPen
+added: TVtScreen.PutChar
+added: TVtScreen.PutText
+added: TVtScreen.LineFeed
+added: TVtScreen.ReverseIndex
+added: TVtScreen.CarriageReturn
+added: TVtScreen.Backspace
+added: TVtScreen.Tab
+added: TVtScreen.BackTab
+added: TVtScreen.SetTabStop
+added: TVtScreen.ClearTabStop
+added: TVtScreen.ClearAllTabStops
+added: TVtScreen.EraseInLine
+added: TVtScreen.EraseInDisplay
+added: TVtScreen.EraseChars
+added: TVtScreen.InsertChars
+added: TVtScreen.DeleteChars
+added: TVtScreen.InsertLines
+added: TVtScreen.DeleteLines
+added: TVtScreen.ScrollUp
+added: TVtScreen.ScrollDown
+added: TVtScreen.SetScrollRegion
+added: TVtScreen.MoveTo
+added: TVtScreen.MoveBy
+added: TVtScreen.SaveCursor
+added: TVtScreen.RestoreCursor
+added: TVtScreen.SetCursorVisible
+added: TVtScreen.SetCursorBlink
+added: TVtScreen.EnableAltScreen
+added: TVtScreen.Resize
+added: TVtScreen.GetCell
+added: TVtScreen.LineContinues
+added: TVtScreen.Cols
+added: TVtScreen.Rows
+added: TVtScreen.CursorX
+added: TVtScreen.CursorY
+added: TVtScreen.WrapPending
+added: TVtScreen.AutoWrap
+added: TVtScreen.CursorVisible
+added: TVtScreen.CursorBlink
+added: TVtScreen.MouseEnabled
+added: TVtScreen.AltScreen
+added: TVtScreen.TopMargin
+added: TVtScreen.BottomMargin
+added: TVtScreen.History
+added: TVtScreen.BlankCell
+added: TVtScreen.MakeBlankRow
+added: TVtScreen.NewGrid
+added: TVtScreen.RowFromLine
+added: TVtScreen.Damage
+added: TVtScreen.DamageAll
+added: TVtScreen.ResetTabs
+added: TVtScreen.ReleasePartner
+added: TVtScreen.ClearSpan
+added: TVtScreen.RepairRow
+added: TVtScreen.PushRowToHistory
+added: TVtScreen.ShiftLines
+added: TVtScreen.WrapLine
+added: TVtScreen.AppendMark
+added: TVtScreen.AdjustGridRows
+added: TVtScreen.AdjustGridCols
+added: Scrollback.PopLine
+added: Scrollback.LineAt
+added: Scrollback.Clear
+added: Scrollback.SlotOf
+added: TVtColorKind
+added: TVtColor
+added: TVtAttr
+added: TVtAttrs
+added: TVtCell
+added: TVtCellArray
+added: TVtRow
+added: TVtRowArray
+added: TVtLine
+added: PVtLine
+added: VtMaxChars
+added: VtWideTrail
+added: DefaultColor
+added: IndexedColor
+added: RgbColor
+added: DefaultCell
+added: TCellRow
+added: ToTColor
+added: LoadRow
+added: StoreRow
+added: IsWideTrail
+added: IsWideLead
+added: RowIsBlank
+
+The libvterm library that the C++ emulator uses for the grid is not a source, so the class TVtScreen holds the grid, the
+cursor and the control functions that a terminal needs, and the cell type TVtCell stands for VTermScreenCell. A cell has
+up to VtMaxChars code points (chars), a width, foreground and background colors (TVtColor: default, a palette index or
+RGB) and the attributes of the set TVtAttrs. The first code point is 0 for an erased cell and VtWideTrail, the value
+(uint32_t) -1, for the second cell of a double-width character. The struct Scrollback is the class Scrollback with the
+public field Offset and the constant maxSize; its lines are TVtLine values (Line of the C++, with Cells, Cols and
+Continuation) held in a ring, and LineAt gives the address of the line with a given index, which stands for the access
+lines[i] of the deque. PopLine takes the newest line away, which Resize uses to bring lines back to a screen that grows,
+and Clear empties the history, which EraseInDisplay with the mode 3 uses.
+
+The members updateState, handleScrollbackWheel and copySelection are UpdateState, HandleScrollbackWheel and
+CopySelection; updateSurface, drawScrollbackLine, extractScrollbackLineText and extractTerminalLineText are private
+members, and drawLine, convCell, convAttr and extractCellText are routines of the unit that are not visible outside it.
+The C++ state that updateState compares with (scrollOffset, visibleScrollLines and scrollOverflowed of LocalState) are
+the private fields FShownOffset, FShownLines and FOverflowed, the cursor and mouse state are fields of the class, and the
+damage of the rows is the private array FDamage of RowRange. The title is not part of this unit. The function
+copySelection gives the text as the result, where the C++ passes it to TClipboard::setText. The constant
+mouseWheelScrollLines keeps its name and is a constant of the unit. A TPoint of the C++ state, such as the size, is read
+through Cols and Rows. The pen, the cursor, the margins, the tab stops and the saved cursor are private fields; the pen
+gives the colors and attributes of the cells that PutChar writes, and the cells that erasing and scrolling make have the
+background of the pen and the default foreground.
+
+A cell that stands for an erased cell has no code point, and ConvCell gives the screen cell of it the text of one NUL
+byte without calling the text routines, because CharWidth of TvUtf8 is -1 for the code point 0. A history line that is
+shorter than the surface is completed with such cells, as the C++ completes it with the default cell.
