@@ -1,0 +1,37 @@
+{
+  "path": "src/tvcodepages.pas",
+  "kind": "specification",
+  "sources": [
+    {
+      "specification": "tvcodepages"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "specification:tvcodepages",
+      "sha256": "a9ba3b1665a9d1036138d72f62efbee10cd714976efd36ff6f25218301a7bf6c"
+    },
+    {
+      "origin": "repository:docs/API-NAMES.md",
+      "sha256": "36b8589aa7136bef2842bab58dc5abd556e8982e5e1923e49ed2e60ea4861bf6"
+    },
+    {
+      "origin": "repository:docs/ASYNC.md",
+      "sha256": "22669952d272adad4aea137d9f50edd6038ce18d9abba0eed77dcd1fd23b6878"
+    },
+    {
+      "origin": "repository:src/tvutf8.pas",
+      "sha256": "90f14c9877c4a1b731255e1f28389e16631b4290669cd123d54c2732feae3001"
+    }
+  ],
+  "implementer": "implementer 75",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "7d60edb156c268c777821b1a12dcb43e20fbd2b2",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
