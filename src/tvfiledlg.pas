@@ -130,4 +130,396 @@ var
 
 implementation
 
+uses
+  TvWindow, TvHist, TvApp, TvMsgBox, TvPath, TvUtil;
+
+const
+  { The place of the input line, of its label and of the other views of the dialog. }
+  InputLineRight = 31;
+  ButtonColumnLeft = 35;
+  ButtonColumnRight = 46;
+  ButtonRowStep = 3;
+  { The size that the dialog is made when the screen is wide or tall, and the margins of the middle sizes. }
+  WideScreenColumns = 90;
+  MediumScreenColumns = 63;
+  TallScreenRows = 34;
+  MediumScreenRows = 25;
+  SideMargin = 7;
+  TopMargin = 3;
+  WideGrow = 15;
+  TallGrow = 5;
+  { The smallest size of the dialog. }
+  SmallestWidth = 49;
+  SmallestHeight = 19;
+
+{ The text that StrNZCopyHook gives for Source, put in Target; Target keeps its text while there is no hook. }
+procedure CopyThrough(var Target: string; const Source: string);
+begin
+  if not Assigned(StrNZCopyHook) then
+    Exit;
+  Target := StrNZCopyHook(Source, MaxPath);
+end;
+
+{ The text up to its first zero character, as the copy of trim for a target with a flat memory model takes it. }
+function TrimName(const Source: string): string;
+var
+  zeroPosition: Integer;
+begin
+  zeroPosition := Pos(#0, Source);
+  if zeroPosition = 0 then
+    Result := Source
+  else
+    Result := Copy(Source, 1, zeroPosition - 1);
+end;
+
+{ Cuts a path into the drive, the directory with its last separator, the name and the extension with its dot. }
+procedure SplitPath(const FullPath: string; out DrivePart, DirectoryPart, NamePart, ExtensionPart: string);
+var
+  wholePath, driveOfPath, directoryWithDrive, nameOfPath, extensionOfPath: AnsiString;
+begin
+  wholePath := FullPath;
+  driveOfPath := PathDrive(wholePath);
+  PathSplit(wholePath, directoryWithDrive, nameOfPath, extensionOfPath);
+  DrivePart := driveOfPath;
+  DirectoryPart := Copy(directoryWithDrive, Length(driveOfPath) + 1, Length(directoryWithDrive));
+  NamePart := nameOfPath;
+  ExtensionPart := extensionOfPath;
+end;
+
+{ Puts the four parts of a path together. }
+function MergePath(const DrivePart, DirectoryPart, NamePart, ExtensionPart: string): string;
+begin
+  Result := DrivePart + DirectoryPart + NamePart + ExtensionPart;
+end;
+
+{ TFileInputLine }
+
+constructor TFileInputLine.Create(const Bounds: TRect; MaxLength: SmallInt);
+begin
+  inherited Create(Bounds, MaxLength);
+end;
+
+procedure TFileInputLine.HandleEvent(var Event: TEvent);
+begin
+  inherited HandleEvent(Event);
+  if not Assigned(FileInputLineEventHook) then
+    Exit;
+  FileInputLineEventHook(Self, Event);
+end;
+
+{ TFileInfoPane }
+
+constructor TFileInfoPane.Create(const Bounds: TRect);
+begin
+  inherited Create(Bounds);
+end;
+
+procedure TFileInfoPane.Draw;
+begin
+  if not Assigned(FileInfoPaneDrawHook) then
+    Exit;
+  FileInfoPaneDrawHook(Self);
+end;
+
+procedure TFileInfoPane.HandleEvent(var Event: TEvent);
+begin
+  inherited HandleEvent(Event);
+  if not Assigned(FileInfoPaneEventHook) then
+    Exit;
+  FileInfoPaneEventHook(Self, Event);
+end;
+
+{ TFileDialog }
+
+procedure TFileDialog.AddButton(const Caption: string; ButtonCommand, ButtonFlags: Word; var Area: TRect);
+begin
+  Insert(TButton.Create(Area, Caption, ButtonCommand, ButtonFlags));
+  First.GrowMode := Byte(gfGrowLoX or gfGrowHiX);
+  Area.A.Y := Area.A.Y + ButtonRowStep;
+  Area.B.Y := Area.B.Y + ButtonRowStep;
+end;
+
+procedure TFileDialog.FitToScreen;
+var
+  dialogBounds, screenBounds: TRect;
+  screenSize: TPoint;
+  isWide, isMediumWide, isTall, isMediumTall: Boolean;
+begin
+  dialogBounds := GetBounds;
+  screenSize := TProgram.Application.Size;
+  screenBounds := TProgram.Application.GetBounds;
+
+  isWide := screenSize.X > WideScreenColumns;
+  isMediumWide := (not isWide) and (screenSize.X > MediumScreenColumns);
+  if isWide then
+    dialogBounds.Grow(WideGrow, 0)
+  else if isMediumWide then
+  begin
+    screenBounds.Grow(-SideMargin, 0);
+    dialogBounds.A.X := screenBounds.A.X;
+    dialogBounds.B.X := screenBounds.B.X;
+  end;
+
+  isTall := screenSize.Y > TallScreenRows;
+  isMediumTall := (not isTall) and (screenSize.Y > MediumScreenRows);
+  if isTall then
+    dialogBounds.Grow(0, TallGrow)
+  else if isMediumTall then
+  begin
+    screenBounds.Grow(0, -TopMargin);
+    dialogBounds.A.Y := screenBounds.A.Y;
+    dialogBounds.B.Y := screenBounds.B.Y;
+  end;
+
+  Locate(dialogBounds);
+end;
+
+constructor TFileDialog.Create(const WildCardText, TitleText, InputLabelText: string; DialogOptions: Word;
+  HistoryListId: Byte);
+var
+  scrollBar: TScrollBar;
+  nextFlags: Word;
+  buttonArea: TRect;
+begin
+  inherited Create(TRect.Create(15, 1, 64, 20), TitleText);
+  Directory := '';
+  Options := Options or ofCentered;
+  Flags := Byte(Flags or wfGrow);
+  CopyThrough(WildCard, WildCardText);
+
+  FileName := TFileInputLine.Create(TRect.Create(3, 3, InputLineRight, 4), MaxPath);
+  CopyThrough(FileName.Data, WildCard);
+  Insert(FileName);
+  First.GrowMode := Byte(gfGrowHiX);
+
+  Insert(TLabel.Create(TRect.Create(2, 2, 3 + Cstrlen(InputLabelText), 3), InputLabelText, FileName));
+  First.GrowMode := 0;
+  Insert(THistory.Create(TRect.Create(InputLineRight, 3, 34, 4), FileName, HistoryListId));
+  First.GrowMode := Byte(gfGrowLoX or gfGrowHiX);
+  scrollBar := TScrollBar.Create(TRect.Create(3, 14, 34, 15));
+  Insert(scrollBar);
+  FileList := TFileList.Create(TRect.Create(3, 6, 34, 14), scrollBar);
+  Insert(FileList);
+  First.GrowMode := Byte(gfGrowHiX or gfGrowHiY);
+  Insert(TLabel.Create(TRect.Create(2, 5, 8, 6), FilesText, FileList));
+  First.GrowMode := 0;
+
+  nextFlags := bfDefault;
+  buttonArea := TRect.Create(ButtonColumnLeft, 3, ButtonColumnRight, 5);
+
+  if (DialogOptions and fdOpenButton) <> 0 then
+  begin
+    AddButton(OpenText, cmFileOpen, nextFlags, buttonArea);
+    nextFlags := bfNormal;
+  end;
+  if (DialogOptions and fdOKButton) <> 0 then
+  begin
+    AddButton(OkText, cmFileOpen, nextFlags, buttonArea);
+    nextFlags := bfNormal;
+  end;
+  if (DialogOptions and fdReplaceButton) <> 0 then
+  begin
+    AddButton(ReplaceText, cmFileReplace, nextFlags, buttonArea);
+    nextFlags := bfNormal;
+  end;
+  if (DialogOptions and fdClearButton) <> 0 then
+  begin
+    AddButton(ClearText, cmFileClear, nextFlags, buttonArea);
+    nextFlags := bfNormal;
+  end;
+
+  AddButton(CancelText, cmCancel, bfNormal, buttonArea);
+  if (DialogOptions and fdHelpButton) <> 0 then
+    AddButton(HelpText, cmHelp, bfNormal, buttonArea);
+
+  Insert(TFileInfoPane.Create(TRect.Create(1, 16, 48, 18)));
+  First.GrowMode := Byte(gfGrowAll and (not gfGrowLoX) and $FF);
+  SelectNext(False);
+
+  if TProgram.Application <> nil then
+    FitToScreen;
+
+  if (DialogOptions and fdNoLoadDir) = 0 then
+    ReadDirectory;
+end;
+
+procedure TFileDialog.ShutDown;
+begin
+  FileName := nil;
+  FileList := nil;
+  inherited ShutDown;
+end;
+
+procedure TFileDialog.SizeLimits(var Smallest, Largest: TPoint);
+begin
+  inherited SizeLimits(Smallest, Largest);
+  Smallest.X := SmallestWidth;
+  Smallest.Y := SmallestHeight;
+end;
+
+function TFileDialog.GetFileName: string;
+var
+  typedName, expandedName: string;
+  driveText, directoryText, baseName, extensionText: string;
+  wildDrive, wildDirectory, wildBase, wildExtension: string;
+  hasNoName: Boolean;
+begin
+  typedName := TrimName(FileName.Data);
+  expandedName := PathExpandFrom(typedName, Directory);
+  SplitPath(expandedName, driveText, directoryText, baseName, extensionText);
+  hasNoName := (baseName = '') and (extensionText = '');
+  if hasNoName then
+  begin
+    SplitPath(WildCard, wildDrive, wildDirectory, wildBase, wildExtension);
+    expandedName := MergePath(driveText, directoryText, wildBase, wildExtension);
+  end;
+  Result := expandedName;
+end;
+
+procedure TFileDialog.FinishWithFileCommand(var Event: TEvent);
+var
+  chosenCommand: Word;
+begin
+  chosenCommand := Event.Message.Command;
+  case chosenCommand of
+    cmFileOpen, cmFileReplace, cmFileClear:
+      begin
+        EndModal(chosenCommand);
+        ClearEvent(Event);
+      end;
+  end;
+end;
+
+procedure TFileDialog.TurnDoubleClickIntoOK(var Event: TEvent);
+var
+  okEvent: TEvent;
+begin
+  if Event.Message.Command <> cmFileDoubleClicked then
+    Exit;
+  okEvent := Event;
+  okEvent.What := evCommand;
+  okEvent.Message.Command := cmOK;
+  Event := okEvent;
+  PutEvent(Event);
+  ClearEvent(Event);
+end;
+
+procedure TFileDialog.HandleEvent(var Event: TEvent);
+begin
+  inherited HandleEvent(Event);
+  case Event.What of
+    evCommand:
+      FinishWithFileCommand(Event);
+    evBroadcast:
+      TurnDoubleClickIntoOK(Event);
+  end;
+end;
+
+procedure TFileDialog.ReadDirectory;
+var
+  currentDirectory: string;
+begin
+  if Assigned(GetCurDirHook) then
+    currentDirectory := GetCurDirHook()
+  else
+    currentDirectory := '';
+  Directory := currentDirectory;
+  FileList.ReadDirectory(WildCard);
+end;
+
+procedure TFileDialog.SetData(Rec: Pointer);
+var
+  recordText: string;
+begin
+  inherited SetData(Rec);
+  if PAnsiChar(Rec)^ = #0 then
+    Exit;
+  recordText := PAnsiChar(Rec);
+  if not IsWild(recordText) then
+    Exit;
+  Valid(cmFileInit);
+  FileName.Select;
+end;
+
+procedure TFileDialog.GetData(Rec: Pointer);
+var
+  nameText: string;
+  nameLength: Integer;
+begin
+  nameText := GetFileName;
+  nameLength := Length(nameText);
+  if nameLength > 0 then
+    Move(nameText[1], PAnsiChar(Rec)^, nameLength);
+  PAnsiChar(Rec)[nameLength] := #0;
+end;
+
+function TFileDialog.CheckDirectory(const Path: string): Boolean;
+begin
+  if PathValid(Path) then
+  begin
+    Result := True;
+    Exit;
+  end;
+  MessageBox(mfError or mfOKButton, '%s: ''%s''', [InvalidDriveText, Path]);
+  FileName.Select;
+  Result := False;
+end;
+
+function TFileDialog.Valid(Command: Word): Boolean;
+var
+  fullName, driveText, directoryText, baseName, extensionText, directoryPath: string;
+  isNameValid: Boolean;
+begin
+  Result := False;
+  if Command = cmValid then
+  begin
+    Result := True;
+    Exit;
+  end;
+  if not inherited Valid(Command) then
+    Exit;
+  if (Command = cmCancel) or (Command = cmFileClear) then
+  begin
+    Result := True;
+    Exit;
+  end;
+
+  fullName := GetFileName;
+
+  if IsWild(fullName) then
+  begin
+    SplitPath(fullName, driveText, directoryText, baseName, extensionText);
+    directoryPath := driveText + directoryText;
+    if CheckDirectory(directoryPath) then
+    begin
+      Directory := directoryPath;
+      WildCard := baseName + extensionText;
+      if Command <> cmFileInit then
+        FileList.Select;
+      FileList.ReadDirectory(Directory, WildCard);
+    end;
+    Exit;
+  end;
+
+  if IsDir(fullName) then
+  begin
+    if CheckDirectory(fullName) then
+    begin
+      Directory := fullName + PathSep;
+      if Command <> cmFileInit then
+        FileList.Select;
+      FileList.ReadDirectory(Directory, WildCard);
+    end;
+    Exit;
+  end;
+
+  isNameValid := Assigned(ValidFileNameHook) and ValidFileNameHook(fullName);
+  if isNameValid then
+  begin
+    Result := True;
+    Exit;
+  end;
+  MessageBox(mfError or mfOKButton, '%s: ''%s''', [InvalidFileText, fullName]);
+end;
+
 end.
