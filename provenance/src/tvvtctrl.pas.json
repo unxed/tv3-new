@@ -1,0 +1,58 @@
+{
+  "path": "src/tvvtctrl.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termctrl.h",
+      "lines": "1-75"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "source/tvterm-core/termctrl.cc",
+      "lines": "1-328"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termemu.h",
+      "lines": "1-288"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/pty.h",
+      "lines": "1-66"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termctrl.h",
+      "sha256": "15f04bb44aa8aa9717ad3699fac17ff990b075ec391c17f254966011657684d3"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:source/tvterm-core/termctrl.cc",
+      "sha256": "9cb413377252242b42038f278e15c5105798b2c513a8bd164ff7bd09e4e8dec2"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termemu.h",
+      "sha256": "39a2689ed93f0b3c269280bac7711fcfd8ea9a7454507f3f49ae21e89fabe4a0"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/pty.h",
+      "sha256": "63ec95e297af2e37f6fc95592cf7d805919f084a6942979c1ab15be34db502be"
+    }
+  ],
+  "implementer": "implementer 69",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "dd6e23d115c96648a9cebe4b186ad337f13829e7",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
