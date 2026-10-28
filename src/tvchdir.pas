@@ -1,7 +1,8 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (the options cdNormal, cdNoLoadDir and cdHelpButton, the commands cmChangeDir
   and cmRevert, TChDirDialog), source/tvision/tchdrdlg.cpp, include/tvision/ttypes.h (EOS),
-  source/tvision/tvtext1.cpp (the text of the drives), include/tvision/util.h, source/tvision/misc.cpp (strnzcpy)
+  source/tvision/tvtext1.cpp (the text of the drives), include/tvision/util.h, source/tvision/misc.cpp (strnzcpy),
+  source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   The views are used by the thread of the user interface only; no routine of this unit is thread-safe. The members
@@ -18,10 +19,9 @@
   strnzcpy, which puts a path into the line, is Strnzcpy of TvUtil.
 
   The texts of the dialog (changeDirTitle, dirNameText, dirTreeText, okText, chdirText, revertText, helpText,
-  drivesText and invalidText) are defined in a file that is not among the sources of this unit, so they are the class
-  variables ChangeDirTitle, DirNameText, DirTreeText, OkText, ChdirText, RevertText, HelpText, DrivesText and
-  InvalidText of TChDirDialog, empty until the program sets them. DrivesText must hold the same text as Drives of
-  TDirListBox for the entry of the drives to be recognised.
+  drivesText and invalidText) are the class variables ChangeDirTitle, DirNameText, DirTreeText, OkText, ChdirText,
+  RevertText, HelpText, DrivesText and InvalidText of TChDirDialog, which hold the texts of the C++ when the unit
+  starts. DrivesText holds the same text as Drives of TDirListBox, for the entry of the drives to be recognised.
 
   MAXPATH is defined by a header that is not among the sources; MaxPathLength is the value 257, so that the line
   of the dialog holds at most 255 characters, which is the longest text that a string of this library holds.
@@ -330,5 +330,14 @@ end;
 
 initialization
   ChDirButtonDefaultHook := @MakeChDirButtonDefault;
+  TChDirDialog.ChangeDirTitle := 'Change Directory';
+  TChDirDialog.DirNameText := 'Directory ~n~ame';
+  TChDirDialog.DirTreeText := 'Directory ~t~ree';
+  TChDirDialog.OkText := 'O~K~';
+  TChDirDialog.ChdirText := '~C~hdir';
+  TChDirDialog.RevertText := '~R~evert';
+  TChDirDialog.HelpText := 'Help';
+  TChDirDialog.DrivesText := 'Drives';
+  TChDirDialog.InvalidText := 'Invalid directory';
 
 end.

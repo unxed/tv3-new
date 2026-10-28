@@ -1,7 +1,8 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/stddlg.h (the options cdNormal, cdNoLoadDir and cdHelpButton, the commands cmChangeDir
   and cmRevert, TChDirDialog), source/tvision/tchdrdlg.cpp, include/tvision/ttypes.h (EOS),
-  source/tvision/tvtext1.cpp (the text of the drives), include/tvision/util.h, source/tvision/misc.cpp
+  source/tvision/tvtext1.cpp (the text of the drives), include/tvision/util.h, source/tvision/misc.cpp,
+  source/tvision/tvtext2.cpp
   See COPYRIGHT.magiblot.
 
   Test program of the unit TvChDir.
@@ -9,7 +10,7 @@
   The display is a screen of 60 by 20 cells in memory and the application has only a desktop. The application counts
   the expired timers that it gets. A command that a list box sends to its owner reaches the dialog. The hook that
   stands for getCurDir gives a directory that does not exist, so that the lists of directories hold only the path to
-  it. The texts of the dialog are set to short words after a check that they start empty. The
+  it. The texts of the dialog are checked as the unit sets them. The
   application puts the command cmOK from its Idle when a flag is set, which closes a message box, and takes a copy of
   the text and the title of the box that is on top when the loop first asks for an event. The posted event and the
   wake-up of the threads reach the loop of ExecView on the desktop. }
@@ -428,10 +429,15 @@ begin
   Check(cmChangeDir = 1005, 'cmChangeDir is 1005');
   Check(cmRevert = 1006, 'cmRevert is 1006');
   Check(MaxPathLength = 257, 'the size of a path buffer');
-  Check((TChDirDialog.ChangeDirTitle = '') and (TChDirDialog.DirNameText = '') and (TChDirDialog.DirTreeText = '') and
-    (TChDirDialog.OkText = '') and (TChDirDialog.ChdirText = '') and (TChDirDialog.RevertText = '') and
-    (TChDirDialog.HelpText = '') and (TChDirDialog.DrivesText = '') and (TChDirDialog.InvalidText = ''),
-    'the texts of the dialog start empty');
+  Check(TChDirDialog.ChangeDirTitle = 'Change Directory', 'changeDirTitle is the text of the C++');
+  Check(TChDirDialog.DirNameText = 'Directory ~n~ame', 'dirNameText is the text of the C++');
+  Check(TChDirDialog.DirTreeText = 'Directory ~t~ree', 'dirTreeText is the text of the C++');
+  Check(TChDirDialog.OkText = 'O~K~', 'okText is the text of the C++');
+  Check(TChDirDialog.ChdirText = '~C~hdir', 'chdirText is the text of the C++');
+  Check(TChDirDialog.RevertText = '~R~evert', 'revertText is the text of the C++');
+  Check(TChDirDialog.HelpText = 'Help', 'helpText is the text of the C++');
+  Check(TChDirDialog.DrivesText = 'Drives', 'drivesText is the text of the C++');
+  Check(TChDirDialog.InvalidText = 'Invalid directory', 'invalidText is the text of the C++');
   Check(not Assigned(GetCurDirHook), 'the hook of getCurDir is not given by the unit');
   Check(Assigned(ChDirButtonDefaultHook), 'the unit gives the hook of makeDefault to TvFiles');
   Check(TDirListBox.Drives = 'Drives', 'the text of the drives of the list box');
@@ -446,7 +452,7 @@ begin
   dlg := TPeekDialog.Create(cdNoLoadDir or cdHelpButton, 7);
   Check((dlg.Size.X = 48) and (dlg.Size.Y = 18), 'the dialog is 48 by 18');
   title := StrPas(dlg.Title);
-  Check(title = 'ChDir', 'the title of the dialog is the text ChangeDirTitle');
+  Check(title = 'Change Directory', 'the title of the dialog is the text ChangeDirTitle');
   Check((dlg.Options and ofCentered) = ofCentered, 'the dialog is centred');
   Check((dlg.Flags and wfGrow) <> 0, 'the dialog can grow');
   Check((dlg.Flags and wfMove) <> 0, 'the dialog keeps the flag of a dialog that it can move');
@@ -461,7 +467,7 @@ begin
 
   found := FindByBounds(dlg, 2, 2, 17, 3);
   Check((found is TLabel) and (TLabelPeek(found).LinkOf = TView(dlg.InputOf)) and
-    (StaticTextOf(TStaticText(found)) = 'Name'), 'the first label names the input line');
+    (StaticTextOf(TStaticText(found)) = 'Directory ~n~ame'), 'the first label names the input line');
 
   found := FindByBounds(dlg, 42, 3, 45, 4);
   Check((found is THistory) and (THistoryPeek(found).LinkOf = dlg.InputOf) and (THistoryPeek(found).IdOf = 7),
@@ -478,24 +484,24 @@ begin
 
   found := FindByBounds(dlg, 2, 5, 17, 6);
   Check((found is TLabel) and (TLabelPeek(found).LinkOf = TView(dlg.ListOf)) and
-    (StaticTextOf(TStaticText(found)) = 'Tree'), 'the second label names the list');
+    (StaticTextOf(TStaticText(found)) = 'Directory ~t~ree'), 'the second label names the list');
 
   found := FindByBounds(dlg, 35, 6, 45, 8);
-  Check((found is TButton) and (found = TView(dlg.OkOf)) and (StrPas(TButton(found).Title) = 'OK'),
+  Check((found is TButton) and (found = TView(dlg.OkOf)) and (StrPas(TButton(found).Title) = 'O~K~'),
     'the button of OK is at 35,6,45,8');
   Check((TButtonPeek(found).CommandOf = cmOK) and (TButtonPeek(found).FlagsOf = bfDefault) and
     TButtonPeek(found).IsDefault, 'the button of OK is the default button of the command cmOK');
   Check(found.GrowMode = (gfGrowLoX or gfGrowHiX), 'the button of OK grows at both x sides');
 
   found := FindByBounds(dlg, 35, 9, 45, 11);
-  Check((found is TButton) and (found = TView(dlg.ChDirOf)) and (StrPas(TButton(found).Title) = 'Chdir'),
+  Check((found is TButton) and (found = TView(dlg.ChDirOf)) and (StrPas(TButton(found).Title) = '~C~hdir'),
     'the button of the change is at 35,9,45,11');
   Check((TButtonPeek(found).CommandOf = cmChangeDir) and (TButtonPeek(found).FlagsOf = bfNormal) and
     not TButtonPeek(found).IsDefault, 'the button of the change is a normal button of the command cmChangeDir');
   Check(found.GrowMode = (gfGrowLoX or gfGrowHiX), 'the button of the change grows at both x sides');
 
   found := FindByBounds(dlg, 35, 12, 45, 14);
-  Check((found is TButton) and (StrPas(TButton(found).Title) = 'Revert') and
+  Check((found is TButton) and (StrPas(TButton(found).Title) = '~R~evert') and
     (TButtonPeek(found).CommandOf = cmRevert) and (TButtonPeek(found).FlagsOf = bfNormal),
     'the button of the revert is at 35,12,45,14');
   Check(found.GrowMode = (gfGrowLoX or gfGrowHiX), 'the button of the revert grows at both x sides');
@@ -630,7 +636,6 @@ begin
   dlg.ListOf.SelectItem(2);
   Check(dlg.InputOf.Data = '/nosuchroot/alpha', 'SelectItem of the list changes the directory');
 
-  TChDirDialog.DrivesText := 'Drives';
   dirs := TDirCollection.Create(2, 2);
   dirs.Insert(TDirEntry.Create('shown', 'Drives'));
   dlg.ListOf.NewList(dirs);
@@ -730,9 +735,6 @@ begin
   Check(answer and (GetCurrentDir = expectedDir), 'the path is made full before the change');
   SetCurrentDir(savedDir);
 
-  TChDirDialog.InvalidText := 'Bad dir';
-  MsgBoxText.OkText := 'OK';
-  MsgBoxText.ErrorText := 'Error';
   dlg.InputOf.Data := '/nosuchroot_chdir_test/sub/';
   DrainPosted;
   App.Capturing := True;
@@ -743,7 +745,7 @@ begin
   App.Deadline := 0;
   InterlockedExchange(WakeFlag, 0);
   Check(not answer, 'a directory that does not exist is not valid');
-  Check(App.CapturedText = 'Bad dir: ''/nosuchroot_chdir_test/sub''.', 'the box names the path without its separator');
+  Check(App.CapturedText = 'Invalid directory: ''/nosuchroot_chdir_test/sub''.', 'the box names the path without its separator');
   Check(App.CapturedTitle = 'Error', 'the box is an error box');
   Check(GetCurrentDir = savedDir, 'a failed change leaves the directory');
   TvObject.DestroyObject(dlg);
@@ -843,19 +845,9 @@ begin
   TEventQueue.Backend := FakeEvents;
   CaretPositionHook := @OnCaret;
   ScreenWriteHook := @OnScreenWrite;
-  TDeskTop.DefaultBkgrnd := '.';
 
   TestConstants;
 
-  TChDirDialog.ChangeDirTitle := 'ChDir';
-  TChDirDialog.DirNameText := 'Name';
-  TChDirDialog.DirTreeText := 'Tree';
-  TChDirDialog.OkText := 'OK';
-  TChDirDialog.ChdirText := 'Chdir';
-  TChDirDialog.RevertText := 'Revert';
-  TChDirDialog.HelpText := 'Help';
-  TChDirDialog.DrivesText := 'Drives';
-  TChDirDialog.InvalidText := 'Bad dir';
   GetCurDirHook := @FakeCurDir;
 
   DrainPosted;
