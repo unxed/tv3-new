@@ -22,7 +22,7 @@
 | `src/tvclip.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tclipbrd.cpp:1-44 | 2 | 2 | 0 |
 | `src/tvclipcmd.pas` | specification | specification:tvclipcmd | 2 | 2 | 0 |
 | `src/tvcluster.pas` | translation | magiblot/tvision:include/tvision/dialogs.h:1-1068; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/tcluster.cpp:1-478; magiblot/tvision:source/tvision/tradiobu.cpp:1-56; magiblot/tvision:source/tvision/tcheckbo.cpp:1-45; magiblot/tvision:source/tvision/tmulchkb.cpp:1-110; magiblot/tvision:source/tvision/tvtext1.cpp:1-127 | 2 | 2 | 0 |
-| `src/tvcodepages.pas` | specification | specification:tvcodepages | 1 | 1 | 0 |
+| `src/tvcodepages.pas` | specification | specification:tvcodepages | 2 | 2 | 0 |
 | `src/tvcodepg.pas` | translation | magiblot/tvision:include/tvision/internal/codepage.h:1-43; magiblot/tvision:source/platform/codepage.cpp:1-89 | 2 | 2 | 3 |
 | `src/tvcolors.pas` | translation | magiblot/tvision:include/tvision/colors.h:1-855; magiblot/tvision:source/platform/colors.cpp:1-253 | 2 | 2 | 0 |
 | `src/tvcolorsel.pas` | translation | magiblot/tvision:include/tvision/colorsel.h:1-467; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/tv.h:1-782; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:source/tvision/colorsel.cpp:1-881; magiblot/tvision:source/tvision/tvtext1.cpp:1-127; magiblot/tvision:source/tvision/misc.cpp:1-79; magiblot/tvision:include/tvision/util.h:1-121 | 3 | 3 | 0 |
