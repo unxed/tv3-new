@@ -1,0 +1,58 @@
+{
+  "path": "src/tvvtcore.pas",
+  "kind": "translation",
+  "sources": [
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/termemu.h",
+      "lines": "1-288"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/array.h",
+      "lines": "1-89"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/mutex.h",
+      "lines": "1-33"
+    },
+    {
+      "source": "magiblot/tvterm",
+      "commit": "210eb23564da06c358d2623388939bb02f7f3419",
+      "file": "include/tvterm/consts.h",
+      "lines": "1-41"
+    }
+  ],
+  "inputs": [
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/termemu.h",
+      "sha256": "39a2689ed93f0b3c269280bac7711fcfd8ea9a7454507f3f49ae21e89fabe4a0"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/array.h",
+      "sha256": "637b03161feeb73678b567dd42f56bec72d7d368814546f5ee7fe3f392bedccc"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/mutex.h",
+      "sha256": "905d2bbada17851f1b22f0cd0cd6fbde44bf3d21aef06e208a37ae07f594994b"
+    },
+    {
+      "origin": "magiblot/tvterm@210eb23564da06c358d2623388939bb02f7f3419:include/tvterm/consts.h",
+      "sha256": "14d40c41effa90de404eb83ca7c867ff4dae6f16901b8db2602f4fc89385975d"
+    }
+  ],
+  "implementer": "implementer 65",
+  "proofs": [],
+  "versions": [
+    {
+      "blob": "982c1927560d456151c835772b09718d843fefe0",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    }
+  ]
+}
