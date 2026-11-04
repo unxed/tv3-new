@@ -1,5 +1,6 @@
 { Translated from magiblot/tvision @ b4831e2
-  C++ sources: include/tvision/tvobjs.h, include/tvision/objects.h (TCollection, TSortedCollection),
+  C++ sources: include/tvision/tvobjs.h, include/tvision/config.h, include/tvision/ttypes.h,
+  include/tvision/objects.h (TCollection, TSortedCollection),
   source/tvision/tobject.cpp, source/tvision/tcollect.cpp, source/tvision/tsortcol.cpp,
   source/tvision/nmcollct.cpp, source/tvision/nmscoll.cpp
   See COPYRIGHT.magiblot. }
@@ -576,6 +577,13 @@ begin
   SC.Insert(P(6));
   Check(SC.GetCount = 4, 'TSortedCollection takes no duplicate');
   SC.Free;
+
+  { The constants of config.h and ttypes.h }
+  Check(Ord(EOS) = 0, 'EOS is the character with the code 0');
+  Check(EOS = #0, 'EOS equals #0');
+  Check(maxFindStrLen = 80, 'maxFindStrLen is 80');
+  Check(maxReplaceStrLen = 80, 'maxReplaceStrLen is 80');
+  Check(ccNotFound = -1, 'ccNotFound is -1');
 
   Done;
 end.

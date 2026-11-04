@@ -37,6 +37,12 @@
       "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
       "file": "source/platform/far2l.cpp",
       "lines": "1-258"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/config.h",
+      "lines": "1-42"
     }
   ],
   "inputs": [
@@ -95,9 +101,13 @@
     {
       "origin": "standard:MOUSE_EVENT_RECORD structure",
       "sha256": "c0e212d6cdedfdfe3b1693460f595544d54118d6f41674b79da3e2dd2575f2a9"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/config.h",
+      "sha256": "b6174d5d24dfd8fbf1a084bfc5b9196084246bd51a4a871d0de967a364a80ba7"
     }
   ],
-  "implementer": "implementer 5",
+  "implementer": "implementer 5, implementer 81",
   "proofs": [
     "6022ad363f23ddd1b435abf0d36cecf30c96ab28feea3728bf7a4bff007fbcdf",
     "8695ed2e66db7a38f9eb530de5f59fdbc36c317a6f98679141a605b201f03ed9",
@@ -113,6 +123,12 @@
     },
     {
       "blob": "228ccd6acc11581309697e97a796a41c3e089948",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "b18d500f9ba70827dcf318accc96f81099d5c546",
       "commit": null,
       "pr": null,
       "audit_run": null
