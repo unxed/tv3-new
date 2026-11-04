@@ -1,5 +1,5 @@
 { Translated from magiblot/tvision @ b4831e2
-  C++ sources: include/tvision/system.h, include/tvision/internal/termio.h,
+  C++ sources: include/tvision/system.h, include/tvision/config.h, include/tvision/internal/termio.h,
   source/platform/termio.cpp, source/platform/far2l.cpp,
   include/tvision/internal/win32con.h, source/platform/win32con.cpp
   See COPYRIGHT.magiblot. }
@@ -182,6 +182,7 @@ begin
   Check(meMouseMoved = 1, 'meMouseMoved');
   Check(meDoubleClick = 2, 'meDoubleClick');
   Check(meTripleClick = 4, 'meTripleClick');
+  Check(minPasteEventCount = 3, 'minPasteEventCount');
 
   { The members of the unions share their storage }
   FillChar(Ev, SizeOf(Ev), 0);

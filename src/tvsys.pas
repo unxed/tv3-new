@@ -1,12 +1,14 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/system.h (TEventQueue), source/tvision/tevent.cpp,
   include/tvision/internal/events.h, source/platform/events.cpp,
-  include/tvision/hardware.h (getButtonCount, cursorOn, cursorOff)
+  include/tvision/hardware.h (getButtonCount, cursorOn, cursorOff), include/tvision/config.h (the constant of
+  the paste count)
   See COPYRIGHT.magiblot.
 
   The unit is for Unix systems: the wake-up source is a pipe. The wake-up sources of Windows and DOS are not
   part of it. The detection of a paste by a count of consecutive text events is not part of it either, because
-  the constant of that count is not in the C++ sources; the paste text (SetPasteText) is. }
+  the source file that uses the count is not among the C++ sources; the constant of the count is
+  minPasteEventCount of config.h, which TvEvents has. The paste text (SetPasteText) is part of it. }
 unit TvSys;
 
 {$mode objfpc}

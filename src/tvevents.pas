@@ -1,6 +1,6 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/system.h (the event structures and codes),
-  include/tvision/internal/termio.h, source/platform/termio.cpp,
+  include/tvision/config.h (the constants), include/tvision/internal/termio.h, source/platform/termio.cpp,
   source/platform/far2l.cpp, include/tvision/internal/win32con.h,
   source/platform/win32con.cpp (the input parts)
   The reader of the Windows console (ReadConsoleInput and the console input records) is not part of this unit.
@@ -52,6 +52,8 @@ const
 
   { The size of the text of a key event: the longest UTF-8 sequence. }
   maxCharSize = 4;
+  { The number of consecutive text events from which the input is taken as a paste. }
+  minPasteEventCount = 3;
 
   { Flags of the mouse events of the console (dwEventFlags): the values of the document
     tools/audit/facts/windows-console-mouse-event-record-str.md }

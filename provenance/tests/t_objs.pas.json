@@ -43,6 +43,18 @@
       "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
       "file": "source/tvision/nmscoll.cpp",
       "lines": "1-17"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/config.h",
+      "lines": "1-42"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/ttypes.h",
+      "lines": "1-126"
     }
   ],
   "inputs": [
@@ -85,13 +97,27 @@
     {
       "origin": "repository:tests/testlib.inc",
       "sha256": "096b4f4c541c4ef4716079c3d1eeb67cdd02bb36a3711cf15f7aec58114afb3a"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/config.h",
+      "sha256": "b6174d5d24dfd8fbf1a084bfc5b9196084246bd51a4a871d0de967a364a80ba7"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/ttypes.h",
+      "sha256": "35d54dac4675e12a8db8c298fde3225d05c019aba0585b27051613a8b6e44b0d"
     }
   ],
-  "implementer": "implementer 20",
+  "implementer": "implementer 20, implementer 81",
   "proofs": [],
   "versions": [
     {
       "blob": "a9ac02a2aafce1c75d83ef7f6979bf13bb089dee",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "f7de76e9a3f8306734c5b45a08285023567b0549",
       "commit": null,
       "pr": null,
       "audit_run": null

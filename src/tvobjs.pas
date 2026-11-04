@@ -1,5 +1,6 @@
 { Translated from magiblot/tvision @ b4831e2
   C++ sources: include/tvision/tvobjs.h (TObject, TNSCollection, TNSSortedCollection),
+  include/tvision/config.h, include/tvision/ttypes.h (the constants),
   include/tvision/objects.h (TCollection, TSortedCollection), source/tvision/tobject.cpp,
   source/tvision/tcollect.cpp, source/tvision/tsortcol.cpp, source/tvision/nmcollct.cpp,
   source/tvision/nmscoll.cpp
@@ -27,6 +28,12 @@ const
   ccNotFound = -1;
   { The largest limit of a collection. }
   maxCollectionSize = MaxInt div SizeOf(Pointer);
+  { The character with the code 0, which ends a text. }
+  EOS = #0;
+  { The longest text of a search and of a replacement. }
+  maxFindStrLen = 80;
+  maxReplaceStrLen = 80;
+  { maxViewWidth of config.h is declared only when __FLAT__ is not defined; this library is flat, so it has none. }
 
 type
   { Tells whether Item meets a condition; Arg is passed on from the caller. }
