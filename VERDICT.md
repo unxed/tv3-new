@@ -410,9 +410,11 @@ provenance check: pending version tools/tests/test_provenance_lint.py be25061847
 provenance check: pending version tools/tests/test_text_lint.py 537a21bf0271ec8c32c1b07d37b9e10fd709d141
 provenance check: pending version tools/tests/test_text_lint.py 207f3122b8e4fdcd1b8f240cfd22bbc07e198bb0
 provenance check: pending version tools/tests/test_text_lint.py 2a6c57f51cba57307cb7dbb89ecefb8cc860ff26
+provenance check: pending version tools/tests/test_text_lint.py 7978a4056eabf1323d2e57eec19d2ebad2e453d4
 provenance check: pending version tools/tests/test_tokens.py 9488bd319980703544cff69af597c9b33816c7c1
 provenance check: pending version tools/tests/test_verdict.py 9323cb820b84f55d693d31170d4bf35b127318fa
 provenance check: pending version tools/text_lint.py daf3c1f143df93b65e936fb51670f7c5fe638629
 provenance check: pending version tools/text_lint.py 48152ab0923d9224387ed55852a10e59cf8a2966
 provenance check: pending version tools/text_lint.py 2bdd5a113380ebbb77ce8a8d83a0f590f3815807
+provenance check: pending version tools/text_lint.py f92efe27cd35fce2c954dea3af867d44475f8106
 text check: commit 23b2e8547598: neutral: tool name lunobot
