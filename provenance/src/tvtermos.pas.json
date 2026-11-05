@@ -33,6 +33,10 @@
     {
       "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/internal/getenv.h",
       "sha256": "542f64e559449c3ef0fd484504b38894951047cad9c937967760b40e6bd3abff"
+    },
+    {
+      "origin": "standard:Linux console ioctl requests used by TvTermOs",
+      "sha256": "40d5ad14a0a48c6a0446a75229bb66f8bbebeae5013db1767760f7ca1ad94bfb"
     }
   ],
   "implementer": "implementer 58",
@@ -40,6 +44,12 @@
   "versions": [
     {
       "blob": "0aa2e65fc94137536a70c0c25c397f293f396c1a",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "a2929958677357a9593c8f0a184f68690c54d727",
       "commit": null,
       "pr": null,
       "audit_run": null
