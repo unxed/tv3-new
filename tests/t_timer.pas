@@ -1,5 +1,6 @@
 { Translated from magiblot/tvision @ b4831e2
-  C++ sources: include/tvision/system.h (TTimerQueue), source/tvision/ttimerqu.cpp
+  C++ sources: include/tvision/system.h (TTimerQueue), source/tvision/ttimerqu.cpp,
+  include/tvision/hardware.h (getTickCountMs), source/platform/hardware.cpp (getTickCountMs)
   See COPYRIGHT.magiblot. }
 program t_timer;
 
@@ -145,6 +146,8 @@ var
   Workers: array[0..3] of TWorker;
   MainThread: TThreadID;
   I: Integer;
+  Prev, Cur: LongInt;
+  Monotonic: Boolean;
 
 begin
   B := TEventBackend.Create;
@@ -301,13 +304,59 @@ begin
   Clock := Clock + 200;
   Check(Tm.TimeUntilNextTimeout = 300, 'the clock is not limited to 32 bits');
   Tm.KillTimer(A1);
+  { the time points are 64 bits wide: the sum of the clock and the time-out does not wrap at 2^32 }
+  Clock := $FFFFFFFF;
+  A1 := Tm.SetTimer(10);
+  Check(Tm.TimeUntilNextTimeout = 10, 'a time point beyond 32 bits is 10 ms away');
+  Clock := $FFFFFFFF + 9;
+  Check(Tm.TimeUntilNextTimeout = 1, 'one ms before a time point beyond 32 bits');
+  ResetLog(Log, nmPlain, Tm);
+  Tm.CollectExpiredTimers(@Note, @Log);
+  Check(Log.Count = 0, 'a timer is not collected before a time point beyond 32 bits');
+  Clock := $FFFFFFFF + 10;
+  Tm.CollectExpiredTimers(@Note, @Log);
+  Check((Log.Count = 1) and (Log.Ids[0] = A1), 'a timer is collected at a time point beyond 32 bits');
+  { a distance beyond 32 bits is cut to its low 32 bits, as uint32_t(expiresAt - now) is: the clock is set back }
+  Clock := 1;
+  A1 := Tm.SetTimer($FFFFFFFF);
+  Clock := 0;
+  Check(Tm.TimeUntilNextTimeout = 0, 'a distance of exactly 2^32 ms is cut to 0');
+  Tm.KillTimer(A1);
+  Clock := 6;
+  A1 := Tm.SetTimer($FFFFFFFF);
+  Clock := 0;
+  Check(Tm.TimeUntilNextTimeout = 5, 'a distance of 2^32 + 5 ms is cut to 5');
+  Tm.KillTimer(A1);
   Tm.Free;
 
-  { the clock of the parameterless constructor }
+  { the clock of the parameterless constructor: milliseconds of a steady clock }
   Tm := TTimerQueue.Create;
   A1 := Tm.SetTimer(60000);
-  Check((Tm.TimeUntilNextTimeout > 50000) and (Tm.TimeUntilNextTimeout <= 60000), 'the default clock counts milliseconds');
+  Check((Tm.TimeUntilNextTimeout > 59000) and (Tm.TimeUntilNextTimeout <= 60000), 'the default clock counts milliseconds');
+  Prev := Tm.TimeUntilNextTimeout;
+  Monotonic := True;
+  for I := 1 to 5 do
+  begin
+    Sleep(50);
+    Cur := Tm.TimeUntilNextTimeout;
+    if (Cur > Prev) or (Prev - Cur < 49) then
+      Monotonic := False;
+    Prev := Cur;
+  end;
+  Check(Monotonic, 'the default clock never goes back and advances by the time that passed');
   Tm.KillTimer(A1);
+  A1 := Tm.SetTimer(5000);
+  Sleep(300);
+  Check((Tm.TimeUntilNextTimeout > 0) and (Tm.TimeUntilNextTimeout <= 4701), 'the default clock advanced by about 300 ms');
+  Tm.KillTimer(A1);
+  ResetLog(Log, nmPlain, Tm);
+  A1 := Tm.SetTimer(100);
+  Tm.CollectExpiredTimers(@Note, @Log);
+  Check(Log.Count = 0, 'a timer of the default clock is not due at once');
+  Sleep(250);
+  Check(Tm.TimeUntilNextTimeout = 0, 'a timer of the default clock is due after its time-out');
+  Tm.CollectExpiredTimers(@Note, @Log);
+  Check((Log.Count = 1) and (Log.Ids[0] = A1), 'a timer of the default clock is collected after its time-out');
   Tm.Free;
 
   { a queue that is freed with timers in it }
@@ -335,6 +384,20 @@ begin
   TEventQueue.WaitForEvents(Guard);
   Check(Now64 - Start < Quick, 'KillTimer ends the next wait');
   TEventQueue.WaitForEvents(0);
+  Tm.Free;
+
+  { the wake-up does not depend on the clock of the queue }
+  Tm := TTimerQueue.Create(@FakeClock);
+  Clock := 0;
+  TEventQueue.WaitForEvents(0);
+  A1 := Tm.SetTimer(5);
+  Start := Now64;
+  TEventQueue.WaitForEvents(Guard);
+  Check(Now64 - Start < Quick, 'SetTimer of a queue with its own clock ends the next wait');
+  Tm.KillTimer(A1);
+  TEventQueue.WaitForEvents(0);
+  Tm.Free;
+  Tm := TTimerQueue.Create;
 
   { a timer set from a second thread ends a blocked wait and fires on this thread }
   ResetLog(Log, nmPlain, Tm);

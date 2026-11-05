@@ -13,6 +13,18 @@
       "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
       "file": "source/tvision/ttimerqu.cpp",
       "lines": "1-140"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "include/tvision/hardware.h",
+      "lines": "1-327"
+    },
+    {
+      "source": "magiblot/tvision",
+      "commit": "b4831e2ca16652db327fb7cc964f1c8c2d512524",
+      "file": "source/platform/hardware.cpp",
+      "lines": "1-138"
     }
   ],
   "inputs": [
@@ -47,13 +59,27 @@
     {
       "origin": "repository:src/tvtimer.pas",
       "sha256": "220c50e7d99eb23ef8badecda4b385b778bf61dc254fb7b0c2ba902a59f63e2f"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:include/tvision/hardware.h",
+      "sha256": "62ce1286269c6b0dce76ac9deb9ba70d261f70c19f0e4851520d060da036dc41"
+    },
+    {
+      "origin": "magiblot/tvision@b4831e2ca16652db327fb7cc964f1c8c2d512524:source/platform/hardware.cpp",
+      "sha256": "6d5737d5ef0f0051eb51221162ba3fe962cd9c0673e3c300a9130ed8a71d9c62"
     }
   ],
-  "implementer": "implementer 9",
+  "implementer": "implementer 9, implementer 82",
   "proofs": [],
   "versions": [
     {
       "blob": "41b9c344ad769483e144bab63ed252f6728c91f6",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "b338fcee0d7b12b0119e7ce9c75dc2a8d34d23f5",
       "commit": null,
       "pr": null,
       "audit_run": null
