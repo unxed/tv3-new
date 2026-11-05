@@ -9,11 +9,11 @@
   "inputs": [
     {
       "origin": "specification:tvcharset",
-      "sha256": "b8aab5f340366a07861a9733e3fc1a7043149779fc4b95cf966e562f7e69d038"
+      "sha256": "65cd25fe36d77df344f11e151797b8f0f637ece70607b59f2a5dbf1b31b022df"
     },
     {
       "origin": "repository:docs/API-NAMES.md",
-      "sha256": "36b8589aa7136bef2842bab58dc5abd556e8982e5e1923e49ed2e60ea4861bf6"
+      "sha256": "665d91be15c528b3afe098b434bfdaf2cc984ce5b023897b812a2a1dd350e572"
     },
     {
       "origin": "repository:docs/ASYNC.md",
@@ -25,14 +25,20 @@
     },
     {
       "origin": "repository:src/tvcharset.pas",
-      "sha256": "1d864869af86f574e394ee8e1c707c3fa5faaf63e83fb6be63b260232374817c"
+      "sha256": "55f74347cb55069339fb746469705f3f0372c8e5ab5f4fba9745fafbe2b1d896"
     }
   ],
-  "implementer": "implementer 76",
+  "implementer": "implementer 76, implementer 86",
   "proofs": [],
   "versions": [
     {
       "blob": "eb094a94064a48ecb04dd1e0f7d6cb4e9bd01df9",
+      "commit": null,
+      "pr": null,
+      "audit_run": null
+    },
+    {
+      "blob": "d9e7ecfc26bcad43b1893c8c90366853cb246b5a",
       "commit": null,
       "pr": null,
       "audit_run": null
