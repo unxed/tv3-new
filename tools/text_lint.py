@@ -20,6 +20,9 @@ import subprocess
 import sys
 
 SELF = "tools/text_lint.py"
+# The report written by the verdict job. It quotes the findings of the checks, including the words the
+# rule forbids, so its text is not judged by the rule; its encoding is.
+REPORT = "VERDICT.md"
 
 # The neutral rule. Non-ASCII parts are written with escape sequences.
 NEUTRAL_PATTERNS = [
@@ -80,8 +83,8 @@ def check_bytes(path, data):
         text = data.decode("utf-8")
     except UnicodeDecodeError:
         return [{"where": path, "rule": "not UTF-8", "detail": ""}]
-    if path == SELF:
-        # the script is exempt from the check of its own text
+    if path in (SELF, REPORT):
+        # the script is exempt from the check of its own text, the report from the check of the words it quotes
         if "\ufffd" in text:
             return [{"where": path, "rule": "replacement character", "detail": ""}]
         return []

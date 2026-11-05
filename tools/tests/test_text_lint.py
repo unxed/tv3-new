@@ -73,6 +73,13 @@ class FileTests(unittest.TestCase):
         self.assertEqual(text_lint.check_bytes("tools/text_lint.py", data), [])
         self.assertTrue(text_lint.check_bytes("tools/other.py", data))
 
+    def test_report_quotes_are_exempt(self):
+        data = ("text check: commit 0123456789ab: neutral: tool name " + WL).encode("utf-8")
+        self.assertEqual(text_lint.check_bytes("VERDICT.md", data), [])
+        self.assertTrue(text_lint.check_bytes("docs/VERDICT.md", data))
+        self.assertEqual(text_lint.check_bytes("VERDICT.md", b"\xef\xbb\xbfx")[0]["rule"], "byte order mark")
+        self.assertEqual(text_lint.check_bytes("VERDICT.md", b"\xff\xfe")[0]["rule"], "not UTF-8")
+
     def test_names(self):
         self.assertEqual(text_lint.check_name(WT.upper() + ".md"), [])
         self.assertTrue(text_lint.check_name("docs/" + WA + ".md"))

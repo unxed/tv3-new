@@ -227,7 +227,7 @@
 | `tools/tests/test_gen_tables.py` | new | - | 1 | 1 | 0 |
 | `tools/tests/test_prove.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
 | `tools/tests/test_provenance_lint.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `tools/tests/test_text_lint.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
+| `tools/tests/test_text_lint.py` | specification | specification:infra-requirements | 4 | 4 | 0 |
 | `tools/tests/test_tokens.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
 | `tools/tests/test_verdict.py` | specification | specification:infra-requirements | 1 | 1 | 0 |
-| `tools/text_lint.py` | specification | specification:infra-requirements | 3 | 3 | 0 |
+| `tools/text_lint.py` | specification | specification:infra-requirements | 4 | 4 | 0 |
