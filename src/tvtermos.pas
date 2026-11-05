@@ -64,7 +64,7 @@ type
 
 {$IFDEF LINUX}
 const
-  { Values of the Linux kernel interface (linux/kd.h and linux/tiocl.h are not among the translated sources). }
+  { Values of the Linux kernel interface, as recorded in tools/audit/facts/linux-console-ioctls.md. }
   KdFontOpIoctl = $4B72;
   KdFontOpGet = 1;
   TiocLinuxIoctl = $541C;

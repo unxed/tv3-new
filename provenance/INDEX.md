@@ -64,7 +64,7 @@
 | `src/tvsurface.pas` | translation | magiblot/tvision:include/tvision/surface.h:1-88; magiblot/tvision:source/tvision/tsurface.cpp:1-146 | 1 | 1 | 0 |
 | `src/tvsys.pas` | translation | magiblot/tvision:include/tvision/system.h:1-560; magiblot/tvision:source/tvision/tevent.cpp:1-472; magiblot/tvision:include/tvision/internal/events.h:1-166; magiblot/tvision:source/platform/events.cpp:1-301; magiblot/tvision:include/tvision/hardware.h:1-327; magiblot/tvision:include/tvision/config.h:1-42 | 4 | 4 | 0 |
 | `src/tvtermio.pas` | translation | magiblot/tvision:include/tvision/internal/termio.h:1-171; magiblot/tvision:source/platform/termio.cpp:1-1004; magiblot/tvision:include/tvision/internal/far2l.h:1-20; magiblot/tvision:source/platform/far2l.cpp:1-258; magiblot/tvision:include/tvision/internal/base64.h:1-36; magiblot/tvision:source/platform/base64.cpp:1-99; magiblot/tvision:include/tvision/internal/codepage.h:1-43 | 1 | 1 | 0 |
-| `src/tvtermos.pas` | translation | magiblot/tvision:include/tvision/internal/conctl.h:1-66; magiblot/tvision:source/platform/conctl.cpp:1-352; magiblot/tvision:include/tvision/internal/getenv.h:1-31 | 1 | 1 | 0 |
+| `src/tvtermos.pas` | translation | magiblot/tvision:include/tvision/internal/conctl.h:1-66; magiblot/tvision:source/platform/conctl.cpp:1-352; magiblot/tvision:include/tvision/internal/getenv.h:1-31 | 2 | 2 | 0 |
 | `src/tvtermosbase.pas` | specification | specification:tvtermosbase | 2 | 2 | 0 |
 | `src/tvtext.pas` | translation | magiblot/tvision:include/tvision/ttext.h:1-524; magiblot/tvision:source/platform/ttext.cpp:1-403; magiblot/tvision:include/tvision/scrncell.h:1-270 | 2 | 2 | 0 |
 | `src/tvtextview.pas` | translation | magiblot/tvision:include/tvision/textview.h:1-128; magiblot/tvision:source/tvision/textview.cpp:1-250; magiblot/tvision:source/tvision/ttprvlns.cpp:1-47; magiblot/tvision:include/tvision/views.h:1-1060; magiblot/tvision:include/tvision/ttypes.h:1-126; magiblot/tvision:include/tvision/config.h:1-42; magiblot/tvision:include/tvision/tv.h:1-782 | 1 | 1 | 0 |
@@ -210,6 +210,7 @@
 | `tools/audit/facts/charsets/ibm-1125_P100-1997.ucm` | standard | Character set mapping table ibm-1125_P100-1997.ucm | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/ibm-720_P100-1997.ucm` | standard | Character set mapping table ibm-720_P100-1997.ucm | 1 | 1 | 0 |
 | `tools/audit/facts/charsets/ibm-858_P100-1997.ucm` | standard | Character set mapping table ibm-858_P100-1997.ucm | 1 | 1 | 0 |
+| `tools/audit/facts/linux-console-ioctls.md` | standard | Linux console ioctl requests used by TvTermOs | 1 | 1 | 0 |
 | `tools/audit/facts/windows-console-mouse-event-record-str.md` | standard | MOUSE_EVENT_RECORD structure | 1 | 1 | 0 |
 | `tools/audit/facts/windows-virtual-key-codes.md` | standard | Virtual-Key Codes (Winuser.h) | 1 | 1 | 0 |
 | `tools/audit/facts/xterm-ctlseqs.txt` | standard | XTerm Control Sequences | 1 | 1 | 0 |
