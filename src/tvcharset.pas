@@ -1,5 +1,8 @@
-{ Conversion between UTF-8 and single-byte character sets (DOS and Windows code pages, KOI8, ISO 8859,
-  Mac Roman) and UTF-16, names and ids of the sets, UTF-8 validation and a guess of the set of a raw text. }
+{ TvCharset converts text between UTF-8 and the character sets met in files, the clipboard and the terminal: the
+  single-byte sets of DOS and Windows, KOI8, ISO 8859, Mac Roman, and UTF-16 in both byte orders. It names the sets,
+  lists them, validates UTF-8 (Utf8DecodeAt is the one decoder of UTF-8 text) and guesses which single-byte set a
+  raw text is written in. Every conversion goes through UTF-8. The only state is the reverse table that
+  CharsetFromUtf8 keeps for the set it served last, so that routine is not reentrant. }
 unit TvCharset;
 
 {$mode objfpc}
@@ -26,6 +29,7 @@ function CharsetListId(I: Integer): LongInt;
 function CharsetToUtf8(Id: LongInt; const Raw: AnsiString): AnsiString;
 function CharsetFromUtf8(Id: LongInt; const Text: AnsiString; out Lost: Integer): AnsiString;
 function Utf8Valid(const S: AnsiString): Boolean;
+function Utf8DecodeAt(const S: AnsiString; Pos: SizeInt; out Cp: Cardinal; out Len: Integer): Boolean;
 function IsPlainAscii(const S: AnsiString): Boolean;
 function CharsetGuess(const Raw: AnsiString; const Candidates: array of LongInt): LongInt;
 
@@ -34,462 +38,238 @@ implementation
 uses
   TvUtf8;
 
+type
+  TCharTable = array[0..255] of Word;
+  PCharTable = ^TCharTable;
+
+  TSetEntry = record
+    Id: LongInt;
+    Table: PCharTable;
+  end;
+
+{ The tables Set437 ... Set10000, indexed by byte value. A value 0 at a byte of $80 or more means undefined. }
 {$I tvcsets.inc}
 
-type
-  TSetTable = array[0..255] of Word;
-  PSetTable = ^TSetTable;
-
 const
-  SetCount = 46;
-  ReplacementChar = $FFFD;
-  GuessLimit = 1048576;
+  SingleByteSetCount = 46;
+  ReplacementCp = $FFFD;
+  UndefinedMark = $FFFF;
+  GuessWindow = 1048576;
+  GuessFallbackId = 1252;
+  MaxNameVariants = 4;
 
-  OemFamilyCount = 19;
-
-  { Weights of the lower-case Russian letters U+0430..U+044F, in percent times 10. }
-  RussianWeights: array[0..31] of Byte = (
-    80, 16, 45, 17, 30, 85, 9, 16, 74, 12, 35, 40, 32, 67, 110, 28,
-    47, 55, 63, 26, 3, 10, 5, 14, 7, 3, 2, 19, 17, 3, 6, 20
-  );
-
-type
-  TReverseCodes = array[0..127] of Word;
-  TReverseBytes = array[0..127] of Byte;
+  { Frequency of the Russian lower-case letters U+0430..U+044F, percent times ten. }
+  LowerLetterWeight: array[0..31] of Byte = (
+    80, 16, 45, 17, 30, 85, 9, 16,
+    74, 12, 35, 40, 32, 67, 110, 28,
+    47, 55, 63, 26, 3, 10, 5, 14,
+    7, 3, 2, 19, 17, 3, 6, 20);
 
 var
-  { The ids of the sets in list order: the DOS code pages, the Windows ones, KOI8, ISO 8859, Mac Roman. }
-  ListIds: array[0..SetCount - 1] of LongInt;
+  CacheSetId: LongInt = 0;
+  CacheSize: Integer = 0;
+  CacheCodes: array[0..127] of Word;
+  CacheBytes: array[0..127] of Byte;
 
-  { The reverse table of the set last used by CharsetFromUtf8: code points ascending, with their bytes. }
-  ReverseId: LongInt = 0;
-  ReverseCount: Integer = 0;
-  ReverseCodes: TReverseCodes;
-  ReverseBytes: TReverseBytes;
+{ ---- the sets ---- }
 
-{ ---- Tables ---- }
-
-procedure BuildListIds;
-var
-  Slot, Number: Integer;
-
-  procedure Add(Id: Integer);
-  begin
-    ListIds[Slot] := Id;
-    Inc(Slot);
-  end;
-
+function MakeEntry(Id: LongInt; Table: Pointer): TSetEntry;
 begin
-  Slot := 0;
-  Add(437);
-  Add(720);
-  Add(737);
-  Add(775);
-  Add(850);
-  Add(852);
-  Add(855);
-  for Number := 857 to 858 do
-    Add(Number);
-  for Number := 860 to 866 do
-    Add(Number);
-  Add(869);
-  Add(874);
-  Add(1125);
-  for Number := 1250 to 1258 do
-    Add(Number);
-  Add(20866);
-  Add(21866);
-  for Number := 28591 to 28606 do
-    if Number <> 28602 then
-      Add(Number);
-  Add(10000);
+  Result.Id := Id;
+  Result.Table := PCharTable(Table);
 end;
 
-{ True for the DOS code pages named cpN, ibmN and N: the first OemFamilyCount ids of the list except 1125. }
-function IsOemFamily(Id: LongInt): Boolean;
-var
-  Slot: Integer;
+{ The set number Index in list order; Id = 0 and Table = nil when Index is out of range. }
+function EntryAt(Index: Integer): TSetEntry;
 begin
-  Result := False;
-  if Id = 1125 then
+  case Index of
+    0: Result := MakeEntry(437, @Set437);
+    1: Result := MakeEntry(720, @Set720);
+    2: Result := MakeEntry(737, @Set737);
+    3: Result := MakeEntry(775, @Set775);
+    4: Result := MakeEntry(850, @Set850);
+    5: Result := MakeEntry(852, @Set852);
+    6: Result := MakeEntry(855, @Set855);
+    7: Result := MakeEntry(857, @Set857);
+    8: Result := MakeEntry(858, @Set858);
+    9: Result := MakeEntry(860, @Set860);
+    10: Result := MakeEntry(861, @Set861);
+    11: Result := MakeEntry(862, @Set862);
+    12: Result := MakeEntry(863, @Set863);
+    13: Result := MakeEntry(864, @Set864);
+    14: Result := MakeEntry(865, @Set865);
+    15: Result := MakeEntry(866, @Set866);
+    16: Result := MakeEntry(869, @Set869);
+    17: Result := MakeEntry(874, @Set874);
+    18: Result := MakeEntry(1125, @Set1125);
+    19: Result := MakeEntry(1250, @Set1250);
+    20: Result := MakeEntry(1251, @Set1251);
+    21: Result := MakeEntry(1252, @Set1252);
+    22: Result := MakeEntry(1253, @Set1253);
+    23: Result := MakeEntry(1254, @Set1254);
+    24: Result := MakeEntry(1255, @Set1255);
+    25: Result := MakeEntry(1256, @Set1256);
+    26: Result := MakeEntry(1257, @Set1257);
+    27: Result := MakeEntry(1258, @Set1258);
+    28: Result := MakeEntry(20866, @Set20866);
+    29: Result := MakeEntry(21866, @Set21866);
+    30: Result := MakeEntry(28591, @Set28591);
+    31: Result := MakeEntry(28592, @Set28592);
+    32: Result := MakeEntry(28593, @Set28593);
+    33: Result := MakeEntry(28594, @Set28594);
+    34: Result := MakeEntry(28595, @Set28595);
+    35: Result := MakeEntry(28596, @Set28596);
+    36: Result := MakeEntry(28597, @Set28597);
+    37: Result := MakeEntry(28598, @Set28598);
+    38: Result := MakeEntry(28599, @Set28599);
+    39: Result := MakeEntry(28600, @Set28600);
+    40: Result := MakeEntry(28601, @Set28601);
+    41: Result := MakeEntry(28603, @Set28603);
+    42: Result := MakeEntry(28604, @Set28604);
+    43: Result := MakeEntry(28605, @Set28605);
+    44: Result := MakeEntry(28606, @Set28606);
+    45: Result := MakeEntry(10000, @Set10000);
+  else
+    Result := MakeEntry(0, nil);
+  end;
+end;
+
+function FindTable(Id: LongInt): PCharTable;
+var
+  Index: Integer;
+  Entry: TSetEntry;
+begin
+  Result := nil;
+  if Id <= 0 then
     Exit;
-  for Slot := 0 to OemFamilyCount - 1 do
-    if ListIds[Slot] = Id then
+  for Index := 0 to SingleByteSetCount - 1 do
+  begin
+    Entry := EntryAt(Index);
+    if Entry.Id = Id then
     begin
-      Result := True;
+      Result := Entry.Table;
       Exit;
     end;
-end;
-
-function FindTable(Id: LongInt): PSetTable;
-begin
-  case Id of
-    437: Result := @Set437;
-    720: Result := @Set720;
-    737: Result := @Set737;
-    775: Result := @Set775;
-    850: Result := @Set850;
-    852: Result := @Set852;
-    855: Result := @Set855;
-    857: Result := @Set857;
-    858: Result := @Set858;
-    860: Result := @Set860;
-    861: Result := @Set861;
-    862: Result := @Set862;
-    863: Result := @Set863;
-    864: Result := @Set864;
-    865: Result := @Set865;
-    866: Result := @Set866;
-    869: Result := @Set869;
-    874: Result := @Set874;
-    1125: Result := @Set1125;
-    1250: Result := @Set1250;
-    1251: Result := @Set1251;
-    1252: Result := @Set1252;
-    1253: Result := @Set1253;
-    1254: Result := @Set1254;
-    1255: Result := @Set1255;
-    1256: Result := @Set1256;
-    1257: Result := @Set1257;
-    1258: Result := @Set1258;
-    20866: Result := @Set20866;
-    21866: Result := @Set21866;
-    28591: Result := @Set28591;
-    28592: Result := @Set28592;
-    28593: Result := @Set28593;
-    28594: Result := @Set28594;
-    28595: Result := @Set28595;
-    28596: Result := @Set28596;
-    28597: Result := @Set28597;
-    28598: Result := @Set28598;
-    28599: Result := @Set28599;
-    28600: Result := @Set28600;
-    28601: Result := @Set28601;
-    28603: Result := @Set28603;
-    28604: Result := @Set28604;
-    28605: Result := @Set28605;
-    28606: Result := @Set28606;
-    10000: Result := @Set10000;
-  else
-    Result := nil;
   end;
 end;
 
-{ True when byte B of Table has no Unicode value. }
-function IsUndefined(const Table: TSetTable; B: Integer): Boolean;
+function IsUndefined(Value: Word): Boolean;
 begin
-  Result := (B >= $80) and (Table[B] = 0);
+  Result := (Value = 0) or (Value = UndefinedMark);
 end;
 
-{ ---- Names ---- }
+{ ---- the names ---- }
 
-function IntText(Value: LongInt): AnsiString;
-begin
-  Str(Value, Result);
-end;
-
-function LowerAscii(const S: AnsiString): AnsiString;
+function LowerAscii(const Text: AnsiString): AnsiString;
 var
-  I: Integer;
+  Index: SizeInt;
+  Code: Integer;
 begin
-  Result := S;
-  for I := 1 to Length(Result) do
-    if Result[I] in ['A'..'Z'] then
-      Result[I] := Chr(Ord(Result[I]) + 32);
+  Result := Text;
+  for Index := 1 to Length(Result) do
+  begin
+    Code := Ord(Result[Index]);
+    if (Code >= Ord('A')) and (Code <= Ord('Z')) then
+      Result[Index] := AnsiChar(Code + (Ord('a') - Ord('A')));
+  end;
 end;
 
-{ The Index-th name of the table set Id (0-based, in the order of the name table), or '' when there is none. }
-function SetNameAt(Id: LongInt; Index: Integer): AnsiString;
+{ Name number VariantNo of the set Id, counted from 0; the empty string when the set has fewer names. }
+function SetNameAt(Id: LongInt; VariantNo: Integer): AnsiString;
 var
   Digits: AnsiString;
+  IsoNumber: AnsiString;
 begin
   Result := '';
-  Digits := IntText(Id);
-  if IsOemFamily(Id) then
-  begin
-    case Index of
-      0: Result := 'cp' + Digits;
-      1: Result := 'ibm' + Digits;
-      2: Result := Digits;
-    end;
-    Exit;
-  end;
+  Str(Id, Digits);
   case Id of
     1125:
-      case Index of
+      case VariantNo of
         0: Result := 'cp1125';
         1: Result := 'ibm1125';
         2: Result := 'cp866u';
         3: Result := '1125';
       end;
     1250..1258:
-      case Index of
+      case VariantNo of
         0: Result := 'windows-' + Digits;
         1: Result := 'cp' + Digits;
         2: Result := Digits;
       end;
     20866:
-      case Index of
+      case VariantNo of
         0: Result := 'koi8-r';
         1: Result := 'koi8r';
       end;
     21866:
-      case Index of
+      case VariantNo of
         0: Result := 'koi8-u';
         1: Result := 'koi8u';
       end;
     28591..28606:
-      case Index of
-        0: Result := 'iso-8859-' + IntText(Id - 28590);
-        1: Result := 'iso8859-' + IntText(Id - 28590);
+      begin
+        Str(Id - 28590, IsoNumber);
+        case VariantNo of
+          0: Result := 'iso-8859-' + IsoNumber;
+          1: Result := 'iso8859-' + IsoNumber;
+        end;
       end;
     10000:
-      case Index of
+      case VariantNo of
         0: Result := 'macintosh';
         1: Result := 'mac-roman';
         2: Result := 'macroman';
       end;
-  end;
-end;
-
-{ ---- UTF-8 ---- }
-
-{ Decodes the character that starts at byte Pos (1-based) of S. Returns True and the code point when the bytes form
-  a valid, complete sequence; Len is the number of bytes used. When they do not, returns False with Len = 1. }
-function DecodeAt(const S: AnsiString; Pos: SizeInt; out Cp: Cardinal; out Len: Integer): Boolean;
-var
-  Lead, Second, Needed, K: Integer;
-  Continuation: Byte;
-  Value: Cardinal;
-  LowBound, HighBound: Byte;
-begin
-  Result := False;
-  Cp := ReplacementChar;
-  Len := 1;
-  Lead := Byte(S[Pos]);
-  if Lead < $80 then
-  begin
-    Cp := Lead;
-    Result := True;
-    Exit;
-  end;
-  if (Lead < $C2) or (Lead > $F4) then
-    Exit;
-  if Lead < $E0 then
-  begin
-    Needed := 1;
-    Value := Lead and $1F;
-  end
-  else if Lead < $F0 then
-  begin
-    Needed := 2;
-    Value := Lead and $0F;
-  end
   else
-  begin
-    Needed := 3;
-    Value := Lead and $07;
-  end;
-  if Pos + Needed > Length(S) then
-    Exit;
-  LowBound := $80;
-  HighBound := $BF;
-  case Lead of
-    $E0: LowBound := $A0;
-    $ED: HighBound := $9F;
-    $F0: LowBound := $90;
-    $F4: HighBound := $8F;
-  end;
-  Second := Byte(S[Pos + 1]);
-  if (Second < LowBound) or (Second > HighBound) then
-    Exit;
-  Value := (Value shl 6) or (Second and $3F);
-  for K := 2 to Needed do
-  begin
-    Continuation := Byte(S[Pos + K]);
-    if (Continuation and $C0) <> $80 then
-      Exit;
-    Value := (Value shl 6) or (Continuation and $3F);
-  end;
-  Cp := Value;
-  Len := Needed + 1;
-  Result := True;
-end;
-
-{ Appends the UTF-8 form of Cp to Buf at position Used + 1. Buf must have room for 4 more bytes. }
-procedure PutUtf8(var Buf: AnsiString; var Used: SizeInt; Cp: Cardinal);
-var
-  Bytes: TUtf8Bytes;
-  Count, K: SizeInt;
-begin
-  Count := Utf32To8(Cp, Bytes);
-  for K := 0 to Count - 1 do
-    Buf[Used + 1 + K] := Chr(Bytes[K]);
-  Inc(Used, Count);
-end;
-
-function Utf8Valid(const S: AnsiString): Boolean;
-var
-  Pos: SizeInt;
-  Cp: Cardinal;
-  Len: Integer;
-begin
-  Result := False;
-  Pos := 1;
-  while Pos <= Length(S) do
-  begin
-    if not DecodeAt(S, Pos, Cp, Len) then
-      Exit;
-    Inc(Pos, Len);
-  end;
-  Result := True;
-end;
-
-function IsPlainAscii(const S: AnsiString): Boolean;
-var
-  I: SizeInt;
-begin
-  Result := False;
-  for I := 1 to Length(S) do
-    if Byte(S[I]) >= $80 then
-      Exit;
-  Result := True;
-end;
-
-{ ---- UTF-16 ---- }
-
-function Utf16ToUtf8(const Raw: AnsiString; BigEndian: Boolean): AnsiString;
-var
-  UnitCount, Index, Used: SizeInt;
-  Current, Following: Cardinal;
-  Cp: Cardinal;
-
-  function UnitAt(UnitIndex: SizeInt): Cardinal;
-  var
-    First, Second: Cardinal;
-  begin
-    First := Byte(Raw[UnitIndex * 2 + 1]);
-    Second := Byte(Raw[UnitIndex * 2 + 2]);
-    if BigEndian then
-      Result := (First shl 8) or Second
-    else
-      Result := (Second shl 8) or First;
-  end;
-
-begin
-  UnitCount := Length(Raw) div 2;
-  SetLength(Result, UnitCount * 3 + 4);
-  Used := 0;
-  Index := 0;
-  while Index < UnitCount do
-  begin
-    Current := UnitAt(Index);
-    Inc(Index);
-    if (Current >= $D800) and (Current <= $DBFF) then
-    begin
-      Cp := ReplacementChar;
-      if Index < UnitCount then
-      begin
-        Following := UnitAt(Index);
-        if (Following >= $DC00) and (Following <= $DFFF) then
-        begin
-          Cp := $10000 + ((Current - $D800) shl 10) + (Following - $DC00);
-          Inc(Index);
-        end;
-      end;
-    end
-    else if (Current >= $DC00) and (Current <= $DFFF) then
-      Cp := ReplacementChar
-    else
-      Cp := Current;
-    PutUtf8(Result, Used, Cp);
-  end;
-  SetLength(Result, Used);
-end;
-
-function Utf8ToUtf16(const Text: AnsiString; BigEndian: Boolean; out Lost: Integer): AnsiString;
-var
-  Used, Pos: SizeInt;
-  Cp: Cardinal;
-  Len: Integer;
-
-  procedure PutUnit(Value: Cardinal);
-  var
-    HighByte, LowByte: Char;
-  begin
-    HighByte := Chr(Byte((Value shr 8) and $FF));
-    LowByte := Chr(Byte(Value and $FF));
-    if BigEndian then
-    begin
-      Result[Used + 1] := HighByte;
-      Result[Used + 2] := LowByte;
-    end
-    else
-    begin
-      Result[Used + 1] := LowByte;
-      Result[Used + 2] := HighByte;
+    case VariantNo of
+      0: Result := 'cp' + Digits;
+      1: Result := 'ibm' + Digits;
+      2: Result := Digits;
     end;
-    Inc(Used, 2);
   end;
-
-begin
-  Lost := 0;
-  SetLength(Result, Length(Text) * 2);
-  Used := 0;
-  Pos := 1;
-  while Pos <= Length(Text) do
-  begin
-    if not DecodeAt(Text, Pos, Cp, Len) then
-    begin
-      Inc(Lost);
-      Cp := ReplacementChar;
-    end;
-    Inc(Pos, Len);
-    if Cp >= $10000 then
-    begin
-      PutUnit($D800 + ((Cp - $10000) shr 10));
-      PutUnit($DC00 + ((Cp - $10000) and $3FF));
-    end
-    else
-      PutUnit(Cp);
-  end;
-  SetLength(Result, Used);
 end;
-
-{ ---- Lookup routines ---- }
 
 function CharsetId(const Name: AnsiString): LongInt;
 var
-  Lower: AnsiString;
-  ListIndex, NameIndex: Integer;
-  Candidate: AnsiString;
+  Wanted: AnsiString;
+  Index: Integer;
+  VariantNo: Integer;
+  Entry: TSetEntry;
 begin
   Result := 0;
-  Lower := LowerAscii(Name);
-  if Lower = '' then
+  Wanted := LowerAscii(Name);
+  if Wanted = '' then
     Exit;
-  if (Lower = 'utf-8') or (Lower = 'utf8') then
-    Result := csUtf8
-  else if (Lower = 'utf-16le') or (Lower = 'utf-16') or (Lower = 'utf16le') then
-    Result := csUtf16LE
-  else if (Lower = 'utf-16be') or (Lower = 'utf16be') then
-    Result := csUtf16BE
-  else if (Lower = 'ascii') or (Lower = 'us-ascii') then
-    Result := csLatin1
-  else
-    for ListIndex := 0 to SetCount - 1 do
-    begin
-      NameIndex := 0;
-      repeat
-        Candidate := SetNameAt(ListIds[ListIndex], NameIndex);
-        if Candidate = Lower then
-        begin
-          Result := ListIds[ListIndex];
-          Exit;
-        end;
-        Inc(NameIndex);
-      until Candidate = '';
-    end;
+  if (Wanted = 'utf-8') or (Wanted = 'utf8') then
+  begin
+    Result := csUtf8;
+    Exit;
+  end;
+  if (Wanted = 'utf-16le') or (Wanted = 'utf-16') or (Wanted = 'utf16le') then
+  begin
+    Result := csUtf16LE;
+    Exit;
+  end;
+  if (Wanted = 'utf-16be') or (Wanted = 'utf16be') then
+  begin
+    Result := csUtf16BE;
+    Exit;
+  end;
+  if (Wanted = 'ascii') or (Wanted = 'us-ascii') then
+  begin
+    Result := csLatin1;
+    Exit;
+  end;
+  for Index := 0 to SingleByteSetCount - 1 do
+  begin
+    Entry := EntryAt(Index);
+    for VariantNo := 0 to MaxNameVariants - 1 do
+      if SetNameAt(Entry.Id, VariantNo) = Wanted then
+      begin
+        Result := Entry.Id;
+        Exit;
+      end;
+  end;
 end;
 
 function CharsetName(Id: LongInt): AnsiString;
@@ -513,264 +293,474 @@ end;
 
 function CharsetListCount: Integer;
 begin
-  Result := SetCount;
+  Result := SingleByteSetCount;
 end;
 
 function CharsetListId(I: Integer): LongInt;
 begin
-  if (I < 0) or (I >= SetCount) then
-    Result := 0
-  else
-    Result := ListIds[I];
+  Result := EntryAt(I).Id;
 end;
 
-{ ---- Conversions ---- }
+{ ---- UTF-8 ---- }
+
+function Utf8DecodeAt(const S: AnsiString; Pos: SizeInt; out Cp: Cardinal; out Len: Integer): Boolean;
+var
+  Lead: Cardinal;
+  Value: Cardinal;
+  Continuations: Integer;
+  Step: Integer;
+  Follower: Cardinal;
+begin
+  Result := False;
+  Cp := ReplacementCp;
+  Len := 0;
+  if (Pos < 1) or (Pos > Length(S)) then
+    Exit;
+  Len := 1;
+  Lead := Ord(S[Pos]);
+  if Lead < $80 then
+  begin
+    Cp := Lead;
+    Result := True;
+    Exit;
+  end;
+  if (Lead < $C2) or (Lead > $F4) then
+    Exit;
+  if Lead < $E0 then
+  begin
+    Continuations := 1;
+    Value := Lead and $1F;
+  end
+  else if Lead < $F0 then
+  begin
+    Continuations := 2;
+    Value := Lead and $0F;
+  end
+  else
+  begin
+    Continuations := 3;
+    Value := Lead and $07;
+  end;
+  if Pos + Continuations > Length(S) then
+    Exit;
+  for Step := 1 to Continuations do
+  begin
+    Follower := Ord(S[Pos + Step]);
+    if (Follower and $C0) <> $80 then
+      Exit;
+    Value := (Value shl 6) or (Follower and $3F);
+  end;
+  case Continuations of
+    2:
+      if (Value < $800) or ((Value >= $D800) and (Value <= $DFFF)) then
+        Exit;
+    3:
+      if (Value < $10000) or (Value > $10FFFF) then
+        Exit;
+  end;
+  Cp := Value;
+  Len := Continuations + 1;
+  Result := True;
+end;
+
+function Utf8Valid(const S: AnsiString): Boolean;
+var
+  Pos: SizeInt;
+  Cp: Cardinal;
+  Len: Integer;
+begin
+  Result := False;
+  Pos := 1;
+  while Pos <= Length(S) do
+  begin
+    if not Utf8DecodeAt(S, Pos, Cp, Len) then
+      Exit;
+    Inc(Pos, Len);
+  end;
+  Result := True;
+end;
+
+function IsPlainAscii(const S: AnsiString): Boolean;
+var
+  Index: SizeInt;
+begin
+  Result := False;
+  for Index := 1 to Length(S) do
+    if Ord(S[Index]) >= $80 then
+      Exit;
+  Result := True;
+end;
+
+{ Writes the UTF-8 of Cp into Dest after the first Used bytes; Dest must be long enough. }
+procedure AppendUtf8(var Dest: AnsiString; var Used: SizeInt; Cp: Cardinal);
+var
+  Encoded: TUtf8Bytes;
+  Count: SizeInt;
+  Index: SizeInt;
+begin
+  Count := Utf32To8(Cp, Encoded);
+  for Index := 0 to Count - 1 do
+    Dest[Used + 1 + Index] := AnsiChar(Encoded[Index]);
+  Inc(Used, Count);
+end;
+
+{ ---- UTF-16 ---- }
+
+function ReadUnit(const Raw: AnsiString; UnitNo: SizeInt; BigEndian: Boolean): Word;
+var
+  First: Integer;
+  Second: Integer;
+begin
+  First := Ord(Raw[UnitNo * 2 + 1]);
+  Second := Ord(Raw[UnitNo * 2 + 2]);
+  if BigEndian then
+    Result := Word((First shl 8) or Second)
+  else
+    Result := Word((Second shl 8) or First);
+end;
+
+procedure AppendUnit(var Dest: AnsiString; var Used: SizeInt; Value: Word; BigEndian: Boolean);
+var
+  HighByte: AnsiChar;
+  LowByte: AnsiChar;
+begin
+  HighByte := AnsiChar(Value shr 8);
+  LowByte := AnsiChar(Value and $FF);
+  if BigEndian then
+  begin
+    Dest[Used + 1] := HighByte;
+    Dest[Used + 2] := LowByte;
+  end
+  else
+  begin
+    Dest[Used + 1] := LowByte;
+    Dest[Used + 2] := HighByte;
+  end;
+  Inc(Used, 2);
+end;
+
+function Utf16ToUtf8(const Raw: AnsiString; BigEndian: Boolean): AnsiString;
+var
+  UnitCount: SizeInt;
+  UnitNo: SizeInt;
+  Used: SizeInt;
+  Current: Word;
+  Following: Word;
+  Cp: Cardinal;
+  Built: AnsiString;
+begin
+  UnitCount := Length(Raw) div 2;
+  SetLength(Built, UnitCount * 3);
+  Used := 0;
+  UnitNo := 0;
+  while UnitNo < UnitCount do
+  begin
+    Current := ReadUnit(Raw, UnitNo, BigEndian);
+    Inc(UnitNo);
+    if (Current >= $D800) and (Current <= $DBFF) then
+    begin
+      Cp := ReplacementCp;
+      if UnitNo < UnitCount then
+      begin
+        Following := ReadUnit(Raw, UnitNo, BigEndian);
+        if (Following >= $DC00) and (Following <= $DFFF) then
+        begin
+          Cp := $10000 + ((Cardinal(Current) - $D800) shl 10) + (Cardinal(Following) - $DC00);
+          Inc(UnitNo);
+        end;
+      end;
+    end
+    else if (Current >= $DC00) and (Current <= $DFFF) then
+      Cp := ReplacementCp
+    else
+      Cp := Current;
+    AppendUtf8(Built, Used, Cp);
+  end;
+  SetLength(Built, Used);
+  Result := Built;
+end;
+
+function Utf8ToUtf16(const Text: AnsiString; BigEndian: Boolean; out Lost: Integer): AnsiString;
+var
+  Pos: SizeInt;
+  Used: SizeInt;
+  Cp: Cardinal;
+  Len: Integer;
+  Offset: Cardinal;
+  Built: AnsiString;
+begin
+  Lost := 0;
+  SetLength(Built, Length(Text) * 2);
+  Used := 0;
+  Pos := 1;
+  while Pos <= Length(Text) do
+  begin
+    if not Utf8DecodeAt(Text, Pos, Cp, Len) then
+      Inc(Lost);
+    Inc(Pos, Len);
+    if Cp < $10000 then
+      AppendUnit(Built, Used, Word(Cp), BigEndian)
+    else
+    begin
+      Offset := Cp - $10000;
+      AppendUnit(Built, Used, Word($D800 + (Offset shr 10)), BigEndian);
+      AppendUnit(Built, Used, Word($DC00 + (Offset and $3FF)), BigEndian);
+    end;
+  end;
+  SetLength(Built, Used);
+  Result := Built;
+end;
+
+{ ---- single-byte sets ---- }
 
 function CharsetToUtf8(Id: LongInt; const Raw: AnsiString): AnsiString;
 var
-  Table: PSetTable;
-  I, Used: SizeInt;
-  B: Byte;
-  Value: Cardinal;
+  Table: PCharTable;
+  Built: AnsiString;
+  Used: SizeInt;
+  Index: SizeInt;
+  ByteValue: Integer;
+  Mapped: Word;
 begin
+  Result := Raw;
   if Raw = '' then
-  begin
-    Result := '';
     Exit;
-  end;
-  case Id of
-    csUtf8:
-      begin
-        Result := Raw;
-        Exit;
-      end;
-    csUtf16LE:
-      begin
-        Result := Utf16ToUtf8(Raw, False);
-        Exit;
-      end;
-    csUtf16BE:
-      begin
-        Result := Utf16ToUtf8(Raw, True);
-        Exit;
-      end;
+  if Id = csUtf8 then
+    Exit;
+  if (Id = csUtf16LE) or (Id = csUtf16BE) then
+  begin
+    Result := Utf16ToUtf8(Raw, Id = csUtf16BE);
+    Exit;
   end;
   Table := FindTable(Id);
-  if (Table = nil) or IsPlainAscii(Raw) then
-  begin
-    Result := Raw;
+  if Table = nil then
     Exit;
-  end;
-  SetLength(Result, Length(Raw) * 3);
+  if IsPlainAscii(Raw) then
+    Exit;
+  SetLength(Built, Length(Raw) * 3);
   Used := 0;
-  for I := 1 to Length(Raw) do
+  for Index := 1 to Length(Raw) do
   begin
-    B := Byte(Raw[I]);
-    if B < $80 then
+    ByteValue := Ord(Raw[Index]);
+    if ByteValue < $80 then
     begin
       Inc(Used);
-      Result[Used] := Raw[I];
+      Built[Used] := Raw[Index];
       Continue;
     end;
-    if IsUndefined(Table^, B) then
-      Value := ReplacementChar
+    Mapped := Table^[ByteValue];
+    if IsUndefined(Mapped) then
+      AppendUtf8(Built, Used, ReplacementCp)
     else
-      Value := Table^[B];
-    PutUtf8(Result, Used, Value);
+      AppendUtf8(Built, Used, Mapped);
   end;
-  SetLength(Result, Used);
+  SetLength(Built, Used);
+  Result := Built;
 end;
 
-{ Builds the reverse table of the set Id (which has a table) and makes it the cached one. }
-procedure BuildReverse(Id: LongInt; const Table: TSetTable);
+{ Fills the reverse table of the cache for the set Id: the defined bytes $80..$FF ordered by code point. }
+procedure BuildReverse(Id: LongInt; Table: PCharTable);
 var
-  B, Slot, Before: Integer;
+  ByteValue: Integer;
+  Code: Word;
+  Slot: Integer;
+  Count: Integer;
 begin
-  ReverseCount := 0;
-  for B := $80 to $FF do
+  CacheSetId := 0;
+  Count := 0;
+  for ByteValue := $80 to $FF do
   begin
-    if IsUndefined(Table, B) then
+    Code := Table^[ByteValue];
+    if IsUndefined(Code) then
       Continue;
-    { Insertion into the ascending list of code points. }
-    Slot := ReverseCount;
-    while (Slot > 0) and (ReverseCodes[Slot - 1] > Table[B]) do
+    Slot := Count;
+    while (Slot > 0) and (CacheCodes[Slot - 1] > Code) do
     begin
-      ReverseCodes[Slot] := ReverseCodes[Slot - 1];
-      ReverseBytes[Slot] := ReverseBytes[Slot - 1];
+      CacheCodes[Slot] := CacheCodes[Slot - 1];
+      CacheBytes[Slot] := CacheBytes[Slot - 1];
       Dec(Slot);
     end;
-    Before := Slot;
-    ReverseCodes[Before] := Table[B];
-    ReverseBytes[Before] := Byte(B);
-    Inc(ReverseCount);
+    CacheCodes[Slot] := Code;
+    CacheBytes[Slot] := Byte(ByteValue);
+    Inc(Count);
   end;
-  ReverseId := Id;
+  CacheSize := Count;
+  CacheSetId := Id;
 end;
 
-{ Returns the byte of the cached set for Cp, or -1 when the set has none. }
-function ReverseLookup(Cp: Cardinal): Integer;
+{ Looks Cp up in the reverse table of the cache. }
+function FindInReverse(Cp: Cardinal; out Found: Byte): Boolean;
 var
-  Low, High, Middle: Integer;
+  FirstIndex: Integer;
+  LastIndex: Integer;
+  MidIndex: Integer;
 begin
-  Result := -1;
+  Result := False;
+  Found := 0;
   if Cp > $FFFF then
     Exit;
-  Low := 0;
-  High := ReverseCount - 1;
-  while Low <= High do
+  FirstIndex := 0;
+  LastIndex := CacheSize - 1;
+  while FirstIndex <= LastIndex do
   begin
-    Middle := (Low + High) div 2;
-    if Cp < ReverseCodes[Middle] then
-      High := Middle - 1
-    else if Cp > ReverseCodes[Middle] then
-      Low := Middle + 1
-    else
+    MidIndex := (FirstIndex + LastIndex) div 2;
+    if CacheCodes[MidIndex] = Cp then
     begin
-      Result := ReverseBytes[Middle];
+      Found := CacheBytes[MidIndex];
+      Result := True;
       Exit;
     end;
+    if CacheCodes[MidIndex] < Cp then
+      FirstIndex := MidIndex + 1
+    else
+      LastIndex := MidIndex - 1;
   end;
 end;
 
 function CharsetFromUtf8(Id: LongInt; const Text: AnsiString; out Lost: Integer): AnsiString;
 var
-  Table: PSetTable;
-  Pos, Used: SizeInt;
+  Table: PCharTable;
+  Built: AnsiString;
+  Used: SizeInt;
+  Pos: SizeInt;
   Cp: Cardinal;
   Len: Integer;
-  Found: Integer;
-  Valid: Boolean;
+  Mapped: Byte;
 begin
   Lost := 0;
-  case Id of
-    csUtf16LE:
-      begin
-        Result := Utf8ToUtf16(Text, False, Lost);
-        Exit;
-      end;
-    csUtf16BE:
-      begin
-        Result := Utf8ToUtf16(Text, True, Lost);
-        Exit;
-      end;
-  end;
-  Table := FindTable(Id);
-  if (Table = nil) or IsPlainAscii(Text) then
+  Result := Text;
+  if Text = '' then
+    Exit;
+  if Id = csUtf8 then
+    Exit;
+  if (Id = csUtf16LE) or (Id = csUtf16BE) then
   begin
-    Result := Text;
+    Result := Utf8ToUtf16(Text, Id = csUtf16BE, Lost);
     Exit;
   end;
-  if ReverseId <> Id then
-    BuildReverse(Id, Table^);
-  SetLength(Result, Length(Text));
+  Table := FindTable(Id);
+  if Table = nil then
+    Exit;
+  if IsPlainAscii(Text) then
+    Exit;
+  if CacheSetId <> Id then
+    BuildReverse(Id, Table);
+  SetLength(Built, Length(Text));
   Used := 0;
   Pos := 1;
   while Pos <= Length(Text) do
   begin
-    if Byte(Text[Pos]) < $80 then
+    if Ord(Text[Pos]) < $80 then
     begin
       Inc(Used);
-      Result[Used] := Text[Pos];
+      Built[Used] := Text[Pos];
       Inc(Pos);
       Continue;
     end;
-    Valid := DecodeAt(Text, Pos, Cp, Len);
+    Utf8DecodeAt(Text, Pos, Cp, Len);
     Inc(Pos, Len);
-    if Valid then
-      Found := ReverseLookup(Cp)
-    else
-      Found := -1;
     Inc(Used);
-    if Found >= 0 then
-      Result[Used] := Chr(Byte(Found))
+    if FindInReverse(Cp, Mapped) then
+      Built[Used] := AnsiChar(Mapped)
     else
     begin
-      Result[Used] := '?';
+      Built[Used] := '?';
       Inc(Lost);
     end;
   end;
-  SetLength(Result, Used);
+  SetLength(Built, Used);
+  Result := Built;
 end;
 
-{ ---- Guessing ---- }
+{ ---- guessing ---- }
 
-{ The frequency of the Russian letter Cp in percent times 10, 0 for any other code point. }
+{ The weight of a Russian letter: its frequency in percent times ten, halved for a capital letter. }
 function RussianWeight(Cp: Cardinal): Integer;
 begin
   Result := 0;
   if (Cp >= $0430) and (Cp <= $044F) then
-    Result := RussianWeights[Cp - $0430]
+    Result := LowerLetterWeight[Cp - $0430]
   else if Cp = $0451 then
     Result := 2
   else if (Cp >= $0410) and (Cp <= $042F) then
-    Result := RussianWeights[Cp + $20 - $0430] div 2
+    Result := LowerLetterWeight[Cp - $0410] div 2
   else if Cp = $0401 then
     Result := 1;
 end;
 
-{ The contribution of one byte (value Cp in the set, or undefined) to the score of a candidate. }
-function ByteScore(Undefined: Boolean; Cp: Cardinal): Integer;
+{ What one byte adds to the score of a set whose table maps it to Mapped. }
+function ByteContribution(Mapped: Word): Integer;
 var
   Weight: Integer;
 begin
-  if Undefined then
-    Result := -50
-  else if (Cp >= $2500) and (Cp <= $259F) then
-    Result := -20
-  else if (Cp >= $0080) and (Cp <= $009F) then
-    Result := -50
-  else
+  Result := 0;
+  if IsUndefined(Mapped) then
   begin
-    Weight := RussianWeight(Cp);
-    Result := 10 * Weight;
-    if (Weight = 0) and (Cp >= $00C0) and (Cp <= $1FFF) then
-      Inc(Result, 3);
+    Result := -50;
+    Exit;
   end;
+  if (Mapped >= $2500) and (Mapped <= $259F) then
+  begin
+    Result := -20;
+    Exit;
+  end;
+  if (Mapped >= $0080) and (Mapped <= $009F) then
+  begin
+    Result := -50;
+    Exit;
+  end;
+  Weight := RussianWeight(Mapped);
+  Result := 10 * Weight;
+  if (Weight = 0) and (Mapped >= $00C0) and (Mapped <= $1FFF) then
+    Result := Result + 3;
 end;
 
 function CharsetGuess(const Raw: AnsiString; const Candidates: array of LongInt): LongInt;
 var
-  Counts: array[$80..$FF] of Int64;
-  Examined, I: SizeInt;
-  CandidateIndex, B: Integer;
-  Table: PSetTable;
-  Score, Best: Int64;
+  Histogram: array[0..127] of Int64;
+  Window: SizeInt;
+  Position: SizeInt;
+  ByteValue: Integer;
+  Slot: Integer;
+  CandidateNo: Integer;
+  Table: PCharTable;
+  Score: Int64;
+  BestScore: Int64;
 begin
   if Length(Candidates) = 0 then
   begin
-    Result := csCp1252;
+    Result := GuessFallbackId;
     Exit;
   end;
   Result := Candidates[0];
   if IsPlainAscii(Raw) then
     Exit;
-  Examined := Length(Raw);
-  if Examined > GuessLimit then
-    Examined := GuessLimit;
-  for B := $80 to $FF do
-    Counts[B] := 0;
-  for I := 1 to Examined do
-    if Byte(Raw[I]) >= $80 then
-      Inc(Counts[Byte(Raw[I])]);
-  Best := -1;
-  for CandidateIndex := 0 to High(Candidates) do
+  Window := Length(Raw);
+  if Window > GuessWindow then
+    Window := GuessWindow;
+  FillChar(Histogram, SizeOf(Histogram), 0);
+  for Position := 1 to Window do
   begin
-    Table := FindTable(Candidates[CandidateIndex]);
+    ByteValue := Ord(Raw[Position]);
+    if ByteValue >= $80 then
+      Inc(Histogram[ByteValue - $80]);
+  end;
+  BestScore := -1;
+  for CandidateNo := 0 to High(Candidates) do
+  begin
+    Table := FindTable(Candidates[CandidateNo]);
     if Table = nil then
       Continue;
     Score := 0;
-    for B := $80 to $FF do
-      if Counts[B] > 0 then
-        Inc(Score, Counts[B] * ByteScore(IsUndefined(Table^, B), Table^[B]));
-    if Score > Best then
+    for Slot := 0 to 127 do
+      if Histogram[Slot] > 0 then
+        Score := Score + Histogram[Slot] * ByteContribution(Table^[Slot + $80]);
+    if Score > BestScore then
     begin
-      Best := Score;
-      Result := Candidates[CandidateIndex];
+      BestScore := Score;
+      Result := Candidates[CandidateNo];
     end;
   end;
 end;
-
-initialization
-  BuildListIds;
 
 end.
