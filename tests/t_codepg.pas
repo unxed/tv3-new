@@ -1,5 +1,6 @@
 { Translated from magiblot/tvision @ b4831e2
-  C++ sources: include/tvision/internal/codepage.h, source/platform/codepage.cpp
+  C++ sources: include/tvision/internal/codepage.h, include/tvision/internal/strings.h,
+  source/platform/codepage.cpp
   See COPYRIGHT.magiblot. }
 program t_codepg;
 
@@ -172,11 +173,48 @@ begin
   Check(CodePageToPackedUtf8(#$80) = $87C3, 'restored: hook');
 end;
 
+{ The key of a string is made of its first four bytes. Bytes after the fourth are ignored, the bytes above 127
+  are not extended in sign, and the empty string has the key 0. }
+procedure TestKeys;
+var
+  T: TCpTranslation;
+  C: Integer;
+begin
+  { Keys of the table of code page 437. }
+  CheckFrom(Seq([$41, 0, 0, 0, $FF]), $41, 'key: one byte, zero bytes and a fifth byte');
+  CheckFrom(Seq([$C3, $87, 0, 0, $55]), $80, 'key: two bytes and a fifth byte');
+  CheckFrom(Seq([$C3, $87, $55]), 0, 'key: a third byte counts');
+  CheckFrom(Seq([$C3, $87, $FF, $FF, $FF, $FF]), 0, 'key: bytes above 127 after the second');
+  CheckFrom(Seq([$FF]), 0, 'key: one byte above 127');
+  CheckFrom(Seq([$A9, $C3]), 0, 'key: bytes in the other order');
+  CheckFrom('', 0, 'key: empty string');
+  CheckPrintable('', 0, 'key: empty string, printable');
+  { A four-byte sequence. }
+  for C := 0 to 255 do
+    T[C] := CpTranslator.ToUtf8(Byte(C));
+  T[$80][0] := $F0;
+  T[$80][1] := $9F;
+  T[$80][2] := $98;
+  T[$80][3] := $80;
+  CpTranslator.SetTranslation(@T);
+  Check(CpTranslator.ToPackedUtf8($80) = $80989FF0, 'key: packed four bytes');
+  CheckFrom(Seq([$F0, $9F, $98, $80]), $80, 'key: four bytes above 127');
+  CheckFrom(Seq([$F0, $9F, $98, $80, $41]), $80, 'key: four bytes and a fifth byte');
+  CheckFrom(Seq([$F0, $9F, $98, $80, $F0, $9F, $98, $80]), $80, 'key: eight bytes');
+  CheckFrom(Seq([$F0, $9F, $98]), 0, 'key: three bytes of four');
+  CheckFrom(Seq([$F0, $9F, $98, $81]), 0, 'key: other fourth byte');
+  CheckFrom(Seq([$C3, $87]), 0, 'key: replaced two-byte sequence is gone');
+  CpTranslator.SetTranslation(nil);
+  CheckFrom(Seq([$F0, $9F, $98, $80]), 0, 'key: four-byte sequence is gone after restore');
+  CheckFrom(Seq([$C3, $87]), $80, 'key: two bytes after restore');
+end;
+
 begin
   TestTable;
   TestPacked;
   TestReverse;
   TestPrintable;
   TestReplaced;
+  TestKeys;
   Done;
 end.

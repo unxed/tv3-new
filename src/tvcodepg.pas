@@ -1,5 +1,6 @@
 { Translated from magiblot/tvision @ b4831e2
-  C++ sources: include/tvision/internal/codepage.h, source/platform/codepage.cpp
+  C++ sources: include/tvision/internal/codepage.h, include/tvision/internal/strings.h,
+  source/platform/codepage.cpp
   See COPYRIGHT.magiblot.
 
   A translation is a table of 256 UTF-8 sequences of up to four bytes, zero-padded, one per code page character.
@@ -99,18 +100,18 @@ begin
     Result := Result or (Cardinal(Bytes[I]) shl (8 * I));
 end;
 
-{ The key of the first four bytes of S. }
+{ The key of S: its first SizeOf(Cardinal) bytes, the first byte being the lowest. The bytes after the fourth are
+  ignored. }
 function StringToKey(const S: string): Cardinal;
 var
-  I: Integer;
+  I, Count: SizeInt;
 begin
   Result := 0;
-  for I := 1 to Length(S) do
-  begin
-    if I > 4 then
-      Break;
-    Result := Result or (Cardinal(Byte(S[I])) shl (8 * (I - 1)));
-  end;
+  Count := Length(S);
+  if Count > SizeOf(Result) then
+    Count := SizeOf(Result);
+  for I := 0 to Count - 1 do
+    Result := Cardinal(QWord(Result) or (QWord(Byte(S[I + 1])) shl (8 * I)));
 end;
 
 { Returns the index of the first entry of the map whose key is not less than Key. }
@@ -136,12 +137,14 @@ var
   I, Pos, J: Integer;
   Len: Integer;
   Key: Cardinal;
+  Seq: string;
 begin
   St^.Count := 0;
   for I := 0 to 255 do
   begin
     Len := 1 + Integer(Utf8BytesLeft(St^.Table[I][0]));
-    Key := PackBytes(St^.Table[I], Len);
+    SetString(Seq, PChar(@St^.Table[I][0]), Len);
+    Key := StringToKey(Seq);
     Pos := LowerBound(St, Key);
     { An existing entry is kept, as with the insertion into a map. }
     if (Pos < St^.Count) and (St^.Map[Pos].Key = Key) then
