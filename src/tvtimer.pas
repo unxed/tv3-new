@@ -1,9 +1,10 @@
 { Translated from magiblot/tvision @ b4831e2
-  C++ sources: include/tvision/system.h (TTimerQueue), source/tvision/ttimerqu.cpp
+  C++ sources: include/tvision/system.h (TTimerQueue), source/tvision/ttimerqu.cpp,
+  include/tvision/hardware.h (getTickCountMs), source/platform/hardware.cpp (getTickCountMs)
   See COPYRIGHT.magiblot.
 
-  The clock of the parameterless constructor is the millisecond counter of the Free Pascal runtime; the C++
-  source of its own clock (THardwareInfo::getTickCountMs) is not part of the sources of this unit. }
+  The clock of the parameterless constructor is DefaultGetTimeMs, which is THardwareInfo::getTickCountMs: the
+  time of the monotonic clock of the system in milliseconds, as a 64-bit value. }
 unit TvTimer;
 
 {$mode objfpc}
@@ -65,19 +66,53 @@ type
 
 implementation
 
+uses
+  ctypes, UnixType;
+
 type
   PPTimer = ^PTimer;
 
+const
+{$IFDEF DARWIN}
+  ClockMonotonic = 6;
+{$ELSE}
+{$IFDEF FREEBSD}
+  ClockMonotonic = 4;
+{$ELSE}
+{$IFDEF NETBSD}
+  ClockMonotonic = 3;
+{$ELSE}
+{$IFDEF OPENBSD}
+  ClockMonotonic = 3;
+{$ELSE}
+  ClockMonotonic = 1;
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+
+{ clock_gettime of the C library: the steady clock of the system. }
+function LibcClockGetTime(ClockId: cint; var Tp: timespec): cint; cdecl; external 'c' name 'clock_gettime';
+
+{ The milliseconds of the steady clock since its epoch; the fraction of a millisecond is cut off. }
 function DefaultGetTimeMs: TTimePoint;
+var
+  Ts: timespec;
 begin
-  Result := TTimePoint(GetTickCount64);
+  Ts.tv_sec := 0;
+  Ts.tv_nsec := 0;
+  if LibcClockGetTime(ClockMonotonic, Ts) <> 0 then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  Result := TTimePoint(Ts.tv_sec) * 1000 + TTimePoint(Ts.tv_nsec) div 1000000;
 end;
 
 { The thread that waits learns of a change of the list. }
 procedure WakeLoop;
 begin
-  if TEventQueue.Backend <> nil then
-    TEventQueue.WakeUp;
+  TEventQueue.WakeUp;
 end;
 
 constructor TTimerQueue.Create;
